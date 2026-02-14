@@ -7,7 +7,8 @@ Personal website hosted with GitHub Pages.
 - `index.html`: Home page
 - `teaching.html`: Teaching page
 - `research.html`: Research page
-- `cv.html`: CV page
+- `cv.html`: Redirect page to CV PDF
+- `files/cv.pdf`: CV PDF file (direct link target)
 - `styles.css`: Shared styles
 
 ## Publish
@@ -21,4 +22,4 @@ Personal website hosted with GitHub Pages.
 - Update biography and contact details in `index.html`.
 - Update course content in `teaching.html`.
 - Update papers and projects in `research.html`.
-- Update CV items (and CV PDF link) in `cv.html`.
+- Update CV PDF by replacing `files/cv.pdf`.
