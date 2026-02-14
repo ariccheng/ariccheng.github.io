@@ -401,3 +401,15 @@ footer {
 .toggle-content {
   margin-top: 12px;
 }
+
+.flight-line{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.flight-line img{
+  display:block;
+  height:55px;          /* 可选：flight 条目高度*/
+  width:auto;
+}
