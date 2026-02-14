@@ -413,3 +413,19 @@ footer {
   height:55px;          /* 可选：flight 条目高度*/
   width:auto;
 }
+
+.chip-maroon{
+  background: rgba(140, 29, 64, 0.2);  /* #8C1D40 的 20% 不透明度 */
+  color: #8C1D40;                      /* 通常半透明底更适合用深色字 */
+}
+
+.chip-gold{
+  background: rgba(255, 198, 39, 0.2); /* #FFC627 的 20% 不透明度 */
+  color: #6b4f00;                      /* 或 #191919 */
+}
+
+.section h3{ margin: 18px 0 10px; }
+.section h4{ margin: 10px 0 8px; }
+.section .list{ margin: 0 0 14px; }
+
+.table-muted-head th{ color:#747474; }  /* 灰色表头 */
