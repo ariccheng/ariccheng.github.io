@@ -3,8 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem('theme');
+        var d = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', s || (d ? 'dark' : 'light'));
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
   <title>Research | Aric Cheng</title>
   <meta name="description" content="Research page of Aric Cheng.">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="files/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="files/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="files/apple-touch-icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Research | Aric Cheng">
+  <meta property="og:description" content="Research page of Aric Cheng.">
+  <meta property="og:url" content="https://ariccheng.github.io/research.html">
+  <meta property="og:image" content="https://ariccheng.github.io/files/profile-photo.jpg">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Research | Aric Cheng">
+  <meta name="twitter:description" content="Research page of Aric Cheng.">
+  <meta name="twitter:image" content="https://ariccheng.github.io/files/profile-photo.jpg">
+
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,6 +43,15 @@
         <a class="active" href="research.html">Research</a>
         <a href="teaching.html">Teaching</a>
         <a href="files/cv.pdf" target="_blank" rel="noopener">CV</a>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme" aria-pressed="false">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
       </nav>
     </div>
   </header>
@@ -24,12 +60,14 @@
     <section class="section">
       <h1>Research</h1>
       <p class="lead">
-        I study platform operations in the last mile, examining how digital platforms — from crowdsourced mapping communities to algorithmic dispatching systems — shape the efficiency and quality of physical delivery operations.
+        I study digital infrastructure in operations — how it is produced, maintained, and consumed, and how its quality shapes operational outcomes. In one stream, I examine how the entry of paid contributors into volunteer-driven mapping platforms reshapes contribution dynamics. In another, I study how underlying map data quality propagates to last-mile delivery performance. My work combines large-scale archival data with quasi-experimental identification strategies.
       </p>
       <div class="chips">
-        <span class="chip">Causal Inference</span>
-        <span class="chip">Empirical Econometrics</span>
-        <span class="chip">Operations Management</span>
+        <span class="chip chip-gold">Digital Infrastructure</span>
+        <span class="chip chip-gold">Platform Operations</span>
+        <span class="chip chip-gold">Last-Mile Delivery</span>
+        <span class="chip chip-maroon">Causal Inference</span>
+        <span class="chip chip-maroon">Applied Econometrics</span>
       </div>
     </section>
 
@@ -53,13 +91,40 @@
         <li>
           <strong>Aric Cheng</strong>, Elliot Rabinovich, and Stanley Lim.
           "Online Mapping Errors and Their Impact on Last-Mile Delivery Operations."
+          <em>Preparing for submission.</em>
         </li>
       </ol>
+    </section>
+
+    <section class="section">
+      <h2>Conference Presentations</h2>
+      <div class="timeline-item">
+        <p style="margin-bottom: 6px;">
+          <em>"Online Mapping Errors and Their Impact on Last-Mile Delivery Operations."</em>
+          (with E. Rabinovich and S. Lim)
+        </p>
+        <ul class="list" style="margin-bottom: 12px;">
+          <li>DSI Annual Conference, Phoenix, AZ. — November 2024</li>
+          <li>POMS Annual Conference, Atlanta, GA. — May 2025</li>
+          <li>INFORMS Annual Meeting, Atlanta, GA. — October 2025</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <p style="margin-bottom: 6px;">
+          <em>"Stronger Together? Corporate Contributions and Volunteer Engagement in Online Communities."</em>
+          (with E. Yoo, A. Nagaraj, and E. Rabinovich)
+        </p>
+        <ul class="list">
+          <li>POMS Annual Conference, Atlanta, GA. — May 2025</li>
+          <li>INFORMS Annual Meeting, Atlanta, GA. (presented by E. Yoo) — October 2025</li>
+        </ul>
+      </div>
     </section>
   </main>
 
   <footer class="container">
-    <div>Last updated: April 7, 2026</div>
+    <div>Last updated: May 21, 2026</div>
   </footer>
+  <script src="theme.js"></script>
 </body>
 </html>

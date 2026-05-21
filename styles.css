@@ -6,11 +6,24 @@
   --gray-2: #484848;
   --gray-6: #e8e8e8;
   --gray-7: #fafafa;
+
+  --bg: #fffdf8;
   --ink: var(--gray-1);
   --muted: var(--gray-2);
   --line: var(--gray-6);
-  --chip-bg: rgba(255, 198, 39, 0.2);
-  --bg-soft-gold: #fffdf8;
+  --link: var(--asu-maroon);
+
+  --topbar-bg: var(--asu-maroon);
+  --topbar-fg: var(--asu-white);
+  --topbar-border: rgba(255, 255, 255, 0.3);
+
+  --chip-gold-bg: rgba(255, 198, 39, 0.2);
+  --chip-gold-fg: #6b4f00;
+  --chip-maroon-bg: rgba(140, 29, 64, 0.2);
+  --chip-maroon-fg: #8c1d40;
+
+  --button-primary-border: rgba(140, 29, 64, 0.35);
+
   --font-serif-option-1: "Iowan Old Style", "Palatino Linotype", Palatino,
     "Book Antiqua", serif;
   --font-serif-option-2: Baskerville, "Baskerville Old Face", "Times New Roman",
@@ -19,6 +32,25 @@
   --font-serif-option-4: Georgia, "Times New Roman", serif;
   /* Switch to option-2/3/4 to preview different serif styles. */
   --font-serif: var(--font-serif-option-1);
+}
+
+[data-theme="dark"] {
+  --bg: #161616;
+  --ink: #e8e8e8;
+  --muted: #a8a8a8;
+  --line: #2d2d2d;
+  --link: #ffc627;
+
+  --topbar-bg: #5e1129;
+  --topbar-fg: var(--asu-white);
+  --topbar-border: rgba(255, 255, 255, 0.25);
+
+  --chip-gold-bg: rgba(255, 198, 39, 0.15);
+  --chip-gold-fg: #ffc627;
+  --chip-maroon-bg: rgba(255, 198, 39, 0.08);
+  --chip-maroon-fg: #ffc627;
+
+  --button-primary-border: rgba(255, 198, 39, 0.4);
 }
 
 * {
@@ -32,14 +64,15 @@ body {
 }
 
 body {
-  background: var(--bg-soft-gold);
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--font-serif);
   line-height: 1.7;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a {
-  color: var(--asu-maroon);
+  color: var(--link);
   text-decoration: none;
 }
 
@@ -54,7 +87,8 @@ a:hover {
 
 .topbar {
   padding: 28px 0 18px;
-  background: var(--asu-maroon);
+  background: var(--topbar-bg);
+  transition: background-color 0.2s ease;
 }
 
 .topbar .container {
@@ -66,7 +100,7 @@ a:hover {
 }
 
 .brand {
-  color: var(--asu-white);
+  color: var(--topbar-fg);
   font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.01em;
@@ -87,8 +121,8 @@ a:hover {
 
 .nav a.active,
 .nav a:hover {
-  color: var(--asu-white);
-  border-bottom-color: var(--asu-white);
+  color: var(--topbar-fg);
+  border-bottom-color: var(--topbar-fg);
   text-decoration: none;
 }
 
@@ -140,7 +174,7 @@ main {
 }
 
 .photo-contact-link:hover {
-  color: var(--asu-maroon);
+  color: var(--link);
   text-decoration: none;
 }
 
@@ -148,7 +182,7 @@ main {
   width: 14px;
   height: 14px;
   flex: none;
-  color: var(--asu-maroon);
+  color: var(--link);
 }
 
 .icon svg {
@@ -207,8 +241,8 @@ p {
   border-radius: 999px;
   padding: 4px 11px;
   font-size: 0.92rem;
-  color: #6b4f00;
-  background: var(--chip-bg);
+  color: var(--chip-gold-fg);
+  background: var(--chip-gold-bg);
 }
 
 .section {
@@ -272,8 +306,8 @@ p {
 }
 
 .button.primary {
-  color: var(--asu-maroon);
-  border-bottom-color: rgba(140, 29, 64, 0.35);
+  color: var(--link);
+  border-bottom-color: var(--button-primary-border);
 }
 
 .button.ghost {
@@ -282,7 +316,7 @@ p {
 
 .button:hover {
   text-decoration: none;
-  border-bottom-color: var(--asu-maroon);
+  border-bottom-color: var(--link);
 }
 
 .table {
@@ -388,7 +422,7 @@ footer {
 
 .toggle-summary::after {
   content: "+";
-  color: var(--asu-maroon);
+  color: var(--link);
   font-weight: 700;
   font-size: 1.15em;
   line-height: 1;
@@ -415,17 +449,46 @@ footer {
 }
 
 .chip-maroon{
-  background: rgba(140, 29, 64, 0.2);  /* #8C1D40 的 20% 不透明度 */
-  color: #8C1D40;                      /* 通常半透明底更适合用深色字 */
+  background: var(--chip-maroon-bg);
+  color: var(--chip-maroon-fg);
 }
 
 .chip-gold{
-  background: rgba(255, 198, 39, 0.2); /* #FFC627 的 20% 不透明度 */
-  color: #6b4f00;                      /* 或 #191919 */
+  background: var(--chip-gold-bg);
+  color: var(--chip-gold-fg);
 }
 
 .section h3{ margin: 18px 0 10px; }
 .section h4{ margin: 10px 0 8px; }
 .section .list{ margin: 0 0 14px; }
 
-.table-muted-head th{ color:#747474; }  /* 灰色表头 */
+.table-muted-head th{ color: var(--muted); }  /* 灰色表头 */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-left: 4px;
+  background: transparent;
+  border: 1px solid var(--topbar-border);
+  border-radius: 6px;
+  color: var(--topbar-fg);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--topbar-fg);
+}
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: none; }

@@ -3,8 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem('theme');
+        var d = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', s || (d ? 'dark' : 'light'));
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
   <title>Aric Cheng | Personal Website</title>
   <meta name="description" content="Personal website of Aric Cheng: teaching, research, and CV.">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="files/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="files/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="files/apple-touch-icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Aric Cheng | Personal Website">
+  <meta property="og:description" content="Personal website of Aric Cheng: teaching, research, and CV.">
+  <meta property="og:url" content="https://ariccheng.github.io/">
+  <meta property="og:image" content="https://ariccheng.github.io/files/profile-photo.jpg">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Aric Cheng | Personal Website">
+  <meta name="twitter:description" content="Personal website of Aric Cheng: teaching, research, and CV.">
+  <meta name="twitter:image" content="https://ariccheng.github.io/files/profile-photo.jpg">
+
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,6 +43,15 @@
         <a href="research.html">Research</a>
         <a href="teaching.html">Teaching</a>
         <a href="files/cv.pdf" target="_blank" rel="noopener">CV</a>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme" aria-pressed="false">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
       </nav>
     </div>
   </header>
@@ -72,7 +108,7 @@
       <article>
         <h1>Aric Cheng</h1>
         <p class="lead">
-         👋🏼 Greetings! I'm Aric Cheng (程宇清), a third-year Ph.D. candidate in the <a href="https://wpcarey.asu.edu/supply-chain-management-degrees" target="_blank" rel="noopener noreferrer">NASPO Department of Supply Chain Management</a> at <a href="https://wpcarey.asu.edu/" target="_blank" rel="noopener noreferrer">W. P. Carey School of Business</a>, Arizona State University. I am fortunate to be advised by Avnet Professor <a href="https://search.asu.edu/profile/330867" target="_blank" rel="noopener noreferrer">Elliot Rabinovich</a>. I earned my Master's degree in Business Analytics from Washington University in 2023 and my Bachelor's degree in Applied Mathematics from Shanghai University of Finance and Economics in 2021.
+         👋🏼 Greetings! I'm Aric Cheng (程宇清), a Ph.D. candidate in the <a href="https://wpcarey.asu.edu/supply-chain-management-degrees" target="_blank" rel="noopener noreferrer">NASPO Department of Supply Chain Management</a> at <a href="https://wpcarey.asu.edu/" target="_blank" rel="noopener noreferrer">W. P. Carey School of Business</a>, Arizona State University. I am fortunate to be advised by Avnet Professor <a href="https://search.asu.edu/profile/330867" target="_blank" rel="noopener noreferrer">Elliot Rabinovich</a>. I earned my Master's degree in Business Analytics from Washington University in 2023 and my Bachelor's degree in Applied Mathematics from Shanghai University of Finance and Economics in 2021.
         </p>
         <div class="chips">
           <span class="chip chip-gold">Digital Infrastructure</span>
@@ -107,7 +143,7 @@
       <span class="loc">St. Louis, MO</span>
     </div>
     <div class="meta meta-row">
-      <span>MSc. in Business Analysis</span>
+      <span>MSc. in Business Analytics</span>
       <span class="year">2023</span>
     </div>
   </div>
@@ -147,59 +183,29 @@
 
     <section id="teaching" class="section">
       <h2><a href="teaching.html">Teaching</a></h2>
-      <!-- Instructor: SCM 300 Global Supply Operations, Fall 2026 — uncomment when confirmed -->
-      <!-- <h3>Teaching Assistant</h3>
-        <h4 style="padding-left: 28px;"> @ Arizona State University</h4>
-        <table class="table table-muted-head" style="margin-left: 28px;">
-          <colgroup>
-            <col style="width: 60%">
-            <col style="width: 20%">
-            <col style="width: 20%">
-          </colgroup>
-          <thead>
-            <tr>
-              <th>Course</th>
-              <th>Level</th>
-              <th>Term</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>SCM 300: Global Supply Operations</td>
-              <td>Undergraduate</td>
-              <td>FL25 & SP26</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h4 style="padding-left: 28px;"> @ Washington University in St. Louis</h4>
-        <table class="table table-muted-head" style="margin-left: 28px;">
-          <colgroup>
-            <col style="width: 60%">
-            <col style="width: 20%">
-            <col style="width: 20%">
-          </colgroup>
-          <thead>
-            <tr>
-              <th>Course</th>
-              <th>Level</th>
-              <th>Term</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>DAT 560: Prescriptive Analysis</td>
-              <td>Master</td>
-              <td>FL22</td>
-            </tr>
-            <tr>
-              <td>DAT 530: SQL and Database Design</td>
-              <td>Master</td>
-              <td>SP22</td>
-            </tr>
-          </tbody>
-        </table> -->
-
+      <h3>Instructor of Record @ Arizona State University</h3>
+      <table class="table table-muted-head" style="margin-left: 28px;">
+        <colgroup>
+          <col style="width: 60%">
+          <col style="width: 20%">
+          <col style="width: 20%">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th>Level</th>
+            <th>Term</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SCM 315: Supply Chain Analytics <span style="color: #888;">(Enrollment: 43)</span></td>
+            <td>Undergraduate</td>
+            <td>FL26</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size: 0.9em; color: #666; margin-top: 12px;">See <a href="teaching.html">Teaching</a> for full TA history.</p>
     </section>
 
     <section id="cv" class="section">
@@ -221,7 +227,8 @@
   </main>
 
   <footer class="container">
-    <div>Last updated: April 7, 2026</div>
+    <div>Last updated: May 21, 2026</div>
   </footer>
+  <script src="theme.js"></script>
 </body>
 </html>
