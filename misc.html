@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem('theme');
+        var d = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', s || (d ? 'dark' : 'light'));
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <title>Miscellaneous | Aric Cheng</title>
+  <meta name="description" content="Miscellaneous page of Aric Cheng: photography and other things outside research.">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="files/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="files/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="files/apple-touch-icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Miscellaneous | Aric Cheng">
+  <meta property="og:description" content="Miscellaneous page of Aric Cheng: photography and other things outside research.">
+  <meta property="og:url" content="https://ariccheng.github.io/misc.html">
+  <meta property="og:image" content="https://ariccheng.github.io/files/profile-photo.jpg">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Miscellaneous | Aric Cheng">
+  <meta name="twitter:description" content="Miscellaneous page of Aric Cheng: photography and other things outside research.">
+  <meta name="twitter:image" content="https://ariccheng.github.io/files/profile-photo.jpg">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="brand">Aric Cheng</div>
+      <nav class="nav" aria-label="Main Navigation">
+        <a href="index.html">About</a>
+        <a href="research.html">Research</a>
+        <a href="teaching.html">Teaching</a>
+        <a class="active" href="misc.html">Miscellaneous</a>
+        <a href="files/cv.pdf" target="_blank" rel="noopener">CV</a>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme" aria-pressed="false">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section">
+      <h1>Miscellaneous</h1>
+      <p class="lead">
+        Things I do outside of research.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Photography</h2>
+      <p>
+        📷 A selection of my photos is on Unsplash, free to download and use.
+      </p>
+      <p class="meta">
+        <a class="button primary" href="https://unsplash.com/@ariccheng" target="_blank" rel="noopener">Unsplash: @ariccheng</a>
+      </p>
+
+      <!--
+        OPTIONAL: photo thumbnails. Drop 3-6 images into files/photos/ and uncomment.
+        <div class="photo-grid">
+          <a href="https://unsplash.com/@ariccheng" target="_blank" rel="noopener">
+            <img src="files/photos/01.jpg" alt="">
+          </a>
+          <a href="https://unsplash.com/@ariccheng" target="_blank" rel="noopener">
+            <img src="files/photos/02.jpg" alt="">
+          </a>
+          <a href="https://unsplash.com/@ariccheng" target="_blank" rel="noopener">
+            <img src="files/photos/03.jpg" alt="">
+          </a>
+        </div>
+      -->
+    </section>
+
+    <!--
+      ====================================================================
+      PLACEHOLDER SECTIONS — uncomment whichever you want to fill in.
+      Each one is self-contained; delete the rest.
+      ====================================================================
+
+      <section class="section">
+        <h2>Travel</h2>
+        <p>Conferences, fieldwork, and places worth going back to.</p>
+        <div class="flight-line">
+          <img src="files/airlines/aa.svg" alt="American Airlines">
+          <span>PHX &rarr; ATL — INFORMS Annual Meeting, October 2025</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Tools &amp; Workflow</h2>
+        <p>What I actually use day to day for empirical work.</p>
+        <table class="table">
+          <colgroup>
+            <col style="width: 25%">
+            <col style="width: 75%">
+          </colgroup>
+          <tbody>
+            <tr><td>Analysis</td><td>Stata, Python (pandas / geopandas), R</td></tr>
+            <tr><td>Writing</td><td>LaTeX (Overleaf), Obsidian</td></tr>
+            <tr><td>Data</td><td>DuckDB, PostgreSQL + PostGIS</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Reading</h2>
+        <ol class="list">
+          <li>Author. <em>Title</em>. Publisher, Year. &mdash; one-line note.</li>
+        </ol>
+      </section>
+    -->
+  </main>
+
+  <footer class="container">
+    <div>Last updated: September 22, 2026</div>
+  </footer>
+  <script src="theme.js"></script>
+</body>
+</html>
