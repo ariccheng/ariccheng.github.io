@@ -157,7 +157,7 @@ a.brand:hover {
 
 .nav a.active::before {
   top: -30px;
-  width: 150%;
+  width: 105%;
   height: 2px;
   border-radius: 2px;
   background: var(--lamp);
@@ -168,7 +168,7 @@ a.brand:hover {
 
 .nav a.active::after {
   top: -28px;
-  width: 260%;
+  width: 200%;
   height: calc(100% + 34px);
   background: radial-gradient(ellipse 45% 85% at 50% 0%, rgba(255, 217, 106, 0.42), rgba(255, 217, 106, 0.1) 60%, transparent 80%);
   clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
@@ -622,7 +622,7 @@ footer {
 .course-extra a {
   position: relative;
   display: inline-block;
-  padding: 2px 13px 3px;
+  padding: 3px 14px 4px;
   border-radius: 999px;
   font-size: 0.88rem;
   color: var(--ink);
@@ -639,10 +639,10 @@ footer {
   pointer-events: none;
 }
 
-/* the border: a 1px ring cut out of a conic gradient that turns */
+/* the border: a 2px ring cut out of a conic gradient that turns */
 .course-extra a::before {
   inset: 0;
-  padding: 1px;
+  padding: 2px;
   background: conic-gradient(from var(--hb-angle), var(--line) 0deg, var(--line) 230deg,
     var(--asu-gold) 290deg, var(--asu-maroon) 330deg, var(--line) 360deg);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -708,7 +708,7 @@ footer {
   /* the nav wraps under the name here, so the lamp hangs just above the item */
   .nav a.active::before {
     top: -7px;
-    width: 120%;
+    width: 90%;
   }
 
   .nav a.active::after {
