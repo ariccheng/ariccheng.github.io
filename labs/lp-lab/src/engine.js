@@ -31,14 +31,14 @@ function draw() {
   return sol;
 }
 
-/* every step reads the same way: why we do it, what to do, what it means */
+/* every step reads with clear instructional design: Objective, Action, Takeaway */
 function blockHTML(def, i) {
   const body = typeof def.body === "function" ? def.body() : (def.body || "");
   return `<div class="block-top"><span class="sn">${i + 1}</span><h3>${def.title}</h3></div>
-    ${def.goal ? `<div class="row goal"><span class="rl">Why</span><p>${def.goal}</p></div>` : ""}
+    ${def.goal ? `<div class="row goal"><span class="rl goal-tag">Goal</span><p>${def.goal}</p></div>` : ""}
     ${body ? `<div class="bbody">${body}</div>` : ""}
-    ${def.task ? `<div class="row task"><span class="rl">Do</span><p>${def.task}</p></div>` : ""}<div class="extra"></div>
-    <div class="done-msg" role="status"><span class="rl">Means</span><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10" fill="#14935C"/>
+    ${def.task ? `<div class="row task"><span class="rl action-tag">Action</span><p>${def.task}</p></div>` : ""}<div class="extra"></div>
+    <div class="done-msg" role="status"><span class="rl takeaway-tag">Takeaway</span><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10" fill="#14935C"/>
       <path d="M5.5 10.5l3 3 6-7" pathLength="1" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dm"></span></div>
     ${def.terms || def.why ? `<div class="terms">${(def.terms || []).map(k => term(k)).join("")}${def.why ? `<button class="term more">${def.whyTitle || "Why does this work?"}</button>` : ""}</div>` : ""}
     ${def.demo || def.custom ? `<div class="block-actions">${def.demo ? `<button class="btn show small">Show me</button>` : ""}${def.custom || ""}</div>` : ""}`;
@@ -51,12 +51,29 @@ function buildLesson(l) {
   el.innerHTML = `<div class="wrap"><header class="lesson-head reveal"><span class="no">${l.n}</span><div>
       <div class="q">${q.t}</div><h2>${l.title}</h2><p>${l.lead}</p></div></header>
     <div class="lesson-grid"><div class="flow"></div>
-      <div class="aside${l.aside ? " " + l.aside : ""}"><div class="gcard"><span class="hint"><i></i>Click on the graph</span>
+      <div class="aside${l.aside ? " " + l.aside : ""}"><div class="mobile-tabs" role="tablist" aria-label="View toggle">
+          <button class="m-tab ${l.aside === "report-first" ? "" : "active"}" data-tab="graph" role="tab" aria-selected="${l.aside === "report-first" ? "false" : "true"}">Graph</button>
+          <button class="m-tab ${l.aside === "report-first" ? "active" : ""}" data-tab="panel" role="tab" aria-selected="${l.aside === "report-first" ? "true" : "false"}">Sensitivity table</button>
+        </div><div class="gcard"><span class="hint"><i></i>Click on the graph</span>
         <svg class="plot" role="img" aria-label="Graph of production plans: Trail boards across, Summit boards up"></svg></div>
         <div class="panel"></div></div></div>
     <div class="lesson-foot"></div></div>`;
   el.hidden = true;
   $("#lessons").appendChild(el);
+  const asideEl = $(".aside", el);
+  asideEl.classList.add(l.aside === "report-first" ? "view-panel" : "view-graph");
+  $$(".m-tab", asideEl).forEach(btn => {
+    btn.addEventListener("click", () => {
+      const isPanel = btn.dataset.tab === "panel";
+      asideEl.classList.toggle("view-panel", isPanel);
+      asideEl.classList.toggle("view-graph", !isPanel);
+      $$(".m-tab", asideEl).forEach(b => {
+        const sel = b === btn;
+        b.classList.toggle("active", sel);
+        b.setAttribute("aria-selected", sel ? "true" : "false");
+      });
+    });
+  });
   const sec = {n: l.n, lesson: l, el, graph: new Graph($(".plot", el)), V: freshView(), panel: $(".panel", el),
                gcard: $(".gcard", el), onReport: null, mem: {}, blocks: [], active: null};
   SECTIONS.push(sec);
@@ -74,6 +91,15 @@ function buildLesson(l) {
         sec.graph.onClick = fn ? (x, y) => { activate(b); fn(x, y); } : null;
         sec.gcard.classList.toggle("ask", !!fn);
         if (hint) $(".hint", sec.gcard).lastChild.textContent = hint;
+        if (fn && window.innerWidth <= 980) {
+          asideEl.classList.remove("view-panel");
+          asideEl.classList.add("view-graph");
+          $$(".m-tab", asideEl).forEach(t => {
+            const isG = t.dataset.tab === "graph";
+            t.classList.toggle("active", isG);
+            t.setAttribute("aria-selected", isG ? "true" : "false");
+          });
+        }
         sec.graph.render && draw();
       },
       complete(msg) {
@@ -201,12 +227,14 @@ function init() {
     <p>Next: building a model from a description, special cases, and whole-number and yes-or-no decisions.</p>
     <ul>${SOON.map(t => `<li>${t}</li>`).join("")}</ul></div></section>`);
   buildNav();
-  // the block crossing the middle of the screen becomes active
+  // the block crossing the active reading area becomes active
+  const isNarrow = window.innerWidth <= 980;
+  const rootMargin = isNarrow ? "-32% 0px -32% 0px" : "-40% 0px -48% 0px";
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting || CLASSROOM.on) return;
     const b = SECTIONS.flatMap(s => s.blocks).find(b => b.el === e.target);
     if (b) activate(b);
-  }), {rootMargin: "-42% 0px -52% 0px"});
+  }), {rootMargin});
   SECTIONS.forEach(s => s.blocks.forEach(b => io.observe(b.el)));
   SECTIONS.forEach(s => activate(s.blocks[0]));
   const rv = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); rv.unobserve(e.target); } }),

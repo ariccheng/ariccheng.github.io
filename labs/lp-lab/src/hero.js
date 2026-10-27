@@ -8,7 +8,8 @@ const Hero = (() => {
   const UX = 40, UY = 20, UZ = 0.24;                 // px per Trail board, Summit board, dollar
   const REGION = [[0, 0], [5.25, 10.5], [0, 14]];
   const LEVELS = [150, 300, 450, 600, 750, 900];
-  let svg, scene, track, tilt, cue, caps, W = 0, H = 0, cur = 0, target = 0, raf = 0;
+  let svg, scene, track, tilt, cue, spinCue, caps, W = 0, H = 0, cur = 0, target = 0, raf = 0;
+  let dAz = 0, dEl = 0, grab = null, spun = false;   // rotation the reader added by hand, in degrees
 
   const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
   const ramp = (p, a, b) => clamp((p - a) / (b - a));
@@ -37,7 +38,8 @@ const Hero = (() => {
     if (!W || !H) return;
     /* camera */
     const m = ease(ramp(p, .1, .84));
-    const el = mix(24, 90, m) * Math.PI / 180, az = mix(-38, 0, m) * Math.PI / 180;
+    const free = 1 - m;                             // the reader steers least once the view flattens
+    const el = clamp(mix(24, 90, m) + dEl * free, 6, 90) * Math.PI / 180, az = (mix(-38, 0, m) + dAz * free) * Math.PI / 180;
     const se = Math.sin(el), ce = Math.cos(el), sa = Math.sin(az), ca = Math.cos(az);
     const narrow = W < 980;
     const k = Math.min(W * (narrow ? .8 : .5) / 560, H * .66 / 480) * mix(1.12, 1, m);
@@ -113,7 +115,40 @@ const Hero = (() => {
     tilt.style.transform = `translateY(${-30 * h}vh) rotateX(${62 * h}deg) scale(${1 - .12 * h})`;
     tilt.style.opacity = 1 - ramp(p, .08, .2);
     cue.style.opacity = 1 - ramp(p, .02, .08);
+    spinCue.style.opacity = spun ? 0 : (1 - ramp(p, .02, .08));
     caps.forEach((c, i) => c.classList.toggle("on", p >= [.2, .47, .72][i] && p < [.47, .72, 1.01][i]));
+  }
+
+  /* turn the scene by hand: drag it, or use the arrow keys once the svg has focus */
+  function spin(dx, dy) {
+    dAz = (dAz + dx * .4 + 540) % 360 - 180;
+    dEl = clamp(dEl - dy * .3, -40, 70);
+    spun = true;
+    frame(cur);
+  }
+  function bindSpin() {
+    scene.addEventListener("pointerdown", e => {
+      if (e.button) return;
+      grab = {id: e.pointerId, x: e.clientX, y: e.clientY};
+      scene.setPointerCapture(e.pointerId);
+      scene.classList.add("spinning");
+    });
+    scene.addEventListener("pointermove", e => {
+      if (!grab || e.pointerId !== grab.id) return;
+      spin(e.clientX - grab.x, e.clientY - grab.y);
+      grab.x = e.clientX; grab.y = e.clientY;
+    });
+    const drop = e => { if (grab && e.pointerId === grab.id) { grab = null; scene.classList.remove("spinning"); } };
+    scene.addEventListener("pointerup", drop);
+    scene.addEventListener("pointercancel", drop);
+    svg.addEventListener("keydown", e => {
+      const d = e.shiftKey ? 15 : 5;
+      const k = {ArrowLeft: [-d, 0], ArrowRight: [d, 0], ArrowUp: [0, -d], ArrowDown: [0, d]}[e.key];
+      if (k) spin(...k);
+      else if (e.key === "Home") { dAz = dEl = 0; spun = true; frame(cur); }
+      else return;
+      e.preventDefault();
+    });
   }
 
   function measure() {
@@ -136,11 +171,12 @@ const Hero = (() => {
   }
   function init() {
     track = $(".hero"); scene = $(".hero-scene"); svg = $(".hero-svg");
-    tilt = $(".hero-copy .tilt"); cue = $(".cue"); caps = $$(".cap");
+    tilt = $(".hero-copy .tilt"); cue = $(".cue"); spinCue = $(".spin-cue"); caps = $$(".cap");
     svg.innerHTML = `<defs><linearGradient id="heroTop" x1="0" y1="1" x2="1" y2="0">
       <stop offset="0" stop-color="#C4577A" stop-opacity=".55"/><stop offset=".75" stop-color="#8C1D40" stop-opacity=".78"/>
       <stop offset="1" stop-color="#E9A53B" stop-opacity=".9"/></linearGradient></defs><g class="h-draw"></g>`;
     measure();
+    bindSpin();
     addEventListener("resize", () => { measure(); frame(cur); });
     addEventListener("scroll", onScroll, {passive: true});
     cur = target = progress();

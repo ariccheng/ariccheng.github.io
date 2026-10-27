@@ -1,10 +1,12 @@
 /* ---- Lessons (phase 1: 2, 3, 5, 6, 7) ------------------------------------- */
 const ALL = [0, 1, 2];
-const MODEL_HTML = `<div class="model">Max&nbsp; 50<i>T</i> + 65<i>S</i><span class="c">weekly profit</span><br>
-  s.t.&nbsp; 3.5<i>T</i> + 4<i>S</i> ≤ 84<span class="c">fabrication hours</span><br>
-  &emsp;&ensp; <i>T</i> + 1.5<i>S</i> ≤ 21<span class="c">finishing hours</span><br>
-  &emsp;&ensp; −2<i>T</i> + <i>S</i> ≥ 0<span class="c">mix rule, S ≥ 2T</span><br>
-  &emsp;&ensp; <i>T</i>, <i>S</i> ≥ 0</div>`;
+const MODEL_HTML = `<div class="model">
+  <div class="model-row"><span class="m-type">Max</span><span class="m-expr">50<i>T</i> + 65<i>S</i></span><span class="m-tag obj">Gross profit for the week</span></div>
+  <div class="model-row sub"><span class="m-type">s.t.</span><span class="m-expr">3.5<i>T</i> + 4<i>S</i> ≤ 84</span><span class="m-tag"><span class="dot fab"></span>Fabrication, 84 h</span></div>
+  <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i> + 1.5<i>S</i> ≤ 21</span><span class="m-tag"><span class="dot fin"></span>Finishing, 21 h</span></div>
+  <div class="model-row sub"><span class="m-type"></span><span class="m-expr">−2<i>T</i> + <i>S</i> ≥ 0</span><span class="m-tag"><span class="dot mix"></span>Dealer mix</span></div>
+  <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i>, <i>S</i> ≥ 0</span><span class="m-tag">No negative production</span></div>
+</div>`;
 const regionView = (o = {}) => view(Object.assign({lines: ALL, region: true, corners: true}, o));
 const bestLabel = c => Math.abs(c[0] - 5.25) < 1e-6 && Math.abs(c[1] - 10.5) < 1e-6 ? "(5.25, 10.5)  $945" : `(${fmt(c[0])}, ${fmt(c[1])})`;
 /* animate a number, calling fn on every frame (used when an answer moves the graph) */
@@ -18,16 +20,16 @@ function animateValue(from, to, ms, fn) {
     requestAnimationFrame(tick);
   });
 }
-const pointMsg = (k, x, y, ok) => `<p class="feedback ${ok ? "ok" : "bad"}">At (${fmt(x, 1)}, ${fmt(y, 1)}): left-hand side = ${fmt(lhs(k, x, y), 2)},
-  ${ok ? "which satisfies" : "which breaks"} ${k.op === "<=" ? "≤" : "≥"} ${k.c}.${ok ? "" : " Try a point on the other side."}</p>`;
+const pointMsg = (k, x, y, ok) => `<p class="feedback ${ok ? "ok" : "bad"}">Plan (${fmt(x, 1)}, ${fmt(y, 1)}): LHS evaluates to ${fmt(lhs(k, x, y), 2)} ${k.op === "<=" ? "≤" : "≥"} ${k.c}.
+  ${ok ? "✓ Satisfies constraint." : "✕ Violates capacity limit. Choose a point on the feasible side."}</p>`;
 
-/* ═════════ 2 · DRAW WHAT IS POSSIBLE ═════════ */
+/* ═════════ 1 · DRAW WHAT IS POSSIBLE ═════════ */
 function sideBlock(i, title, task, rightMsg, demoPt) {
   return {
-    title, task, goal: "Find which side of the line the constraint allows.",
-    body: () => `<p>${["Fabrication", "Finishing", "The mix rule"][i]} is a line plus one side of it. Every point on the allowed side satisfies the constraint.</p>`,
-    why: i === 2 ? "S ≥ 2T is the same as −2T + S ≥ 0. Points above the green line have more than twice as many Summit boards as Trail boards." :
-      "Test any point by putting its T and S into the left-hand side. The origin (0, 0) is an easy test point: it uses 0 hours.",
+    title, task, goal: "Find the side of the line that satisfies the constraint.",
+    body: () => `<p>A constraint draws a line on the graph. Every plan that satisfies it lies on one side of that line, including the line itself.</p>`,
+    why: i === 2 ? "The mix requirement S ≥ 2T rearranges to −2T + S ≥ 0. Points above the green line build at least two Summit boards for every Trail board." :
+      "To find which side satisfies a constraint, substitute any point into it. The origin (0, 0) is the quickest: building nothing uses no hours, which is under the limit.",
     show(b) {
       const done = App.prog[b.key];
       view({lines: ALL.slice(0, i + 1), halves: ALL.slice(0, done ? i + 1 : i).map(j => ({i: j, cls: baseCons()[j].cls}))});
@@ -45,31 +47,31 @@ function sideBlock(i, title, task, rightMsg, demoPt) {
   };
 }
 LESSONS.push({n: 1, title: "Draw what is possible",
-  lead: `Each constraint cuts the graph in two. The plans that survive every cut form the <span class="ph">feasible region</span>.`,
+  lead: `Each constraint cuts the graph in two. The plans that satisfy all of them form the <span class="ph">feasible region</span>.`,
   blocks: [
-  {title: "Every point is a plan",
-   goal: "Connect the model to the picture: every point is one weekly plan.",
-   body: () => `<p>Each point on the graph is a weekly plan: <span class="v">T</span> Trail boards and <span class="v">S</span> Summit boards.
-     The model says which plans are allowed and how much each one earns.</p>${MODEL_HTML}`,
+  {title: "Every point is a production decision",
+   goal: "Read a point on the graph as one week of production.",
+   body: () => `<p>Every point on this plane is one week of production: <span class="v">T</span> Trail boards and <span class="v">S</span> Summit boards.
+     The model below says which points the shop can build, and what each one earns.</p>${MODEL_HTML}`,
    mount(b) { b.complete(); },
    show() { view(); }},
-  sideBlock(0, "Fabrication hours", "Click a point on the side of the blue line where 3.5T + 4S ≤ 84.",
-    "Points below the blue line use at most 84 fabrication hours. That side is shaded.", [3, 4]),
-  sideBlock(1, "Finishing hours", "Click a point on the side of the coral line where T + 1.5S ≤ 21.",
-    "Points below the coral line use at most 21 finishing hours.", [2, 3]),
-  sideBlock(2, "The mix rule", "Click a point on the side of the green line where S ≥ 2T.",
-    "Points above the green line have at least twice as many Summit boards as Trail boards.", [2, 10]),
+  sideBlock(0, "Fabrication capacity", "Click any point on the feasible side of the blue line (3.5T + 4S ≤ 84).",
+    "Points below the blue line use no more than 84 fabrication hours. That side is now shaded.", [3, 4]),
+  sideBlock(1, "Finishing capacity", "Click any point on the feasible side of the coral line (T + 1.5S ≤ 21).",
+    "Points below the coral line use no more than 21 finishing hours.", [2, 3]),
+  sideBlock(2, "Product mix requirement", "Click any point on the feasible side of the green line (S ≥ 2T).",
+    "Points above the green line satisfy the dealer agreement: at least two Summit boards per Trail board.", [2, 10]),
   {title: "The feasible region",
-   goal: "See all the plans Ridgeline is allowed to make at once.",
-   body: () => `<p>The plans that satisfy <b>every</b> constraint at once form the <b>feasible region</b>, shaded in maroon.
-     Any point inside it is a <b>feasible solution</b>.</p>
-     <p>The region's corners are its <b>extreme points</b>: (0, 0), (0, 14) and (5.25, 10.5).</p>`,
-   why: "Non-negativity (T ≥ 0 and S ≥ 0) keeps the region in the first quarter of the graph. A plan cannot make a negative number of boards.",
+   goal: "See which plans satisfy all three constraints at once.",
+   body: () => `<p>The area where <b>every</b> constraint holds is the <b>feasible region</b>, shaded in maroon.
+     Any point inside it is a <b>feasible solution</b>: the shop has the hours to build it.</p>
+     <p>The region has three <b>corners</b>, also called extreme points: (0, 0), (0, 14) and (5.25, 10.5).</p>`,
+   why: "The non-negativity conditions T ≥ 0 and S ≥ 0 keep the region in the first quadrant. The shop cannot build a negative number of boards.",
    mount(b) { b.complete(); },
    show() { regionView(); }},
   {title: "Test a plan",
-   goal: "Check a plan the way Solver does: against every constraint.", task: "Drag the violet point around the graph. Find a plan that breaks a constraint, then one that keeps all three.",
-   body: () => `<p>A plan is feasible only if it passes every check. The table updates as you drag.</p>`,
+   goal: "Check one plan against all three constraints.", task: "Drag the violet probe around the graph. Find an infeasible plan, then move it back inside the region.",
+   body: () => `<p>A plan is feasible only if it satisfies all three constraints. The table below updates as you move the probe.</p>`,
    mount(b) {
      b.host.innerHTML = `<div class="ptbtns"><button class="btn pick small" data-p="4,8">(4, 8)</button><button class="btn pick small" data-p="6,10">(6, 10)</button>
        <button class="btn pick small" data-p="10,10">(10, 10)</button></div><div class="res"></div>`;
@@ -80,20 +82,20 @@ LESSONS.push({n: 1, title: "Draw what is possible",
        b.mem.p = [x, y]; b.mem.seen.add(ok);
        V.probe = {x, y, ok, onMove: b.mem.test};
        $(".res", b.host).innerHTML = `<p style="margin:.6rem 0 0"><b class="num">(${fmt(x, 1)}, ${fmt(y, 1)})</b> <span class="badge ${ok ? "ok" : "bad"}">${ok ? "Feasible" : "Infeasible"}</span>
-         <span class="note num">profit ${money(profit, 0)}</span></p>${checkTable(cons, x, y)}`;
+         <span class="note num">weekly profit ${money(profit, 0)}</span></p>${checkTable(cons, x, y)}`;
        draw();
-       if (b.mem.seen.size === 2) b.complete("Inside the shaded region every check passes. Step outside and at least one constraint breaks.");
+       if (b.mem.seen.size === 2) b.complete("Inside the shaded region every limit holds. Cross any boundary and at least one constraint fails.");
      };
      $$(".pick", b.host).forEach(x => x.addEventListener("click", () => b.mem.test(...x.dataset.p.split(",").map(Number))));
    },
-   show(b) { regionView(); b.mem.test(...b.mem.p); b.click(b.mem.test, "Drag the violet dot, or click anywhere"); },
+   show(b) { regionView(); b.mem.test(...b.mem.p); b.click(b.mem.test, "Drag the violet dot, or click anywhere on the grid"); },
    async demo(b) { await animateValue(0, 1, 1400, t => b.mem.test(3 + 4 * t, 9 + 2 * t)); }},
-  {title: "One line stays clear of the region",
-   goal: "Notice which resource does not limit the plan. It matters again in Lesson 4.",
-   body: () => `<p>Look at the blue fabrication line. It lies outside the feasible region everywhere.</p>
-     <p>The most fabrication time any feasible plan needs is 60.375 hours, at the corner (5.25, 10.5). Ridgeline has 84.
-     Finishing hours and the mix rule are what limit the plan.</p>`,
-   why: "This shows up again in Lesson 4: extra fabrication hours are worth nothing to Ridgeline, because the hours it already has are not all used.",
+  {title: "Unused capacity (slack)",
+   goal: "Tell a binding constraint from one with capacity to spare.",
+   body: () => `<p>The blue fabrication line sits outside the feasible region.</p>
+     <p>At the corner (5.25, 10.5) the shop uses <b>60.375</b> of its 84 fabrication hours, leaving <b>23.625 hours unused</b>. That unused amount is the constraint's <b>slack</b>.
+     Finishing and the mix rule are what actually limit production.</p>`,
+   why: "This slack matters in Lesson 4: because fabrication hours are already going unused, buying more of them adds nothing to profit.",
    mount(b) { b.complete(); },
    show() {
      regionView();
@@ -103,17 +105,17 @@ LESSONS.push({n: 1, title: "Draw what is possible",
    }}
 ]});
 
-/* ═════════ 3 · FIND THE BEST PLAN ═════════ */
+/* ═════════ 2 · FIND THE BEST PLAN ═════════ */
 function isoBlock(b, start, onMove) {
   const id = b.uid("iso");
   b.host.innerHTML = `${slider({id, label: "Profit target", min: 0, max: 1400, step: 5, value: start, fmt: v => money(v, 0)})}
-    <div class="stat" id="${id}-stat"><span>Plans on this line</span><b class="num" id="${id}-msg"></b></div>`;
+    <div class="stat" id="${id}-stat"><span>Feasible plans at this profit level</span><b class="num" id="${id}-msg"></b></div>`;
   b.mem.iso = start;
   b.mem.setIso = v => {
     const off = v > 945 + 1e-9;
     b.mem.iso = v;
     if (CUR === b.sec && b.sec.active === b) { V.iso = {cx: 50, cy: 65, value: v, off, label: off ? `${money(v, 0)}: no feasible plan` : `Profit ${money(v, 0)}`}; draw(); }
-    $(`#${id}-msg`).textContent = off ? "none are feasible" : v === 945 ? "one plan: (5.25, 10.5)" : "many feasible plans";
+    $(`#${id}-msg`).textContent = off ? "None feasible (exceeds capacity)" : v === 945 ? "Unique optimum: (5.25, 10.5)" : "Multiple feasible schedules";
     $(`#${id}-stat`).className = "stat " + (off ? "bad" : "ok");
     onMove && onMove(v);
   };
@@ -121,33 +123,33 @@ function isoBlock(b, start, onMove) {
   b.mem.setIso(start);
 }
 LESSONS.push({n: 2, title: "Find the best plan",
-  lead: `Slide a line of equal profit across the region. The last point it touches is the <span class="ph">best plan</span>.`,
+  lead: `Slide a profit line across the feasible region. The last point it touches is the <span class="ph">optimal plan</span>.`,
   blocks: [
-  {title: "Lines of equal profit",
-   goal: "Draw every plan with the same profit as one line.", task: "Drag the profit slider and watch the dashed line move.",
-   body: () => `<p>Every plan on the dashed line earns the same profit. For a $300 target the line is 50<span class="v">T</span> + 65<span class="v">S</span> = 300.</p>`,
-   why: "Changing the target only changes the right-hand side of 50T + 65S = target, so the line slides without turning. All lines of equal profit are parallel.",
-   mount(b) { isoBlock(b, 300, v => { if (Math.abs(v - 300) >= 200) b.complete("The line slides but keeps its slope. Higher profit puts the line farther from the origin."); }); },
+  {title: "Isoprofit lines",
+   goal: "See which plans earn the same profit.", task: "Drag the profit target and watch the line move.",
+   body: () => `<p>Every point on the dashed line earns the same gross profit. A $300 target is the line 50<span class="v">T</span> + 65<span class="v">S</span> = 300.</p>`,
+   why: "Changing the profit target changes only the constant on the right, so the line moves without turning. Every isoprofit line has the same slope, −50/65.",
+   mount(b) { isoBlock(b, 300, v => { if (Math.abs(v - 300) >= 200) b.complete("The line moves parallel to itself. A higher profit target puts it further from the origin."); }); },
    show(b) { regionView(); b.mem.setIso(b.mem.iso); },
    async demo(b) { await tween($("#" + b.uid("iso")), 650); }},
-  {title: "Push the line as far as it goes",
-   goal: "Find the highest profit a feasible plan can reach.", task: "Raise the profit until the line is about to leave the shaded region.",
-   body: () => `<p>Ridgeline wants the highest profit it can reach with a feasible plan.</p>`,
-   mount(b) { isoBlock(b, 500, v => { if (v >= 940) b.complete("The last point the line touches is (5.25, 10.5). Its profit, $945, is the most Ridgeline can earn."); }); },
+  {title: "Maximizing the objective",
+   goal: "Find the highest profit the region allows.", task: "Raise the profit target until the line is about to leave the feasible region.",
+   body: () => `<p>The shop wants the highest profit its capacity allows.</p>`,
+   mount(b) { isoBlock(b, 500, v => { if (v >= 940) b.complete("The last point the line touches is (5.25, 10.5), a profit of $945 for the week."); }); },
    show(b) { regionView(); b.mem.setIso(b.mem.iso); },
    async demo(b) { await tween($("#" + b.uid("iso")), 945, 1400); }},
-  {title: "The optimal plan",
-   goal: "Name the answer: the optimal solution and its profit.",
-   body: () => `<p>The <b>optimal solution</b> is the feasible plan with the best objective value.</p>
-     <div class="readout"><div class="stat"><span>Trail boards, T</span><b class="num">5.25</b></div>
-     <div class="stat"><span>Summit boards, S</span><b class="num">10.5</b></div>
-     <div class="stat ok"><span>Weekly profit</span><b class="num best-p">$945</b></div></div>`,
-   why: "5.25 boards a week is a fractional answer. Read it as an average rate, for example 21 boards over four weeks. A later lesson asks for whole boards.",
+  {title: "The optimal production schedule",
+   goal: "Read the optimal plan and its profit.",
+   body: () => `<p>The <b>optimal solution</b> is the feasible schedule that maximizes the objective function.</p>
+     <div class="readout"><div class="stat"><span>Trail boards (T)</span><b class="num">5.25</b></div>
+     <div class="stat"><span>Summit boards (S)</span><b class="num">10.5</b></div>
+     <div class="stat ok"><span>Optimal weekly profit</span><b class="num best-p">$945</b></div></div>`,
+   why: "A plan of 5.25 boards a week is an average rate: 21 boards over four weeks. When the answer has to be a whole number, the problem becomes an integer program.",
    mount(b) { b.complete(); },
    show(b) { regionView({best: true, cornerLabel: bestLabel, iso: {cx: 50, cy: 65, value: 945}}); const e = $(".best-p", b.el); e.dataset.v = 0; countTo(e, 945); }},
-  {title: "Check every corner",
-   goal: "Confirm the answer a second way, by checking each corner.", task: "Click each of the three corners on the graph to compute its profit.",
-   body: () => `<p>When a linear program has an optimal solution, one of the corners is optimal. So another way to find it is to compute the profit at every corner and keep the best.</p>`,
+  {title: "The Corner Point Theorem",
+   goal: "Check the answer by computing the profit at every corner.", task: "Click each of the three corners to compute its profit.",
+   body: () => `<p>If a linear program has an optimal solution, that solution is at one of the <b>corners</b> of the feasible region. With three corners here, computing the profit at each one settles the question.</p>`,
    mount(b) {
      b.host.innerHTML = `<table class="checks num"><tr><td>(0, 0)</td><td>50(0) + 65(0)</td><td data-c="0">?</td></tr>
        <tr><td>(0, 14)</td><td>50(0) + 65(14)</td><td data-c="1">?</td></tr><tr><td>(5.25, 10.5)</td><td>50(5.25) + 65(10.5)</td><td data-c="2">?</td></tr></table>`;
@@ -168,22 +170,21 @@ LESSONS.push({n: 2, title: "Find the best plan",
      b.click((x, y) => { const i = b.mem.C.findIndex(c => Math.hypot(X(c[0]) - X(x), Y(c[1]) - Y(y)) < 30); if (i >= 0) b.mem.show(i); }, "Click a corner");
    },
    async demo(b) { for (const i of [0, 1, 2]) { b.mem.show(i); await sleep(650); } }},
-  {title: "What to remember",
-   goal: "Keep the three terms this lesson used.",
-   body: () => `<div class="rules"><div class="rule">A <b>feasible solution</b> satisfies every constraint. The <b>feasible region</b> is the set of all of them.</div>
-     <div class="rule">The <b>optimal solution</b> is the feasible solution with the best objective value.</div>
-     <div class="rule">If a linear program has an optimal solution, one is found at a corner (extreme point) of the feasible region.</div></div>`,
-   custom: `<button class="btn sheet-btn small">See it in a spreadsheet</button>`,
+  {title: "Core principles",
+   goal: "Three definitions to carry into the next lessons.",
+   body: () => `<div class="rules"><div class="rule">A <b>feasible solution</b> satisfies every constraint. The <b>feasible region</b> holds all of them.</div>
+     <div class="rule">The <b>optimal solution</b> is the feasible plan achieving the best objective value (highest profit or lowest cost).</div>
+     <div class="rule"><b>Corner Point Theorem:</b> if a linear program has an optimal solution, that solution is at a corner of the feasible region.</div></div>`,
+   custom: `<button class="btn sheet-btn small">Inspect in spreadsheet</button>`,
    mount(b) { b.complete(); $(".sheet-btn", b.el).addEventListener("click", () => $("#sheet-dlg").showModal()); },
    show() { regionView({best: true, cornerLabel: bestLabel}); }}
 ]});
 
-/* ═════════ shared parts for Lessons 3–5: one report column per page ═════════
-   Each page reads: Definition → At Ridgeline → Try it → Manager's question → What it means. */
+/* ═════════ shared parts for Lessons 3–5: Sensitivity Analysis ═════════ */
 const defBox = t => `<div class="defn"><span class="dl">Definition</span><p>${t}</p></div>`;
 const exBox = h => `<div class="exbox"><span class="dl">At Ridgeline</span><div>${h}</div></div>`;
 const scenario = (ico, who, ask) => `<div class="scen"><div class="scen-h"><span class="req-ico">${icon(ico)}</span>
-  <div><span class="dl">Manager's question</span><b>${who}</b></div></div><p class="scen-q">${ask}</p><div class="scen-a"></div></div>`;
+  <div><span class="dl">Scenario</span><b>${who}</b></div></div><p class="scen-q">${ask}</p><div class="scen-a"></div></div>`;
 /* the side panel: one table of the report, with the page's column lit, plus an optional extra */
 function sidePanel(b, o = {}) {
   const p = b.panel(reportTables(Object.assign({only: o.table}, o.focus || {}, {rows: o.rows})) + (o.extra || ""));
@@ -198,19 +199,19 @@ function sidePanel(b, o = {}) {
 function explainCell(t, r, c) {
   const row = REPORT[t][r], name = row[1].toLowerCase();
   if (t === "vars") return [null, null,
-    `The optimal plan makes ${row[2]} ${name} per week.`,
-    `The reduced cost for ${name} is ${row[3]}, because the plan makes this product.`,
-    `The profit per board for ${name} is $${row[4]}.`,
-    `Profit per board for ${name} can increase by ${row[5] === "1E+30" ? "any amount" : row[5]} before the plan changes.`,
-    `Profit per board for ${name} can decrease by ${row[6]} before the plan changes.`][c];
-  const res = ["fabrication hours", "finishing hours", "the mix rule's right-hand side"][r];
+    `The optimal plan builds ${row[2]} ${name} a week.`,
+    `Reduced cost is ${row[3]}: the plan builds this board.`,
+    `Profit per board in the objective: $${row[4]}.`,
+    `Profit per board can rise by ${row[5] === "1E+30" ? "any amount: there is no limit" : "$" + row[5]} before the optimal plan changes.`,
+    `Profit per board can fall by up to $${row[6]} before the optimal plan changes.`][c];
+  const res = ["fabrication hours", "finishing hours", "the mix rule right-hand side"][r];
   return [null, null,
-    ["The plan uses 60.375 of 84 fabrication hours, leaving 23.625 hours of slack.", "The plan uses all 21 finishing hours, so this constraint is binding.",
-     "At the optimal plan −2T + S = 0, so the mix rule is binding."][r],
-    `One more unit of ${res} changes profit by ${row[3]}.`,
-    `The amount available is ${row[4]}.`,
-    `The shadow price applies for an increase ${row[5] === "1E+30" ? "of any size" : `of up to ${row[5]}`}.`,
-    `The shadow price applies for a decrease of up to ${row[6]}.`][c];
+    ["Uses 60.375 of the 84 fabrication hours, leaving 23.625 hours of slack.", "Uses all 21 finishing hours, so the constraint is binding.",
+     "At the optimal corner −2T + S = 0, so the mix rule is binding."][r],
+    `Shadow price is ${row[3]}: one more unit of ${res} changes weekly profit by ${row[3]}.`,
+    `Capacity available: ${row[4]} ${r < 2 ? "hours" : "units"}.`,
+    `Shadow price holds for capacity increases of up to ${row[5] === "1E+30" ? "any amount" : `${row[5]}${r < 2 ? " hours" : ""}`}.`,
+    `Shadow price holds for capacity reductions of up to ${row[6]}${r < 2 ? " hours" : ""}.`][c];
 }
 const sayIn = (b, html) => { const r = $(".res", b.host); if (r) r.innerHTML = `<p class="feedback">${html}</p>`; };
 
@@ -302,34 +303,33 @@ function ask(b, ico, who, q, kind, spec, onRight) {
 const TRAIL40 = {vars: [["$B$12", "Trail boards", "0", "−3.333333", "40", "3.333333", "1E+30"],
                         ["$C$12", "Summit boards", "14", "0", "65", "1E+30", "5"]]};
 LESSONS.push({n: 3, title: "The report: products", aside: "report-first",
-  lead: `This lesson reads the <span class="ph">Variable Cells</span> table of the Sensitivity Report, one column per page.`,
+  lead: `Read the <span class="ph">Variable Cells</span> table in Excel's Sensitivity Report: what it says about a change in the profit per board.`,
   blocks: [
-  {title: "The report at a glance",
-   body: () => `<p>Solver found the best plan: <b>5.25 Trail</b> and <b>10.5 Summit</b> boards a week, profit <b>$945</b>. It can also write a <b>Sensitivity Report</b>,
-     which answers one kind of question: <i>if one number in the model changes, what happens to the plan and the profit?</i></p>
-     <div class="pair"><div>${icon("tag")}<b>Variable Cells</b><span>One row for each product. This lesson.</span></div>
-     <div>${icon("gauge")}<b>Constraints</b><span>One row for each resource. Lesson 4.</span></div></div>
-     <p class="note">Tap a column name in the report to see its definition. In the report, 1E+30 means there is no limit.</p>`,
+  {title: "The Sensitivity Report at a glance",
+   body: () => `<p>Solver reports the optimal plan: <b>5.25 Trail</b> and <b>10.5 Summit</b> boards a week, for a gross profit of <b>$945</b>. Prices and capacities change from week to week, and the <b>Sensitivity Report</b> says how far each one can move before this plan is no longer the best one.</p>
+     <div class="pair"><div>${icon("tag")}<b>Variable Cells</b><span>One row per board: how many to build, and the profit each one carries.</span></div>
+     <div>${icon("gauge")}<b>Constraints</b><span>One row per resource: how much the plan uses, how much is available, and what one more unit is worth (Lesson 4).</span></div></div>
+     <p class="note">Click any column header for its definition. In Solver, 1E+30 means there is no limit.</p>`,
    mount(b) { b.complete(); },
    show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }},
   {title: "Final Value",
-   body: () => defBox("The value of each decision variable in the optimal plan.") +
-     exBox(`Trail boards <b>5.25</b> and Summit boards <b>10.5</b> per week. This is the gold corner on the graph.`),
-   task: "Click both Final Values in the table.",
+   body: () => defBox("How many of each product the optimal plan builds.") +
+     exBox(`Build <b>5.25</b> Trail boards and <b>10.5</b> Summit boards a week. This is the gold corner on the graph.`),
+   task: "Click both Final Value numbers in the table.",
    mount(b) {
      b.host.innerHTML = `<div class="res"></div>`; b.mem.seen = new Set();
      b.mem.cell = (t, r, c) => { sayIn(b, explainCell(t, r, c)); if (t === "vars" && c === 2) b.mem.seen.add(r);
-       if (b.mem.seen.size === 2) { V.cornerLabel = bestLabel; draw(); b.host.querySelector(".scen") || ask(b, "board", "Production manager",
-         "How many boards of each kind do we build this week?", "choice", {options: [
-           {t: "5.25 Trail and 10.5 Summit", ok: true, why: "Correct. The Final Values give the plan."}, {t: "50 Trail and 65 Summit", why: "Those numbers are the profits per board, in the Objective Coefficient column."}]},
-         () => b.complete("The Final Values give the weekly plan: 5.25 Trail and 10.5 Summit boards, or 21 and 42 boards over four weeks. The remaining columns show how much the inputs can change before this plan changes.")); } };
+       if (b.mem.seen.size === 2) { V.cornerLabel = bestLabel; draw(); b.host.querySelector(".scen") || ask(b, "board", "Shop manager",
+         "According to this report, how many boards of each model should the shop build this week?", "choice", {options: [
+           {t: "5.25 Trail and 10.5 Summit", ok: true, why: "Correct. Final Value is the quantity to build."}, {t: "50 Trail and 65 Summit", why: "Those are the profits per board, in the Objective Coefficient column."}]},
+         () => b.complete("Final Value gives the week's plan: 5.25 Trail and 10.5 Summit boards, or 21 and 42 over four weeks. The other columns say how far the profit per board can move before that plan changes.")); } };
    },
    show(b) { regionView({best: true}); sidePanel(b, {table: "vars", focus: {cols: [2]}, wait: true, onCell: b.mem.cell}); },
    async demo(b) { for (const r of [0, 1]) { $(`.panel td[data-t="vars"][data-r="${r}"][data-c="2"]`, b.sec.el).click(); await sleep(600); } }},
   {title: "Reduced Cost",
-   body: () => defBox("For a product the optimal plan does <b>not</b> make, the reduced cost is the amount by which its profit per unit must improve before the plan includes it. For a product the plan makes, the reduced cost is 0.") +
-     exBox(`Ridgeline makes both boards, so both reduced costs are <b>0</b>. A non-zero reduced cost appears if Trail profit drops to $40.`),
-   task: "Switch Trail profit to $40 and read Trail's row again.",
+   body: () => defBox("For a product the plan leaves out, the reduced cost is how much its profit per board must rise before building it is worthwhile. For a product the plan builds, it is zero.") +
+     exBox(`The plan builds both boards, so both reduced costs are <b>$0</b>. A non-zero reduced cost appears only if the Trail profit falls to $40.`),
+   task: "Switch the Trail profit to $40 and read the table again.",
    mount(b) {
      b.mem.cut = false;
      b.host.innerHTML = `<div class="seg live"><button class="on" data-v="0">Trail profit $50</button><button data-v="1">Trail profit $40</button></div><div class="res"></div>`;
@@ -337,155 +337,155 @@ LESSONS.push({n: 3, title: "The report: products", aside: "report-first",
        activate(b); b.mem.cut = x.dataset.v === "1";
        $$(".seg button", b.host).forEach(y => y.classList.toggle("on", y === x));
        b.def.show(b);
-       if (b.mem.cut && !b.host.querySelector(".scen")) ask(b, "store", "Sales manager",
-         "After a discount, Trail profit is $40 and the plan makes no Trail boards. By how much would Trail profit have to increase before we make Trail boards again?",
-         "num", {prefix: "$", answer: 3.33, tol: .02, hint: "Look at Trail's Reduced Cost in the table, −3.333333.", right: "Correct. Trail profit would have to increase by $3.33, to $43.33."},
-         () => b.complete("Trail's reduced cost is −3.33. Its profit per board must increase by $3.33, to $43.33, before the plan makes Trail boards again."));
+       if (b.mem.cut && !b.host.querySelector(".scen")) ask(b, "store", "Sales",
+         "A wholesale customer asks for a discount that cuts the Trail profit to $40, and Solver then builds no Trail boards at all. By how much must the Trail profit rise before building them is worthwhile again?",
+         "num", {prefix: "$", answer: 3.33, tol: .02, hint: "Check Trail's Reduced Cost in the table: −3.333333.", right: "Correct. The Trail profit must rise by $3.33, to $43.33, before the plan builds Trail boards again."},
+         () => b.complete("Trail's reduced cost is −$3.33: its profit per board must rise by $3.33, to $43.33, before the plan builds Trail boards again."));
      }));
    },
    show(b) {
      const cut = b.mem.cut;
      regionView({best: true, cornerLabel: bestLabel, obj: {cx: cut ? 40 : 50, cy: 65, sense: "max"}});
      sidePanel(b, {table: "vars", focus: {cols: [2, 3]}, rows: cut ? TRAIL40 : null,
-       extra: `<p class="verdict">${cut ? `At $40 the optimal plan is <b>(0, 14)</b>, with a profit of <b>$910</b>. The plan makes no Trail boards.` : `At $50 the plan makes both boards.`}</p>`});
+       extra: `<p class="verdict">${cut ? `At $40 the optimal plan moves to <b>(0, 14)</b>, a profit of <b>$910</b>, with no Trail boards.` : `At $50 the optimal plan builds both boards.`}</p>`});
    },
    async demo(b) { $$(".seg button", b.host)[1].click(); }},
   {title: "Objective Coefficient",
-   body: () => defBox("The number in front of each decision variable in the objective function. Here, the profit per board.") +
-     exBox(`In Max <b>50</b>T + <b>65</b>S, the coefficients are $50 per Trail board and $65 per Summit board. They determine the slope of the dashed profit line.`),
+   body: () => defBox("The profit per board that each product carries in the objective function.") +
+     exBox(`In Max <b>50</b>T + <b>65</b>S the profits are $50 a Trail board and $65 a Summit board. The two coefficients set the slope of the isoprofit line.`),
    mount(b) {
-     ask(b, "tag", "Pricing manager", "If we change a selling price, which column of this table changes?", "choice", {options: [
-       {t: "Objective Coefficient", ok: true, why: "Correct. A new price changes the profit per board."}, {t: "Final Value", why: "The Final Value is the quantity in the plan. It changes only if the plan changes."},
-       {t: "Reduced Cost", why: "Reduced Cost applies to products the plan does not make."}]},
-       () => b.complete("A price change changes an objective coefficient. The Allowable Increase and Allowable Decrease columns show how far it can change before the plan changes."));
+     ask(b, "tag", "Marketing", "If retail prices change, which column of this table changes?", "choice", {options: [
+       {t: "Objective Coefficient", ok: true, why: "Correct. A price change moves the profit per board."}, {t: "Final Value", why: "Final Value is the quantity built. It changes only if the price change moves the optimal corner."},
+       {t: "Reduced Cost", why: "Reduced Cost applies to a product the plan does not build."}]},
+       () => b.complete("A price change moves an <b>Objective Coefficient</b>. Allowable Increase and Allowable Decrease say how far it can move before the plan changes."));
    },
    show(b) { regionView({best: true, cornerLabel: bestLabel, iso: {cx: 50, cy: 65, value: 945, label: "50T + 65S = 945"}}); sidePanel(b, {table: "vars", focus: {cols: [4]}}); }},
   {title: "Allowable Increase",
    focus: {cols: [4, 5]},
-   body: () => defBox("How far an objective coefficient can <b>rise</b> before the optimal values of the decision variables change.") +
-     exBox(`Summit: 65 + <b>10</b> = <b>75</b>. The plan stays the same while Summit profit is at most $75. Trail: 1E+30, so the plan stays the same for any increase.`),
-   task: "Drag Summit profit up to $75 and then above it. Note where the gold corner is.",
+   body: () => defBox("How far an objective coefficient can <b>rise</b> before the optimal plan changes.") +
+     exBox(`Summit: $65 + <b>$10</b> = <b>$75</b>. The plan is unchanged as long as the Summit profit stays at or below $75. Trail shows 1E+30, so there is no upper limit.`),
+   task: "Drag the Summit profit up to $75, then past it, and watch the optimal corner.",
    mount(b) {
      profitSliders(b, ["cy"]);
-     ask(b, "megaphone", "Marketing manager", "Demand for Summit boards is strong. If a price increase raises profit per Summit board from $65 to $70, does the plan change? How much does weekly profit increase?",
-       "num", {prefix: "$", answer: 52.5, hint: "An increase of 5 is less than the allowable increase of 10, so the plan does not change. Multiply the change by Summit's Final Value, 10.5.",
-               right: "Correct. 5 × 10.5 = $52.50."},
-       async () => { activate(b); await setProfit(b, "cy", 70); b.complete("The increase of $5 is within the allowable increase of $10, so the plan stays at 5.25 Trail and 10.5 Summit boards. Profit increases by 5 × 10.5 = <b>$52.50</b>, to $997.50. Above $75 the plan changes to (0, 14), and this calculation no longer applies."); });
+     ask(b, "megaphone", "Sales", "Stronger demand lets the shop raise the Summit profit from $65 to $70, a gain of $5 a board. Do the quantities change, and what happens to weekly profit?",
+       "num", {prefix: "$", answer: 52.5, hint: "A rise of $5 is within the allowable increase of $10, so the quantities do not change. Multiply the change by Summit's Final Value, 10.5 boards.",
+               right: "Correct. 5 × 10.5 = $52.50 more profit a week."},
+       async () => { activate(b); await setProfit(b, "cy", 70); b.complete("The $5 rise is within the allowable increase of $10, so the quantities stay at 5.25 Trail and 10.5 Summit. Weekly profit rises by 5 × 10.5 = <b>$52.50</b>, to $997.50. Above $75 the optimal corner moves to (0, 14) and multiplying no longer works."); });
    },
    show: profitShow,
    async demo(b) { await setProfit(b, "cy", 80); await sleep(600); await setProfit(b, "cy", 65); }},
   {title: "Allowable Decrease",
    focus: {cols: [4, 6]},
-   body: () => defBox("How far an objective coefficient can <b>fall</b> before the optimal values of the decision variables change.") +
-     exBox(`Trail: 50 − <b>6.67</b> = <b>43.33</b>. The plan stays the same while Trail profit is at least $43.33. Summit: 65 − 90 = −25.`),
-   task: "Drag Trail profit below $43.33. Note where the gold corner moves.",
+   body: () => defBox("How far an objective coefficient can <b>fall</b> before the optimal plan changes.") +
+     exBox(`Trail: $50 − <b>$6.67</b> = <b>$43.33</b>. The plan is unchanged as long as the Trail profit stays at or above $43.33. For Summit the allowable decrease is $90.`),
+   task: "Drag the Trail profit below $43.33 and watch the optimal corner move.",
    mount(b) {
      profitSliders(b, ["cx"]);
-     ask(b, "store", "Key-account manager", "A large customer asks for a discount that would reduce Trail profit from $50 to $40. Can the report tell us the new weekly profit?",
-       "choice", {options: [{t: "Yes. Profit decreases by 10 × 5.25 = $52.50, to $892.50.", why: "The allowable decrease is 6.67, and a decrease of 10 is larger than that."},
-                            {t: "No. A decrease of 10 is more than 6.67, so the plan changes and the model must be solved again.", ok: true, why: "Correct. Solving again gives 0 Trail and 14 Summit boards, with a profit of $910."}]},
-       async () => { activate(b); await setProfit(b, "cx", 40); b.complete("A decrease of $10 is larger than the allowable decrease of $6.67. The optimal plan changes to <b>0 Trail and 14 Summit</b> boards, with a profit of <b>$910</b>. The estimate of $892.50 does not apply."); });
+     ask(b, "store", "A large customer", "They want a volume discount that cuts the Trail profit from $50 to $40, a drop of $10 a board. Can the change in profit be read off the report by multiplying?",
+       "choice", {options: [{t: "Yes. Profit falls by 10 × 5.25 = $52.50, to $892.50.", why: "The allowable decrease is only $6.67, so a $10 drop is outside the range."},
+                            {t: "No. A $10 drop is more than the allowable decrease of $6.67, so the plan changes and the model has to be solved again.", ok: true, why: "Correct. Solving again gives 0 Trail and 14 Summit boards, a profit of $910."}]},
+       async () => { activate(b); await setProfit(b, "cx", 40); b.complete("A $10 drop is more than the allowable decrease of $6.67. The optimal plan moves to <b>0 Trail and 14 Summit</b> boards, a profit of <b>$910</b>. Outside the allowable range, multiplying does not work."); });
    },
    show: profitShow,
    async demo(b) { await setProfit(b, "cx", 40); }}
 ]});
 
-/* ═════════ 6 · THE REPORT: RESOURCES (Constraints) ═════════ */
+/* ═════════ 4 · THE REPORT: RESOURCES (Constraints) ═════════ */
 LESSONS.push({n: 4, title: "The report: resources",
-  lead: `This lesson reads the <span class="ph">Constraints</span> table of the report, one column per page.`,
+  lead: `Read the <span class="ph">Constraints</span> table in Excel's Sensitivity Report: which resource is the bottleneck, and what one more hour of it is worth.`,
   blocks: [
-  {title: "Final Value",
-   body: () => defBox("The value of the constraint's left-hand side at the optimal plan, that is, the amount of the resource the plan uses.") +
-     exBox(`Fabrication <b>60.375</b> of 84 h. Finishing <b>21</b> of 21 h. Mix rule −2T + S = <b>0</b>.`) +
-     `<div class="pair"><div><b>Binding</b><span>The plan uses all of it. Finishing and the mix rule.</span></div><div><b>Slack</b><span>Amount available minus amount used. Fabrication has 23.625 h.</span></div></div>`,
-   task: "Click the Final Value of each constraint.",
+  {title: "Final Value: capacity used",
+   body: () => defBox("The left-hand side of the constraint at the optimal solution: how much of the resource the plan uses.") +
+     exBox(`Fabrication uses <b>60.375</b> of its 84 hours. Finishing uses all <b>21</b>. The mix constraint's left-hand side is <b>0</b>.`) +
+     `<div class="pair"><div><b>Binding</b><span>All of the capacity is used. Finishing and the mix rule.</span></div><div><b>Slack</b><span>Capacity left over. Fabrication has 23.625 hours unused.</span></div></div>`,
+   task: "Click the Final Value of each constraint in the table.",
    extra: "usage", focus: {cols: [2, 4]},
    mount(b) {
      b.mem.w = "fin"; b.mem.c = 21; b.host.innerHTML = `<div class="res"></div>`; b.mem.seen = new Set();
      b.mem.cell = (t, r, c) => { sayIn(b, explainCell(t, r, c)); if (c === 2) b.mem.seen.add(r);
-       if (b.mem.seen.size === 3 && !b.host.querySelector(".scen")) ask(b, "gauge", "Shop supervisor", "Which department limits profit this week?", "choice", {options: [
-         {t: "Finishing, which uses all 21 hours", ok: true, why: "Correct. Finishing is a binding constraint."}, {t: "Fabrication, which uses the most hours", why: "Fabrication still has 23.625 hours unused."}]},
-         () => b.complete("Finishing limits the plan because it is <b>binding</b>. Fabrication has <b>23.625 hours of slack</b>. The next pages show what an extra hour of each is worth.")); };
+       if (b.mem.seen.size === 3 && !b.host.querySelector(".scen")) ask(b, "gauge", "Shop manager", "Which department is the bottleneck?", "choice", {options: [
+         {t: "Finishing, which uses all 21 of its hours", ok: true, why: "Correct. Finishing is fully used, so its constraint is binding."}, {t: "Fabrication, which uses the most hours", why: "Fabrication still has 23.625 hours unused."}]},
+         () => b.complete("Finishing limits output because it is <b>binding</b>. Fabrication has <b>23.625 hours of slack</b>. The next steps ask what one more hour of each is worth.")); };
    },
    show(b) { rhsShow(b); $$(".panel td.hot", b.sec.el).forEach(td => td.addEventListener("click", () => b.mem.cell(td.dataset.t, +td.dataset.r, +td.dataset.c))); $$('.panel .report', b.sec.el).forEach(t => t.classList.add("waiting")); },
    async demo(b) { for (const r of [0, 1, 2]) { $(`.panel td[data-t="cons"][data-r="${r}"][data-c="2"]`, b.sec.el).click(); await sleep(500); } }},
   {title: "Constraint R.H. Side",
-   body: () => defBox("The number on the right side of the constraint. Here it is the amount of a resource that is available.") +
-     exBox(`<b>84</b> fabrication hours, <b>21</b> finishing hours, <b>0</b> for the mix rule.`),
+   body: () => defBox("The constant on the right of a constraint: the capacity available, or the level a contract requires.") +
+     exBox(`<b>84</b> fabrication hours, <b>21</b> finishing hours, and <b>0</b> for the mix rule.`),
    extra: "usage", focus: {cols: [4]},
    mount(b) {
      b.mem.w = "fin"; b.mem.c = 21;
-     ask(b, "clock", "Operations manager", "Overtime, a new hire and hours bought from a supplier all add capacity. Which number in the model do they change?", "choice", {options: [
-       {t: "The R.H. Side of a constraint", ok: true, why: "Correct. They change the hours available."}, {t: "The profit per board", why: "Profit per board is an objective coefficient, covered in Lesson 3."},
-       {t: "The Final Value", why: "The Final Value is what the plan uses, not what is available."}]},
-       () => b.complete("Adding hours changes a <b>right-hand side</b>. The Shadow Price column shows what each additional hour is worth."));
+     ask(b, "clock", "Purchasing", "Weekend overtime, temporary staff or a leased machine all change how many hours a department has. Which part of the model does that change?", "choice", {options: [
+       {t: "The R.H. Side of the constraint", ok: true, why: "Correct. More capacity means a larger right-hand side."}, {t: "The profit per board", why: "Profit per board is an objective coefficient, covered in Lesson 3."},
+       {t: "The Final Value", why: "Final Value is how much the plan uses, not how much is available."}]},
+       () => b.complete("A change in capacity is a change in the <b>R.H. Side</b>. The Shadow Price column says what one more hour is worth."));
    },
    show: rhsShow},
-  {title: "Shadow Price",
-   body: () => defBox("How much the optimal profit changes when the right-hand side increases by 1 unit, as long as the change stays within the allowable range.") +
-     exBox(`Finishing: <b>$45</b> per extra hour. Fabrication: <b>$0</b>. Mix rule: <b>−2.5</b>.`),
-   task: "Drag the coral finishing line outward by a few hours, or use the slider. Profit increases by $45 for each hour.",
+  {title: "Shadow Price (Dual Value)",
+   body: () => defBox("The change in optimal profit from one more unit of capacity, as long as the change stays inside the allowable range.") +
+     exBox(`Finishing: <b>$45</b> an hour. Fabrication: <b>$0</b>. Mix rule: <b>−$2.50</b> a unit.`),
+   task: "Drag the coral finishing line outward a few hours, or use the slider. Profit rises by $45 an hour.",
    extra: "curve", focus: {cells: [["cons", 1, 3]], cols: [3]},
-   why: "<p>In this model, profit per board does not include the finishing crew's regular pay, because those hours are already paid for. The $45 shadow price is therefore the full gain from one more hour, and the $30 overtime rate is the full cost of that hour.</p>",
-   whyTitle: "Why compare $45 with $30?",
+   why: "<p>Regular wages are already in the budget and do not change with this decision. The <b>$45 shadow price</b> is the gross profit one more finishing hour brings in. Saturday overtime costs $30 an hour, so the net gain is $45 − $30 = <b>$15 an hour</b>.</p>",
+   whyTitle: "Why compare a $45 shadow price with a $30 wage?",
    mount(b) {
      rhsSlider(b, "fin");
-     ask(b, "clock", "Finishing supervisor", "The crew can work 4 extra hours on Saturday. Overtime costs $30 an hour. What is the net change in weekly profit if we approve it?",
-       "num", {prefix: "$", answer: 60, hint: "Four hours is less than the allowable increase of 8.22, so the shadow price applies. Each hour adds $45 and costs $30.", right: "Correct. 4 × ($45 − $30) = $60."},
-       async () => { activate(b); await setRHS(b, 25); b.complete("Approve the overtime. Each hour adds <b>$45</b> and costs $30, so the net gain is 4 × $15 = <b>$60</b> per week."); });
+     ask(b, "clock", "Finishing supervisor", "The crew offers four overtime hours this Saturday at $30 an hour. What happens to weekly profit if the shop takes them?",
+       "num", {prefix: "$", answer: 60, hint: "Four more hours is within the allowable increase of 8.22, so the shadow price holds. Each hour brings in $45 and costs $30.", right: "Correct. 4 × ($45 − $30) = $60."},
+       async () => { activate(b); await setRHS(b, 25); b.complete("Take the shift. Each overtime hour brings in <b>$45</b> and costs $30, so four hours add 4 × $15 = <b>$60</b> to the week."); });
    },
    show: rhsShow,
    async demo(b) { await setRHS(b, 25, 1000); }},
-  {title: "A shadow price of 0",
-   body: () => defBox("A constraint with slack has a shadow price of 0. An additional unit does not increase profit, because the plan does not use all of the units it already has.") +
-     exBox(`Fabrication: 84 − 60.375 = <b>23.625</b> hours unused, shadow price <b>$0</b>.`),
-   task: "Drag the blue fabrication line in and out. Profit stays at $945 until the line reaches the feasible region.",
+  {title: "A shadow price of zero",
+   body: () => defBox("A constraint with slack has a shadow price of zero. More of a resource that is already going unused adds nothing to profit.") +
+     exBox(`Fabrication has 84 − 60.375 = <b>23.625</b> hours of slack, so its shadow price is <b>$0</b>.`),
+   task: "Drag the blue fabrication line. Profit stays at $945 until the line cuts into the feasible region.",
    extra: "both", focus: {cells: [["cons", 0, 2], ["cons", 0, 3], ["cons", 0, 4]]},
    mount(b) {
      rhsSlider(b, "fab");
-     ask(b, "truck", "Purchasing manager", "A supplier offers us 10 more fabrication hours. What is the most we should pay per hour?", "choice", {options: [
-       {t: "$45", why: "$45 is the shadow price for finishing. Look at the fabrication row."}, {t: "$30", why: "That is the overtime rate for finishing."},
-       {t: "$0", ok: true, why: "Correct. The additional hours would not be used."}]},
-       async () => { activate(b); await setRHS(b, 94); b.complete("Decline the offer. Fabrication already has 23.625 unused hours, so 10 more hours leave profit at $945. Their value to Ridgeline is <b>$0</b>."); });
+     ask(b, "truck", "Purchasing", "A nearby machine shop offers 10 extra fabrication hours. What is the most the shop should pay an hour?", "choice", {options: [
+       {t: "$45", why: "$45 is the shadow price for finishing, not fabrication."}, {t: "$30", why: "That is the wage for finishing overtime."},
+       {t: "$0", ok: true, why: "Correct. Fabrication hours are already going unused, so more of them cannot raise profit."}]},
+       async () => { activate(b); await setRHS(b, 94); b.complete("Turn it down. Fabrication already has 23.625 unused hours, so 10 more leave weekly profit at $945. They are worth <b>$0</b>."); });
    },
    show: rhsShow,
    async demo(b) { await setRHS(b, 55, 1200); await sleep(500); await setRHS(b, 84, 800); }},
   {title: "A negative shadow price",
-   body: () => defBox("If increasing the right-hand side makes a constraint harder to satisfy, its shadow price is negative, and profit decreases.") +
-     exBox(`The mix rule −2T + S ≥ 0 has a shadow price of <b>−2.5</b>. Increasing its right-hand side from 0 requires more Summit boards for each Trail board.`),
+   body: () => defBox("When raising a right-hand side tightens the constraint and shrinks the feasible region, the shadow price is negative: profit falls.") +
+     exBox(`The mix rule −2T + S ≥ 0 has a shadow price of <b>−2.5</b>. Raising its right-hand side forces an even higher ratio of Summit to Trail boards, which moves the plan away from the best mix.`),
    task: "Try both buttons.",
    extra: "curve", focus: {cells: [["cons", 2, 3]], cols: [3]},
    mount(b) {
      rhsSlider(b, "mix");
-     b.host.insertAdjacentHTML("beforeend", `<div class="ptbtns live"><button class="btn pick small" data-v="2">Raise to 2</button><button class="btn pick small" data-v="-4">Lower to −4</button></div><div class="res"></div>`);
+     b.host.insertAdjacentHTML("beforeend", `<div class="ptbtns live"><button class="btn pick small" data-v="2">Raise to +2</button><button class="btn pick small" data-v="-4">Lower to −4</button></div><div class="res"></div>`);
      $$(".pick", b.host).forEach(x => x.addEventListener("click", async () => {
        await setRHS(b, +x.dataset.v, 600);
-       sayIn(b, x.dataset.v === "2" ? "2 × (−2.5) = −$5. Profit is $940." : "−4 × (−2.5) = +$10. Profit is $955.");
+       sayIn(b, x.dataset.v === "2" ? "2 × (−2.5) = −$5. Profit drops to $940." : "−4 × (−2.5) = +$10. Profit rises to $955.");
      }));
-     ask(b, "megaphone", "Sales manager", "A dealer requires at least 2 more Summit boards than twice the number of Trail boards (S ≥ 2T + 2). How does this change weekly profit?",
-       "num", {prefix: "$", answer: -5, placeholder: "e.g. −10", hint: "The right-hand side increases from 0 to 2. Multiply the change by the shadow price, −2.5.", right: "Correct. 2 × (−2.5) = −$5."},
-       () => b.complete("The new requirement lowers weekly profit by <b>$5</b>: an increase of 2 in the right-hand side times a shadow price of −2.5."));
+     ask(b, "megaphone", "A resort dealer", "They want a stricter ratio: two Summit boards beyond twice the Trail count (S ≥ 2T + 2). What does that term cost the shop a week?",
+       "num", {prefix: "$", answer: -5, placeholder: "e.g. −10", hint: "The right-hand side constant increases from 0 to 2. Multiply the change by the shadow price (−2.5).", right: "Correct. 2 × (−2.5) = −$5."},
+       () => b.complete("The stricter ratio costs <b>$5</b> a week: the right-hand side rises by 2, times a shadow price of −2.5."));
    },
    show: rhsShow,
    async demo(b) { $$(".pick", b.host)[0].click(); await sleep(1100); $$(".pick", b.host)[1].click(); }},
-  {title: "Allowable Increase and Decrease",
-   body: () => defBox("How far a right-hand side can rise or fall while its shadow price stays the same.") +
-     exBox(`Finishing: allowable increase <b>8.22</b>, allowable decrease <b>21</b>. The shadow price of $45 applies from <b>0 to 29.22</b> hours. Fabrication: no upper limit, allowable decrease 23.625.`),
-   task: "Drag the finishing line past 29.22 hours. Note how the slope of the profit curve changes.",
+  {title: "Allowable range for a constraint",
+   body: () => defBox("The range of right-hand side values over which the shadow price stays the same.") +
+     exBox(`Finishing: allowable increase <b>8.22</b>, allowable decrease <b>21</b>. The $45 shadow price holds from <b>0 to 29.22 hours</b>. Fabrication has no upper limit.`),
+   task: "Drag the finishing capacity past 29.22 hours and watch where the profit curve bends.",
    extra: "curve", focus: {cells: [["cons", 1, 3], ["cons", 1, 5], ["cons", 1, 6]], cols: [5, 6]},
-   whyTitle: "Why the slope changes at 29.22", why: "<p>Up to 29.22 hours, the optimal corner moves along the mix rule line and each hour adds $45. At 29.22 hours fabrication is also fully used, so a different pair of constraints determines the optimal corner. From there each hour adds $22, and beyond 31.5 hours additional hours add nothing.</p>",
+   whyTitle: "Why the shadow price drops at 29.22 hours", why: "<p>Up to 29.22 hours the optimal corner slides along the mix line and each hour adds $45. At 29.22 hours fabrication is used up as well. Past that point a different pair of constraints sets the corner, and the shadow price falls to $22 an hour until 31.5 hours, beyond which more finishing time adds nothing.</p>",
    mount(b) {
      rhsSlider(b, "fin");
-     ask(b, "clock", "Finishing supervisor", "If the crew offers 10 extra hours instead of 4, does profit increase by 10 × $45 = $450?", "choice", {options: [
-       {t: "Yes, profit increases by $450.", why: "Ten hours is more than the allowable increase of 8.22."},
-       {t: "No. Ten hours is more than 8.22, so the model must be solved again.", ok: true, why: "Correct. Solving again gives a profit of $1,354, not $1,395."}]},
-       async () => { activate(b); await setRHS(b, 31); b.complete("Outside the allowable range the shadow price no longer applies. With 31 finishing hours the optimal profit is <b>$1,354</b>, while the shadow price would give $1,395."); });
+     ask(b, "clock", "Finishing supervisor", "If the finishing crew offers 10 overtime hours instead of 4, will weekly profit rise by 10 × $45 = $450?", "choice", {options: [
+       {t: "Yes, profit rises by $450.", why: "Ten hours is more than the allowable increase of 8.22."},
+       {t: "No. Ten hours is more than the allowable increase of 8.22, so the bottleneck changes and the model has to be solved again.", ok: true, why: "Correct. With 31 hours the optimal profit is $1,354, not $1,395."}]},
+       async () => { activate(b); await setRHS(b, 31); b.complete("Outside the allowable range the shadow price no longer applies. With 31 finishing hours the optimal profit is <b>$1,354</b>, not the $1,395 that multiplying predicts."); });
    },
    show: rhsShow,
    async demo(b) { await setRHS(b, 33, 1600); }}
 ]});
 
-/* ═════════ 7 · USE THE REPORT ═════════ */
+/* ═════════ 5 · USE THE REPORT ═════════ */
 const QUIZ = [
   {q: "Finishing hours go from 21 to 23.", kind: "m", ans: 90, why: "An increase of 2 is within the allowable increase of 8.22, so 2 × $45 = $90."},
   {q: "Finishing hours go from 21 to 32.", kind: "r", why: "An increase of 11 is more than the allowable increase of 8.22."},
@@ -501,10 +501,10 @@ function runQuiz(b) {
   const marks = QUIZ.map(() => ""), host = b.host;
   const next = () => {
     if (i >= QUIZ.length) {
-      host.innerHTML = `<div class="q live"><div class="score">${marks.map(m => `<i class="${m}"></i>`).join("")}</div><p><b>${right} of ${QUIZ.length}</b> right on the first try.</p>
+      host.innerHTML = `<div class="q live"><div class="score">${marks.map(m => `<i class="${m}"></i>`).join("")}</div><p><b>${right} of ${QUIZ.length}</b> correct on the first attempt.</p>
         <button class="btn small again">Try again</button></div>`;
       $(".again", host).addEventListener("click", () => runQuiz(b));
-      return b.complete(right === QUIZ.length ? "All eight right on the first try." : "Review any question you missed using the report on the right.");
+      return b.complete(right === QUIZ.length ? "All eight correct on the first attempt." : "Check any missed case against the Sensitivity Report.");
     }
     const q = QUIZ[i];
     let first = true;
@@ -512,43 +512,43 @@ function runQuiz(b) {
       <p class="quiz-q">${i + 1}. ${q.q}</p></div>`;
     const box = host.firstElementChild;
     const done = () => { marks[i] = first ? "r" : "w"; if (first) right++; i++; setTimeout(next, 1300); };
-    choiceQ(box, {options: [{t: "Multiply", ok: q.kind === "m", why: q.kind === "m" ? "Correct. Now calculate the change." : q.why + " The model must be solved again."},
-                            {t: "Solve again", ok: q.kind === "r", why: q.kind === "r" ? q.why + " The model must be solved again." : "Compare the change with the allowable range again."}]},
+    choiceQ(box, {options: [{t: "Multiply", ok: q.kind === "m", why: q.kind === "m" ? "Correct. The change is inside the allowable range." : q.why + " It is outside the allowable range, so the model has to be solved again."},
+                            {t: "Solve again", ok: q.kind === "r", why: q.kind === "r" ? q.why + " The model has to be solved again." : "The change is inside the allowable range, so multiplying works."}]},
       () => {
         if (q.kind === "r") return done();
-        numQ(box, {q: "Change in profit?", prefix: "$", answer: q.ans, placeholder: "e.g. −45", hint: "Multiply the change by the shadow price or by the final value.", right: q.why}, done);
+        numQ(box, {q: "Net change in weekly profit?", prefix: "$", answer: q.ans, placeholder: "e.g. −45", hint: "Multiply the change by the matching shadow price or Final Value.", right: q.why}, done);
       });
     box.addEventListener("click", () => { if ($(".choice.wrong", box) || $(".numin input.wrong", box)) first = false; });
   };
   next();
 }
 const DECODER = [
-  ["vars", "Final Value", "the optimal amount of each product"], ["vars", "Reduced Cost", "for a product left out: how much its profit must improve to be made"],
-  ["vars", "Objective Coefficient", "profit per unit in the objective"], ["vars", "Allowable Increase / Decrease", "how far that profit can move before the plan changes"],
-  ["cons", "Final Value", "how much of the resource the plan uses"], ["cons", "Shadow Price", "profit change per extra unit available"],
-  ["cons", "Constraint R.H. Side", "the amount available"], ["cons", "Allowable Increase / Decrease", "how far the amount can move while the shadow price holds"]];
+  ["vars", "Final Value", "How many of each product the optimal plan builds"], ["vars", "Reduced Cost", "For a product the plan leaves out: how much its profit must rise before building it is worthwhile"],
+  ["vars", "Objective Coefficient", "The profit per board in the objective function"], ["vars", "Allowable Increase / Decrease", "How far the profit per board can move before the quantities change"],
+  ["cons", "Final Value", "How much of the resource the optimal plan uses"], ["cons", "Shadow Price", "What one more unit of capacity is worth"],
+  ["cons", "Constraint R.H. Side", "The capacity available, or the level a contract requires"], ["cons", "Allowable Increase / Decrease", "How far capacity can move before the shadow price changes"]];
 LESSONS.push({n: 5, title: "Use the report", aside: "report-first",
-  lead: `This lesson puts the columns together to answer <span class="ph">what-if</span> questions.`,
+  lead: `Decide, from the report alone, when a change in profit can be computed by hand and when the model has to be solved again.`,
   blocks: [
   {title: "When to multiply and when to solve again",
-   body: () => `<table class="rtable"><tr><th>What changes</th><th>Check</th><th>Inside the range</th><th>Outside</th></tr>
-     <tr><td>${icon("tag")} a profit per board</td><td>Allowable Increase / Decrease in <b>Variable Cells</b></td><td>The plan does not change. Change in profit = change × <b>Final Value</b></td><td rowspan="2" class="stop">solve again</td></tr>
-     <tr><td>${icon("gauge")} the hours available</td><td>Allowable Increase / Decrease in <b>Constraints</b></td><td>Change in profit = change × <b>Shadow Price</b></td></tr></table>
-     <p class="note">Examples from Lessons 3 and 4:</p>
-     <table class="rtable small"><tr><td>Summit profit $65 → $70</td><td>+5 ≤ 10</td><td>+5 × 10.5 = <b>+$52.50</b></td></tr>
-     <tr><td>Trail profit $50 → $40</td><td>10 > 6.67</td><td class="stop">solve again ($910)</td></tr>
+   body: () => `<div class="table-scroll"><table class="rtable"><tr><th>What changed</th><th>Range to check</th><th>Inside the allowable range</th><th>Outside it</th></tr>
+     <tr><td>${icon("tag")} Profit per board</td><td>Allowable Increase / Decrease in <b>Variable Cells</b></td><td>The quantities do not change: Δ profit = Δ profit per board × <b>Final Value</b></td><td rowspan="2" class="stop">Solve again with Solver</td></tr>
+     <tr><td>${icon("gauge")} Capacity (hours)</td><td>Allowable Increase / Decrease in <b>Constraints</b></td><td>Δ profit = Δ capacity × <b>Shadow Price</b></td></tr></table></div>
+     <p class="note">The cases from Lessons 3 and 4:</p>
+     <div class="table-scroll"><table class="rtable small"><tr><td>Summit profit $65 → $70</td><td>+5 ≤ 10</td><td>+5 × 10.5 = <b>+$52.50</b></td></tr>
+     <tr><td>Trail profit $50 → $40</td><td>10 > 6.67</td><td class="stop">Solve again with Solver ($910)</td></tr>
      <tr><td>4 overtime finishing hours at $30</td><td>4 ≤ 8.22</td><td>4 × ($45 − $30) = <b>+$60</b></td></tr>
-     <tr><td>10 purchased fabrication hours</td><td>slack</td><td>value <b>$0</b></td></tr>
-     <tr><td>10 overtime finishing hours</td><td>10 > 8.22</td><td class="stop">solve again ($1,354)</td></tr></table>`,
+     <tr><td>10 bought fabrication hours</td><td>constraint has slack</td><td>worth <b>$0</b></td></tr>
+     <tr><td>10 overtime finishing hours</td><td>10 > 8.22</td><td class="stop">Solve again with Solver ($1,354)</td></tr></table></div>`,
    mount(b) { b.complete(); },
    show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }},
-  {title: "Report decoder",
-   body: () => `<p class="note">Each column of the report in one line. Tap a column name in the report for the full definition.</p>
-     <table class="rtable small">${DECODER.map(([t, n, m]) => `<tr><td>${icon(t === "vars" ? "tag" : "gauge")} ${n}</td><td>${m}</td></tr>`).join("")}</table>`,
+  {title: "Column reference",
+   body: () => `<p class="note">What each column of the Sensitivity Report means:</p>
+     <div class="table-scroll"><table class="rtable small">${DECODER.map(([t, n, m]) => `<tr><td>${icon(t === "vars" ? "tag" : "gauge")} <b>${n}</b></td><td>${m}</td></tr>`).join("")}</table></div>`,
    mount(b) { b.complete(); },
    show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }},
-  {title: "Eight quick questions",
-   body: () => `<p class="note">For each change, decide whether to multiply or to solve again. Use the report on the right.</p>`,
+  {title: "Eight cases",
+   body: () => `<p class="note">For each case, decide whether the change in profit can be computed from the report or the model has to be solved again. The report is on the right.</p>`,
    mount(b) { runQuiz(b); },
    show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }}
 ]});

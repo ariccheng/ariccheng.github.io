@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Linear Programming Lab</title>
-<meta name="description" content="An interactive guide to linear programming: feasible regions, optimal plans and sensitivity analysis, worked through one small workshop.">
+<meta name="description" content="An interactive, visual exploration of linear programming: feasible regions, optimal plans, and sensitivity analysis.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M4 28V4M4 28h24' stroke='%230E1424' stroke-width='3' fill='none'/%3E%3Cpath d='M4 28V12l10-4 8 10z' fill='%238C1D40' opacity='.3' stroke='%238C1D40' stroke-width='2'/%3E%3Ccircle cx='14' cy='8' r='3.5' fill='%23FFC627' stroke='%235C4300'/%3E%3C/svg%3E">
 <style>
 /*{{CSS}}*/
@@ -23,45 +23,103 @@
 <div id="home">
 <header class="hero" id="top">
   <div class="hero-scene">
-    <svg class="hero-svg" role="img" aria-label="The feasible region with a block on top whose height is the weekly profit; the highest corner is the best plan"></svg>
+    <svg class="hero-svg" tabindex="0" role="img" aria-label="The feasible region with a block on top whose height is the weekly profit; the highest corner is the best plan. Drag, or use the arrow keys, to turn the view; Home resets it."></svg>
     <div class="hero-copy"><div class="tilt">
       <h1>Linear Programming Lab</h1>
-      <p>An interactive guide to linear programming, worked through one small snowboard workshop.</p>
+      <p>An interactive guide to linear programming, built around one production problem.</p>
     </div></div>
     <div class="captions">
-      <div class="cap"><b>Every allowed plan</b><p>The shaded floor holds every plan Ridgeline can make in a week. The height of the block above it is the weekly profit of each plan.</p></div>
-      <div class="cap"><b>The highest point</b><p>Profit rises toward one corner. That corner, 5.25 Trail and 10.5 Summit boards, earns $945, the most of any allowed plan.</p></div>
-      <div class="cap"><b>Seen from above</b><p>Looking straight down, the white lines across the block land on the floor as lines of equal profit. This flat view is the graph used in every lesson below.</p></div>
+      <div class="cap"><b>The feasible region</b><p>The shaded base holds every production schedule the shop can carry out in one week. Height above the base is the gross profit that schedule earns.</p></div>
+      <div class="cap"><b>The best plan</b><p>Profit rises toward a single corner of the base: 5.25 Trail and 10.5 Summit boards, worth $945 for the week.</p></div>
+      <div class="cap"><b>Seen from above</b><p>Schedules that earn the same profit fall on parallel lines. Every lesson below works in this flat view.</p></div>
     </div>
     <div class="cue">Scroll<i></i></div>
+    <div class="spin-cue">Drag to rotate</div>
   </div>
 </header>
 
-  <section class="intro"><div class="wrap intro-grid">
-    <div class="reveal">
+  <section class="intro"><div class="wrap">
+    <div class="intro-body reveal">
       <h2>Ridgeline Boards</h2>
-      <p class="lead">A small workshop builds two snowboards. Each week it decides how many of each to make, within the hours it has.</p>
-      <table class="case num">
-        <tr><th></th><th>Trail board</th><th>Summit board</th><th>Available per week</th></tr>
-        <tr><td>Profit per board</td><td>$50</td><td>$65</td><td></td></tr>
-        <tr><td>Fabrication</td><td>3.5 h</td><td>4 h</td><td>84 h</td></tr>
-        <tr><td>Finishing</td><td>1 h</td><td>1.5 h</td><td>21 h</td></tr>
-      </table>
-      <p style="color:var(--ink-2)">Ridgeline also makes at least twice as many Summit boards as Trail boards. Written as a linear program:</p>
-      <div class="model">Max&nbsp; 50<i>T</i> + 65<i>S</i><span class="c">weekly profit</span><br>
-        s.t.&nbsp; 3.5<i>T</i> + 4<i>S</i> ≤ 84<span class="c">fabrication hours</span><br>
-        &emsp;&ensp; <i>T</i> + 1.5<i>S</i> ≤ 21<span class="c">finishing hours</span><br>
-        &emsp;&ensp; −2<i>T</i> + <i>S</i> ≥ 0<span class="c">mix rule, S ≥ 2T</span><br>
-        &emsp;&ensp; <i>T</i>, <i>S</i> ≥ 0</div>
+      <p class="lead">🏔️ Ridgeline Boards is a small workshop that builds two models of snowboard, the <b>Trail</b> board 🏂 and the <b>Summit</b> board 🎿. Every Monday the shop manager sets the week's production: how many of each model to build. Each board passes through two departments, fabrication and finishing, and each department has a fixed number of hours available that week. The shop's resort dealers also require at least two Summit boards for every Trail board. The question is which schedule earns the most gross profit.</p>
+
+      <div class="table-scroll">
+        <table class="case num">
+          <thead>
+            <tr>
+              <th>Resource</th>
+              <th>Trail (<i>T</i>)</th>
+              <th>Summit (<i>S</i>)</th>
+              <th>Available per week</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gross profit per board</td>
+              <td><b>$50</b></td>
+              <td><b>$65</b></td>
+              <td class="dim">&mdash; maximize</td>
+            </tr>
+            <tr>
+              <td><span class="dot fab"></span>Fabrication hours</td>
+              <td>3.5</td>
+              <td>4.0</td>
+              <td><b>84</b></td>
+            </tr>
+            <tr>
+              <td><span class="dot fin"></span>Finishing hours</td>
+              <td>1.0</td>
+              <td>1.5</td>
+              <td><b>21</b></td>
+            </tr>
+            <tr>
+              <td><span class="dot mix"></span>Dealer mix</td>
+              <td colspan="2" style="text-align:center">At least two Summit boards per Trail board</td>
+              <td><b><i>S</i> &ge; 2<i>T</i></b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">The three colours mark the three constraints, and the lines on every graph below carry the same colours.</p>
+
+      <p class="lead-sm">The same problem in standard linear programming form:</p>
+      <div class="model">
+        <div class="model-row">
+          <span class="m-type">Max</span>
+          <span class="m-expr">50<i>T</i> + 65<i>S</i></span>
+          <span class="m-tag obj">Gross profit for the week</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type">s.t.</span>
+          <span class="m-expr">3.5<i>T</i> + 4<i>S</i> &le; 84</span>
+          <span class="m-tag"><span class="dot fab"></span>Fabrication, 84 h</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr"><i>T</i> + 1.5<i>S</i> &le; 21</span>
+          <span class="m-tag"><span class="dot fin"></span>Finishing, 21 h</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr">&minus;2<i>T</i> + <i>S</i> &ge; 0</span>
+          <span class="m-tag"><span class="dot mix"></span>Dealer mix</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr"><i>T</i>, <i>S</i> &ge; 0</span>
+          <span class="m-tag">No negative production</span>
+        </div>
+      </div>
     </div>
-    <div class="reveal">
-      <h2 style="font-size:clamp(26px,2.4vw,36px)">Four questions</h2>
-      <p class="lead">The lessons answer them in order. Everything you can click, drag or answer has a violet outline.</p>
+
+    <div class="qband reveal">
+      <h2>Core questions</h2>
+      <p class="lead">The lessons answer four questions in turn. Anything you can drag, click or choose is marked in violet.</p>
       <div class="qgrid">
-        <div class="qcard" style="opacity:.6"><span class="k">1</span><b>What can we decide?</b><small>In preparation</small></div>
-        <a class="qcard" href="#lesson-1"><span class="k">2</span><b>What is the best we can do?</b><small>Lessons 1 and 2</small></a>
-        <a class="qcard" href="#lesson-3"><span class="k">3</span><b>What if the numbers change?</b><small>Lessons 3, 4 and 5</small></a>
-        <div class="qcard" style="opacity:.6"><span class="k">4</span><b>What if answers must be whole numbers or yes/no?</b><small>In preparation</small></div>
+        <div class="qcard pending"><span class="k">1</span><b>What can we decide?</b><span class="lessons">In preparation</span></div>
+        <a class="qcard" href="#lesson-1"><span class="k">2</span><b>What is the best we can do?</b><span class="lessons">Lessons 1&ndash;2</span></a>
+        <a class="qcard" href="#lesson-3"><span class="k">3</span><b>What if the numbers change?</b><span class="lessons">Lessons 3&ndash;5</span></a>
+        <div class="qcard pending"><span class="k">4</span><b>What if answers must be integers or binary?</b><span class="lessons">In preparation</span></div>
       </div>
       <a class="btn primary start" href="#lesson-1">Start with Lesson 1</a>
     </div>
@@ -81,10 +139,13 @@
 <dialog class="drawer" id="sheet-dlg">
   <h2>The same model in a spreadsheet</h2>
   <p>Point at a part of the model to see where it lives in the worksheet and in the Solver dialog.</p>
-  <div class="model map">Max&nbsp; <span data-k="obj">50<i>T</i> + 65<i>S</i></span><br>
-    by choosing <span data-k="dv"><i>T</i> and <i>S</i></span><br>
-    s.t.&nbsp; <span data-k="con">3.5<i>T</i> + 4<i>S</i> ≤ 84, &nbsp;<i>T</i> + 1.5<i>S</i> ≤ 21, &nbsp;−2<i>T</i> + <i>S</i> ≥ 0</span><br>
-    &emsp;&ensp; <span data-k="nn"><i>T</i>, <i>S</i> ≥ 0</span></div>
+  <div class="model map">
+    <div class="model-row"><span class="m-type">Max</span><span class="m-expr" data-k="obj">50<i>T</i> + 65<i>S</i></span><span class="m-tag obj">Objective Cell ($B$8)</span></div>
+    <div class="model-row sub"><span class="m-type">by choosing</span><span class="m-expr" data-k="dv"><i>T</i> and <i>S</i></span><span class="m-tag">Decision Cells ($B$6:$C$6)</span></div>
+    <div class="model-row sub"><span class="m-type">s.t.</span><span class="m-expr" data-k="con">3.5<i>T</i> + 4<i>S</i> ≤ 84, &nbsp;<i>T</i> + 1.5<i>S</i> ≤ 21, &nbsp;−2<i>T</i> + <i>S</i> ≥ 0</span><span class="m-tag">Constraints ($B$11:$B$13)</span></div>
+    <div class="model-row sub"><span class="m-type"></span><span class="m-expr" data-k="nn"><i>T</i>, <i>S</i> ≥ 0</span><span class="m-tag">Non-negative checkbox</span></div>
+  </div>
+  <div class="table-scroll">
   <table class="sheet num">
     <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
     <tr><th>1</th><td class="l"></td><td class="l"><b>Trail</b></td><td class="l"><b>Summit</b></td><td class="l"><b>Available</b></td></tr>
@@ -98,6 +159,8 @@
     <tr><th>12</th><td class="l">Finishing</td><td class="cn" data-k="con">21</td><td class="cn" data-k="con">&lt;=</td><td class="cn" data-k="con">21</td></tr>
     <tr><th>13</th><td class="l">Mix rule (−2T + S)</td><td class="cn" data-k="con">0</td><td class="cn" data-k="con">&gt;=</td><td class="cn" data-k="con">0</td></tr>
   </table>
+  </div>
+  <div class="table-scroll">
   <table class="sheet">
     <tr><td class="l" style="width:42%">Set Objective</td><td class="l" data-k="obj">$B$8 &nbsp; To: Max</td></tr>
     <tr><td class="l">By Changing Variable Cells</td><td class="l" data-k="dv">$B$6:$C$6</td></tr>
@@ -105,6 +168,7 @@
     <tr><td class="l">Make Unconstrained Variables Non-Negative</td><td class="l" data-k="nn">checked</td></tr>
     <tr><td class="l">Solving Method</td><td class="l">Simplex LP</td></tr>
   </table>
+  </div>
   <div class="block-actions"><button class="btn primary" onclick="this.closest('dialog').close()">Close</button></div>
 </dialog>
 
