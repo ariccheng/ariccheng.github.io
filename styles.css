@@ -86,6 +86,7 @@ a:hover {
 }
 
 .topbar {
+  position: relative;
   padding: 28px 0 18px;
   background: var(--topbar-bg);
   transition: background-color 0.2s ease;
@@ -107,6 +108,8 @@ a:hover {
 }
 
 .nav {
+  position: relative;
+  z-index: 0;
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
@@ -124,6 +127,77 @@ a:hover {
   color: var(--topbar-fg);
   border-bottom-color: var(--topbar-fg);
   text-decoration: none;
+}
+
+a.brand:hover {
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+/* lamp on the active item: a gold tube along the top edge of the bar,
+   casting a soft cone of light down onto the label */
+.topbar {
+  --lamp: #ffd96a;
+  overflow: hidden;
+}
+
+.nav a.active {
+  position: relative;
+  border-bottom-color: transparent;
+  text-shadow: 0 0 12px rgba(255, 217, 106, 0.55);
+}
+
+.nav a.active::before,
+.nav a.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  pointer-events: none;
+}
+
+.nav a.active::before {
+  top: -30px;
+  width: 150%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--lamp);
+  box-shadow: 0 0 6px 1px var(--lamp), 0 0 18px 4px rgba(255, 198, 39, 0.45);
+  transform: translateX(-50%);
+  animation: lamp-tube 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.nav a.active::after {
+  top: -28px;
+  width: 260%;
+  height: calc(100% + 34px);
+  background: radial-gradient(ellipse 45% 85% at 50% 0%, rgba(255, 217, 106, 0.42), rgba(255, 217, 106, 0.1) 60%, transparent 80%);
+  clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+  transform: translateX(-50%);
+  z-index: -1;
+  animation: lamp-cone 1.1s ease-out both;
+}
+
+.nav a.active:hover {
+  border-bottom-color: transparent;
+}
+
+@keyframes lamp-tube {
+  from { transform: translateX(-50%) scaleX(0.2); opacity: 0.4; }
+  to { transform: translateX(-50%) scaleX(1); opacity: 1; }
+}
+
+@keyframes lamp-cone {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav a.active::before,
+  .nav a.active::after,
+  .course-extra a::before,
+  .course-extra a::after {
+    animation: none;
+  }
 }
 
 main {
@@ -533,20 +607,79 @@ footer {
   color: var(--muted);
 }
 
-/* a quiet second line under a course, for its teaching materials */
+/* a second line under a course, for its teaching materials:
+   a small pill whose border carries a slowly travelling gold-to-maroon light */
+@property --hb-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 .course-extra {
-  margin-top: 2px;
-  font-size: 0.9rem;
+  margin-top: 6px;
 }
 
 .course-extra a {
-  color: var(--muted);
-  text-decoration: underline dotted;
-  text-underline-offset: 3px;
+  position: relative;
+  display: inline-block;
+  padding: 2px 13px 3px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  color: var(--ink);
+  background: var(--bg);
+  isolation: isolate;
+  transition: color 0.2s ease;
+}
+
+.course-extra a::before,
+.course-extra a::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* the border: a 1px ring cut out of a conic gradient that turns */
+.course-extra a::before {
+  inset: 0;
+  padding: 1px;
+  background: conic-gradient(from var(--hb-angle), var(--line) 0deg, var(--line) 230deg,
+    var(--asu-gold) 290deg, var(--asu-maroon) 330deg, var(--line) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: hb-turn 5s linear infinite;
+  z-index: -1;
+}
+
+/* the glow, shown on hover */
+.course-extra a::after {
+  inset: -3px;
+  background: conic-gradient(from var(--hb-angle), rgba(255, 198, 39, 0.55), rgba(140, 29, 64, 0.45), rgba(255, 198, 39, 0.55));
+  filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: hb-turn 5s linear infinite;
+  z-index: -2;
 }
 
 .course-extra a:hover {
+  text-decoration: none;
   color: var(--link);
+}
+
+.course-extra a:hover::before {
+  background: conic-gradient(from var(--hb-angle), var(--asu-gold), var(--asu-maroon), var(--asu-gold));
+  animation-duration: 2.5s;
+}
+
+.course-extra a:hover::after {
+  opacity: 0.6;
+  animation-duration: 2.5s;
+}
+
+@keyframes hb-turn {
+  to { --hb-angle: 360deg; }
 }
 
 /* ---------- Miscellaneous: optional photo grid ---------- */
@@ -570,6 +703,18 @@ footer {
 @media (max-width: 640px) {
   .topbar {
     padding: 20px 0 14px;
+  }
+
+  /* the nav wraps under the name here, so the lamp hangs just above the item */
+  .nav a.active::before {
+    top: -7px;
+    width: 120%;
+  }
+
+  .nav a.active::after {
+    top: -6px;
+    width: 200%;
+    height: calc(100% + 10px);
   }
 
   .topbar .container {
