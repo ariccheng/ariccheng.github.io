@@ -157,9 +157,9 @@ a.brand:hover {
 
 .nav a.active::before {
   top: -30px;
-  width: 105%;
-  height: 2px;
-  border-radius: 2px;
+  width: 80%;
+  height: 3px;
+  border-radius: 3px;
   background: var(--lamp);
   box-shadow: 0 0 6px 1px var(--lamp), 0 0 18px 4px rgba(255, 198, 39, 0.45);
   transform: translateX(-50%);
@@ -167,8 +167,8 @@ a.brand:hover {
 }
 
 .nav a.active::after {
-  top: -28px;
-  width: 200%;
+  top: -27px;
+  width: 160%;
   height: calc(100% + 34px);
   background: radial-gradient(ellipse 45% 85% at 50% 0%, rgba(255, 217, 106, 0.42), rgba(255, 217, 106, 0.1) 60%, transparent 80%);
   clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
@@ -708,7 +708,7 @@ footer {
   /* the nav wraps under the name here, so the lamp hangs just above the item */
   .nav a.active::before {
     top: -7px;
-    width: 90%;
+    width: 80%;
   }
 
   .nav a.active::after {
