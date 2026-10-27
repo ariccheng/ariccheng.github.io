@@ -1,0 +1,143 @@
+{
+  "optimum": {
+    "T": 5.25,
+    "S": 10.5,
+    "profit": 945.0
+  },
+  "corners": [
+    {
+      "T": 0.0,
+      "S": 0.0,
+      "profit": 0.0
+    },
+    {
+      "T": 0.0,
+      "S": 14.0,
+      "profit": 910.0
+    },
+    {
+      "T": 5.25,
+      "S": 10.5,
+      "profit": 945.0
+    }
+  ],
+  "lhs": {
+    "fabrication": 60.375,
+    "finishing": 21.0,
+    "mix": 0.0
+  },
+  "slack": {
+    "fabrication": 23.625,
+    "finishing": 0.0,
+    "mix": 0.0
+  },
+  "shadow_price": {
+    "fabrication": 0.0,
+    "finishing": 45.0,
+    "mix": -2.5
+  },
+  "coef_range": {
+    "Trail": [
+      43.33,
+      null
+    ],
+    "Summit": [
+      -25.0,
+      75.0
+    ]
+  },
+  "rhs_range": {
+    "fabrication": [
+      60.375,
+      null
+    ],
+    "finishing": [
+      -0.0,
+      29.217
+    ],
+    "mix": [
+      -14.0,
+      42.0
+    ]
+  },
+  "finishing_curve": {
+    "0": -0.0,
+    "10": 450.0,
+    "21": 945.0,
+    "25": 1125.0,
+    "29.2174": 1314.78,
+    "30": 1332.0,
+    "31.5": 1365.0,
+    "35": 1365.0,
+    "40": 1365.0
+  },
+  "summit_76": [
+    0.0,
+    14.0,
+    1064.0
+  ],
+  "meeting": {
+    "summit_plus5": [
+      5.25,
+      10.5,
+      997.5
+    ],
+    "trail_minus10": [
+      0.0,
+      14.0,
+      910.0
+    ],
+    "finishing_plus4": [
+      6.25,
+      12.5,
+      1125.0
+    ],
+    "fabrication_plus10": [
+      5.25,
+      10.5,
+      945.0
+    ],
+    "summit_80": [
+      0.0,
+      14.0,
+      1120.0
+    ],
+    "finishing_31": [
+      1.6,
+      19.6,
+      1354.0
+    ],
+    "mix_plus2": [
+      4.5,
+      11.0,
+      940.0
+    ],
+    "trail_40_enters_at": [
+      43.33,
+      null
+    ]
+  },
+  "integer": {
+    "best": {
+      "T": 3,
+      "S": 12,
+      "profit": 930
+    },
+    "round_nearest": {
+      "T": 5,
+      "S": 11,
+      "feasible": false,
+      "finishing": 21.5
+    },
+    "round_down": {
+      "T": 5,
+      "S": 10,
+      "feasible": true,
+      "profit": 900
+    },
+    "trap_2_13": {
+      "feasible": false,
+      "profit": 945
+    }
+  }
+}

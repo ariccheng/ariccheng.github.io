@@ -533,6 +533,22 @@ footer {
   color: var(--muted);
 }
 
+/* a quiet second line under a course, for its teaching materials */
+.course-extra {
+  margin-top: 2px;
+  font-size: 0.9rem;
+}
+
+.course-extra a {
+  color: var(--muted);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.course-extra a:hover {
+  color: var(--link);
+}
+
 /* ---------- Miscellaneous: optional photo grid ---------- */
 .photo-grid {
   display: grid;

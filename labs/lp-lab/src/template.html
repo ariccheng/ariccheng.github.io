@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linear Programming Lab</title>
+<meta name="description" content="An interactive guide to linear programming: feasible regions, optimal plans and sensitivity analysis, worked through one small workshop.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M4 28V4M4 28h24' stroke='%230E1424' stroke-width='3' fill='none'/%3E%3Cpath d='M4 28V12l10-4 8 10z' fill='%238C1D40' opacity='.3' stroke='%238C1D40' stroke-width='2'/%3E%3Ccircle cx='14' cy='8' r='3.5' fill='%23FFC627' stroke='%235C4300'/%3E%3C/svg%3E">
+<style>
+/*{{CSS}}*/
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="Lessons">
+  <a class="wordmark" href="#top"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 28V4M4 28h24" stroke="#0E1424" stroke-width="3" fill="none"/>
+    <path d="M4 28V12l10-4 8 10z" fill="#8C1D40" opacity=".3" stroke="#8C1D40" stroke-width="2"/><circle cx="14" cy="8" r="3.5" fill="#FFC627" stroke="#5C4300"/></svg><span class="wm-full">Linear Programming Lab</span><span class="wm-short">LP Lab</span></a>
+  <button class="present-btn" title="Classroom mode: full screen, 16:9, large type. Arrow keys move between steps; Esc exits.">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4" width="19" height="12" rx="1.5"/><path d="M12 16v4M8 20h8"/><path d="M10 8.2v3.6l3.2-1.8z" fill="currentColor"/></svg>Present</button>
+  <div class="nav-links"></div>
+</nav>
+
+<main>
+<div id="home">
+<header class="hero" id="top">
+  <div class="hero-scene">
+    <svg class="hero-svg" role="img" aria-label="The feasible region with a block on top whose height is the weekly profit; the highest corner is the best plan"></svg>
+    <div class="hero-copy"><div class="tilt">
+      <h1>Linear Programming Lab</h1>
+      <p>An interactive guide to linear programming, worked through one small snowboard workshop.</p>
+    </div></div>
+    <div class="captions">
+      <div class="cap"><b>Every allowed plan</b><p>The shaded floor holds every plan Ridgeline can make in a week. The height of the block above it is the weekly profit of each plan.</p></div>
+      <div class="cap"><b>The highest point</b><p>Profit rises toward one corner. That corner, 5.25 Trail and 10.5 Summit boards, earns $945, the most of any allowed plan.</p></div>
+      <div class="cap"><b>Seen from above</b><p>Looking straight down, the white lines across the block land on the floor as lines of equal profit. This flat view is the graph used in every lesson below.</p></div>
+    </div>
+    <div class="cue">Scroll<i></i></div>
+  </div>
+</header>
+
+  <section class="intro"><div class="wrap intro-grid">
+    <div class="reveal">
+      <h2>Ridgeline Boards</h2>
+      <p class="lead">A small workshop builds two snowboards. Each week it decides how many of each to make, within the hours it has.</p>
+      <table class="case num">
+        <tr><th></th><th>Trail board</th><th>Summit board</th><th>Available per week</th></tr>
+        <tr><td>Profit per board</td><td>$50</td><td>$65</td><td></td></tr>
+        <tr><td>Fabrication</td><td>3.5 h</td><td>4 h</td><td>84 h</td></tr>
+        <tr><td>Finishing</td><td>1 h</td><td>1.5 h</td><td>21 h</td></tr>
+      </table>
+      <p style="color:var(--ink-2)">Ridgeline also makes at least twice as many Summit boards as Trail boards. Written as a linear program:</p>
+      <div class="model">Max&nbsp; 50<i>T</i> + 65<i>S</i><span class="c">weekly profit</span><br>
+        s.t.&nbsp; 3.5<i>T</i> + 4<i>S</i> ≤ 84<span class="c">fabrication hours</span><br>
+        &emsp;&ensp; <i>T</i> + 1.5<i>S</i> ≤ 21<span class="c">finishing hours</span><br>
+        &emsp;&ensp; −2<i>T</i> + <i>S</i> ≥ 0<span class="c">mix rule, S ≥ 2T</span><br>
+        &emsp;&ensp; <i>T</i>, <i>S</i> ≥ 0</div>
+    </div>
+    <div class="reveal">
+      <h2 style="font-size:clamp(26px,2.4vw,36px)">Four questions</h2>
+      <p class="lead">The lessons answer them in order. Everything you can click, drag or answer has a violet outline.</p>
+      <div class="qgrid">
+        <div class="qcard" style="opacity:.6"><span class="k">1</span><b>What can we decide?</b><small>In preparation</small></div>
+        <a class="qcard" href="#lesson-1"><span class="k">2</span><b>What is the best we can do?</b><small>Lessons 1 and 2</small></a>
+        <a class="qcard" href="#lesson-3"><span class="k">3</span><b>What if the numbers change?</b><small>Lessons 3, 4 and 5</small></a>
+        <div class="qcard" style="opacity:.6"><span class="k">4</span><b>What if answers must be whole numbers or yes/no?</b><small>In preparation</small></div>
+      </div>
+      <a class="btn primary start" href="#lesson-1">Start with Lesson 1</a>
+    </div>
+  </div></section>
+</div>
+  <div id="lessons"></div>
+</main>
+<div class="cbar" aria-label="Classroom controls">
+  <div class="ct"></div><div class="cdots"></div>
+  <div class="cbtns"><button class="btn cprev" aria-label="Previous step">←</button><button class="btn cnext" aria-label="Next step">→</button><button class="btn cexit">Exit</button></div>
+</div>
+<footer><div class="wrap">Linear Programming Lab, by Aric Cheng, W. P. Carey School of Business, Arizona State University. Ridgeline Boards is a teaching example.
+  Your progress stays in this browser. <button class="reset">Reset my progress</button></div></footer>
+<div id="live" class="sr" aria-live="polite"></div>
+
+<dialog class="drawer term-dlg" id="term-dlg"></dialog>
+<dialog class="drawer" id="sheet-dlg">
+  <h2>The same model in a spreadsheet</h2>
+  <p>Point at a part of the model to see where it lives in the worksheet and in the Solver dialog.</p>
+  <div class="model map">Max&nbsp; <span data-k="obj">50<i>T</i> + 65<i>S</i></span><br>
+    by choosing <span data-k="dv"><i>T</i> and <i>S</i></span><br>
+    s.t.&nbsp; <span data-k="con">3.5<i>T</i> + 4<i>S</i> ≤ 84, &nbsp;<i>T</i> + 1.5<i>S</i> ≤ 21, &nbsp;−2<i>T</i> + <i>S</i> ≥ 0</span><br>
+    &emsp;&ensp; <span data-k="nn"><i>T</i>, <i>S</i> ≥ 0</span></div>
+  <table class="sheet num">
+    <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+    <tr><th>1</th><td class="l"></td><td class="l"><b>Trail</b></td><td class="l"><b>Summit</b></td><td class="l"><b>Available</b></td></tr>
+    <tr><th>2</th><td class="l">Profit per board</td><td class="in" data-k="obj">50</td><td class="in" data-k="obj">65</td><td></td></tr>
+    <tr><th>3</th><td class="l">Fabrication hours</td><td class="in">3.5</td><td class="in">4</td><td class="in" data-k="con">84</td></tr>
+    <tr><th>4</th><td class="l">Finishing hours</td><td class="in">1</td><td class="in">1.5</td><td class="in" data-k="con">21</td></tr>
+    <tr><th>6</th><td class="l">Boards to make</td><td class="dv" data-k="dv nn">5.25</td><td class="dv" data-k="dv nn">10.5</td><td></td></tr>
+    <tr><th>8</th><td class="l">Total profit</td><td class="ob" data-k="obj">$945</td><td class="l" colspan="2" style="color:var(--ink-3)">=SUMPRODUCT(B2:C2,B6:C6)</td></tr>
+    <tr><th>10</th><td class="l"></td><td class="l"><b>Used</b></td><td class="l"></td><td class="l"><b>Limit</b></td></tr>
+    <tr><th>11</th><td class="l">Fabrication</td><td class="cn" data-k="con">60.375</td><td class="cn" data-k="con">&lt;=</td><td class="cn" data-k="con">84</td></tr>
+    <tr><th>12</th><td class="l">Finishing</td><td class="cn" data-k="con">21</td><td class="cn" data-k="con">&lt;=</td><td class="cn" data-k="con">21</td></tr>
+    <tr><th>13</th><td class="l">Mix rule (−2T + S)</td><td class="cn" data-k="con">0</td><td class="cn" data-k="con">&gt;=</td><td class="cn" data-k="con">0</td></tr>
+  </table>
+  <table class="sheet">
+    <tr><td class="l" style="width:42%">Set Objective</td><td class="l" data-k="obj">$B$8 &nbsp; To: Max</td></tr>
+    <tr><td class="l">By Changing Variable Cells</td><td class="l" data-k="dv">$B$6:$C$6</td></tr>
+    <tr><td class="l">Subject to the Constraints</td><td class="l" data-k="con">$B$11:$B$12 &lt;= $D$11:$D$12<br>$B$13 &gt;= $D$13</td></tr>
+    <tr><td class="l">Make Unconstrained Variables Non-Negative</td><td class="l" data-k="nn">checked</td></tr>
+    <tr><td class="l">Solving Method</td><td class="l">Simplex LP</td></tr>
+  </table>
+  <div class="block-actions"><button class="btn primary" onclick="this.closest('dialog').close()">Close</button></div>
+</dialog>
+
+<script>
+/*{{JS}}*/
+</script>
+</body>
+</html>

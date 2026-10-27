@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem('theme');
+        var d = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', s || (d ? 'dark' : 'light'));
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <title>Teaching Labs | Aric Cheng</title>
+  <meta name="description" content="Interactive web lessons used in Aric Cheng's courses.">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../files/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../files/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../files/apple-touch-icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Teaching Labs | Aric Cheng">
+  <meta property="og:description" content="Interactive web lessons used in Aric Cheng's courses.">
+  <meta property="og:url" content="https://ariccheng.github.io/labs/">
+
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    /* labs list: one entry per lab, styled with the site's own tokens */
+    .labs { list-style: none; margin: 18px 0 0; padding: 0; }
+    .lab { padding: 18px 0 20px; border-top: 1px solid var(--line); }
+    .lab:first-child { border-top: 0; padding-top: 6px; }
+    .lab h2 { margin: 0 0 6px; font-size: 1.35rem; }
+    .lab p { margin: 6px 0 0; }
+    .lab .meta { color: var(--muted); font-size: 0.95rem; }
+    .lab .open { display: inline-block; margin-top: 10px; padding: 5px 14px; border: 1px solid var(--button-primary-border);
+      border-radius: 999px; font-size: 0.95rem; }
+    .lab .open:hover { text-decoration: none; background: var(--chip-maroon-bg); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="brand">Aric Cheng</div>
+      <nav class="nav" aria-label="Main Navigation">
+        <a href="../index.html">About</a>
+        <a href="../research.html">Research</a>
+        <a class="active" href="../teaching.html">Teaching</a>
+        <a href="../misc.html">Miscellaneous</a>
+        <a href="../files/cv.pdf" target="_blank" rel="noopener">CV</a>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme" aria-pressed="false">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section">
+      <h1>Teaching Labs</h1>
+      <p class="lead">
+        Interactive lessons I use in my courses. Each lab runs in a web browser, works on a phone,
+        and has a presentation mode for class.
+      </p>
+      <ul class="labs" id="labs">
+        <li class="lab"><h2><a href="lp-lab/">Linear Programming Lab</a></h2></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="container">
+    <div><a href="../teaching.html">Back to Teaching</a></div>
+  </footer>
+  <script src="../theme.js"></script>
+  <script>
+    /* the list comes from labs.json; adding a lab means adding one entry there */
+    fetch("labs.json").then(function (r) { return r.json(); }).then(function (labs) {
+      var esc = function (s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; };
+      document.getElementById("labs").innerHTML = labs.map(function (l) {
+        return '<li class="lab"><span class="chip">' + esc(l.topic) + '</span>' +
+          '<h2><a href="' + encodeURI(l.slug) + '/">' + esc(l.title) + '</a></h2>' +
+          '<p>' + esc(l.description) + '</p>' +
+          '<p class="meta">' + l.lessons + ' lessons, updated ' + esc(l.updated) + '</p>' +
+          '<a class="open" href="' + encodeURI(l.slug) + '/">Open the lab</a></li>';
+      }).join("");
+    }).catch(function () {});
+  </script>
+</body>
+</html>
