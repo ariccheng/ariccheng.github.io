@@ -158,8 +158,8 @@ a.brand:hover {
 .nav a.active::before {
   top: -30px;
   width: 80%;
-  height: 3px;
-  border-radius: 3px;
+  height: 2px;
+  border-radius: 2px;
   background: var(--lamp);
   box-shadow: 0 0 6px 1px var(--lamp), 0 0 18px 4px rgba(255, 198, 39, 0.45);
   transform: translateX(-50%);
@@ -622,7 +622,7 @@ footer {
 .course-extra a {
   position: relative;
   display: inline-block;
-  padding: 3px 14px 4px;
+  padding: 4px 15px 5px;
   border-radius: 999px;
   font-size: 0.88rem;
   color: var(--ink);
@@ -639,10 +639,10 @@ footer {
   pointer-events: none;
 }
 
-/* the border: a 2px ring cut out of a conic gradient that turns */
+/* the border: a 3px ring cut out of a conic gradient that turns */
 .course-extra a::before {
   inset: 0;
-  padding: 2px;
+  padding: 3px;
   background: conic-gradient(from var(--hb-angle), var(--line) 0deg, var(--line) 230deg,
     var(--asu-gold) 290deg, var(--asu-maroon) 330deg, var(--line) 360deg);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
