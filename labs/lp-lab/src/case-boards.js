@@ -1,4 +1,86 @@
-/* ---- Lessons (phase 1: 2, 3, 5, 6, 7) ------------------------------------- */
+/* the home page for this case */
+CASES.boards.intro = () => `
+    <div class="intro-body reveal">
+      <h2>Ridgeline Boards</h2>
+      <p class="lead">🏔️ Ridgeline Boards is a small workshop that builds two models of snowboard, the <b>Trail</b> board 🏂 and the <b>Summit</b> board 🎿. Every Monday the shop manager sets the week's production: how many of each model to build. Each board passes through two departments, fabrication and finishing, and each department has a fixed number of hours available that week. The shop's resort dealers also require at least two Summit boards for every Trail board. The question is which schedule earns the most gross profit.</p>
+
+      <div class="table-scroll">
+        <table class="case num">
+          <thead>
+            <tr>
+              <th>Resource</th>
+              <th>Trail (<i>T</i>)</th>
+              <th>Summit (<i>S</i>)</th>
+              <th>Available per week</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gross profit per board</td>
+              <td><b>$50</b></td>
+              <td><b>$65</b></td>
+              <td class="dim">&mdash; maximize</td>
+            </tr>
+            <tr>
+              <td><span class="dot fab"></span>Fabrication hours</td>
+              <td>3.5</td>
+              <td>4.0</td>
+              <td><b>84</b></td>
+            </tr>
+            <tr>
+              <td><span class="dot fin"></span>Finishing hours</td>
+              <td>1.0</td>
+              <td>1.5</td>
+              <td><b>21</b></td>
+            </tr>
+            <tr>
+              <td><span class="dot mix"></span>Dealer mix</td>
+              <td colspan="2" style="text-align:center">At least two Summit boards per Trail board</td>
+              <td><b><i>S</i> &ge; 2<i>T</i></b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">The three colours mark the three constraints, and the lines on every graph below carry the same colours.</p>
+
+      <p class="lead-sm">The same problem in standard linear programming form:</p>
+      <div class="model">
+        <div class="model-row">
+          <span class="m-type">Max</span>
+          <span class="m-expr">50<i>T</i> + 65<i>S</i></span>
+          <span class="m-tag obj">Gross profit for the week</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type">s.t.</span>
+          <span class="m-expr">3.5<i>T</i> + 4<i>S</i> &le; 84</span>
+          <span class="m-tag"><span class="dot fab"></span>Fabrication, 84 h</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr"><i>T</i> + 1.5<i>S</i> &le; 21</span>
+          <span class="m-tag"><span class="dot fin"></span>Finishing, 21 h</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr">&minus;2<i>T</i> + <i>S</i> &ge; 0</span>
+          <span class="m-tag"><span class="dot mix"></span>Dealer mix</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr"><i>T</i>, <i>S</i> &ge; 0</span>
+          <span class="m-tag">No negative production</span>
+        </div>
+      </div>
+    </div>
+`;
+
+/* ---- The snowboard course --------------------------------------------------
+   Ridgeline Boards: two products, two departments, one dealer agreement.
+   Everything here is this case's own; the shared pieces are in lesson-kit.js.
+   Runs inside a function so the two courses can use the same helper names. */
+CASES.boards.lessons = function () {
+  const LESSONS = [];
+
 const ALL = [0, 1, 2];
 const MODEL_HTML = `<div class="model">
   <div class="model-row"><span class="m-type">Max</span><span class="m-expr">50<i>T</i> + 65<i>S</i></span><span class="m-tag obj">Gross profit for the week</span></div>
@@ -9,17 +91,6 @@ const MODEL_HTML = `<div class="model">
 </div>`;
 const regionView = (o = {}) => view(Object.assign({lines: ALL, region: true, corners: true}, o));
 const bestLabel = c => Math.abs(c[0] - 5.25) < 1e-6 && Math.abs(c[1] - 10.5) < 1e-6 ? "(5.25, 10.5)  $945" : `(${fmt(c[0])}, ${fmt(c[1])})`;
-/* animate a number, calling fn on every frame (used when an answer moves the graph) */
-function animateValue(from, to, ms, fn) {
-  return new Promise(res => {
-    const t0 = performance.now();
-    const tick = t => {
-      const k = reduced ? 1 : Math.min(1, (t - t0) / ms), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
-      fn(from + (to - from) * e); k < 1 ? requestAnimationFrame(tick) : res();
-    };
-    requestAnimationFrame(tick);
-  });
-}
 const pointMsg = (k, x, y, ok) => `<p class="feedback ${ok ? "ok" : "bad"}">Plan (${fmt(x, 1)}, ${fmt(y, 1)}): LHS evaluates to ${fmt(lhs(k, x, y), 2)} ${k.op === "<=" ? "≤" : "≥"} ${k.c}.
   ${ok ? "✓ Satisfies constraint." : "✕ Violates capacity limit. Choose a point on the feasible side."}</p>`;
 
@@ -180,22 +251,6 @@ LESSONS.push({n: 2, title: "Find the best plan",
    show() { regionView({best: true, cornerLabel: bestLabel}); }}
 ]});
 
-/* ═════════ shared parts for Lessons 3–5: Sensitivity Analysis ═════════ */
-const defBox = t => `<div class="defn"><span class="dl">Definition</span><p>${t}</p></div>`;
-const exBox = h => `<div class="exbox"><span class="dl">At Ridgeline</span><div>${h}</div></div>`;
-const scenario = (ico, who, ask) => `<div class="scen"><div class="scen-h"><span class="req-ico">${icon(ico)}</span>
-  <div><span class="dl">Scenario</span><b>${who}</b></div></div><p class="scen-q">${ask}</p><div class="scen-a"></div></div>`;
-/* the side panel: one table of the report, with the page's column lit, plus an optional extra */
-function sidePanel(b, o = {}) {
-  const p = b.panel(reportTables(Object.assign({only: o.table}, o.focus || {}, {rows: o.rows})) + (o.extra || ""));
-  if (o.wait) $$(".report", p).forEach(t => t.classList.add("waiting"));
-  $$("td.hot", p).forEach(td => td.addEventListener("click", () => {
-    $$("td.sel", p).forEach(x => x.classList.remove("sel"));
-    td.classList.add("sel");
-    o.onCell && o.onCell(td.dataset.t, +td.dataset.r, +td.dataset.c);
-  }));
-  return p;
-}
 function explainCell(t, r, c) {
   const row = REPORT[t][r], name = row[1].toLowerCase();
   if (t === "vars") return [null, null,
@@ -213,7 +268,6 @@ function explainCell(t, r, c) {
     `Shadow price holds for capacity increases of up to ${row[5] === "1E+30" ? "any amount" : `${row[5]}${r < 2 ? " hours" : ""}`}.`,
     `Shadow price holds for capacity reductions of up to ${row[6]}${r < 2 ? " hours" : ""}.`][c];
 }
-const sayIn = (b, html) => { const r = $(".res", b.host); if (r) r.innerHTML = `<p class="feedback">${html}</p>`; };
 
 /* profit pages (Lesson 3): sliders change a profit per board; the panel shows the
    Variable Cells table and compares the report's prediction with a fresh solve */
@@ -291,13 +345,6 @@ function setRHS(b, to, ms = 800) {
   if (el) return tween(el, to, ms);
   return animateValue(b.mem.c, to, ms, v => { b.mem.c = v; rhsShow(b); });
 }
-/* manager's question: the card sits in the block, the question goes inside it */
-function ask(b, ico, who, q, kind, spec, onRight) {
-  b.host.insertAdjacentHTML("beforeend", scenario(ico, who, q));
-  const a = $(".scen-a", b.host);
-  (kind === "num" ? numQ : choiceQ)(a, spec, onRight);
-  a.firstElementChild.classList.add("live");
-}
 
 /* ═════════ 5 · THE REPORT: PRODUCTS (Variable Cells) ═════════ */
 const TRAIL40 = {vars: [["$B$12", "Trail boards", "0", "−3.333333", "40", "3.333333", "1E+30"],
@@ -306,7 +353,7 @@ LESSONS.push({n: 3, title: "The report: products", aside: "report-first",
   lead: `Read the <span class="ph">Variable Cells</span> table in Excel's Sensitivity Report: what it says about a change in the profit per board.`,
   blocks: [
   {title: "The Sensitivity Report at a glance",
-   body: () => `<p>Solver reports the optimal plan: <b>5.25 Trail</b> and <b>10.5 Summit</b> boards a week, for a gross profit of <b>$945</b>. Prices and capacities change from week to week, and the <b>Sensitivity Report</b> says how far each one can move before this plan is no longer the best one.</p>
+   body: () => `<p>Solver reports the optimal plan: <b>5.25 Trail</b> and <b>10.5 Summit</b> boards a week, for a gross profit of <b>$945</b>. Prices and capacities change from week to week, and the <b>Sensitivity Report</b> says how far each one can move before a different plan becomes the best one.</p>
      <div class="pair"><div>${icon("tag")}<b>Variable Cells</b><span>One row per board: how many to build, and the profit each one carries.</span></div>
      <div>${icon("gauge")}<b>Constraints</b><span>One row per resource: how much the plan uses, how much is available, and what one more unit is worth (Lesson 4).</span></div></div>
      <p class="note">Click any column header for its definition. In Solver, 1E+30 means there is no limit.</p>`,
@@ -370,7 +417,7 @@ LESSONS.push({n: 3, title: "The report: products", aside: "report-first",
      ask(b, "megaphone", "Sales", "Stronger demand lets the shop raise the Summit profit from $65 to $70, a gain of $5 a board. Do the quantities change, and what happens to weekly profit?",
        "num", {prefix: "$", answer: 52.5, hint: "A rise of $5 is within the allowable increase of $10, so the quantities do not change. Multiply the change by Summit's Final Value, 10.5 boards.",
                right: "Correct. 5 × 10.5 = $52.50 more profit a week."},
-       async () => { activate(b); await setProfit(b, "cy", 70); b.complete("The $5 rise is within the allowable increase of $10, so the quantities stay at 5.25 Trail and 10.5 Summit. Weekly profit rises by 5 × 10.5 = <b>$52.50</b>, to $997.50. Above $75 the optimal corner moves to (0, 14) and multiplying no longer works."); });
+       async () => { activate(b); await setProfit(b, "cy", 70); b.complete("The $5 rise is within the allowable increase of $10, so the quantities stay at 5.25 Trail and 10.5 Summit. Weekly profit rises by 5 × 10.5 = <b>$52.50</b>, to $997.50. Above $75 the optimal corner moves to (0, 14) and multiplying stops working."); });
    },
    show: profitShow,
    async demo(b) { await setProfit(b, "cy", 80); await sleep(600); await setProfit(b, "cy", 65); }},
@@ -417,7 +464,7 @@ LESSONS.push({n: 4, title: "The report: resources",
      b.mem.w = "fin"; b.mem.c = 21;
      ask(b, "clock", "Purchasing", "Weekend overtime, temporary staff or a leased machine all change how many hours a department has. Which part of the model does that change?", "choice", {options: [
        {t: "The R.H. Side of the constraint", ok: true, why: "Correct. More capacity means a larger right-hand side."}, {t: "The profit per board", why: "Profit per board is an objective coefficient, covered in Lesson 3."},
-       {t: "The Final Value", why: "Final Value is how much the plan uses, not how much is available."}]},
+       {t: "The Final Value", why: "Final Value is the amount the plan uses. The capacity available is the R.H. Side."}]},
        () => b.complete("A change in capacity is a change in the <b>R.H. Side</b>. The Shadow Price column says what one more hour is worth."));
    },
    show: rhsShow},
@@ -444,7 +491,7 @@ LESSONS.push({n: 4, title: "The report: resources",
    mount(b) {
      rhsSlider(b, "fab");
      ask(b, "truck", "Purchasing", "A nearby machine shop offers 10 extra fabrication hours. What is the most the shop should pay an hour?", "choice", {options: [
-       {t: "$45", why: "$45 is the shadow price for finishing, not fabrication."}, {t: "$30", why: "That is the wage for finishing overtime."},
+       {t: "$45", why: "$45 is the finishing shadow price. Fabrication's is $0."}, {t: "$30", why: "That is the wage for finishing overtime."},
        {t: "$0", ok: true, why: "Correct. Fabrication hours are already going unused, so more of them cannot raise profit."}]},
        async () => { activate(b); await setRHS(b, 94); b.complete("Turn it down. Fabrication already has 23.625 unused hours, so 10 more leave weekly profit at $945. They are worth <b>$0</b>."); });
    },
@@ -478,8 +525,8 @@ LESSONS.push({n: 4, title: "The report: resources",
      rhsSlider(b, "fin");
      ask(b, "clock", "Finishing supervisor", "If the finishing crew offers 10 overtime hours instead of 4, will weekly profit rise by 10 × $45 = $450?", "choice", {options: [
        {t: "Yes, profit rises by $450.", why: "Ten hours is more than the allowable increase of 8.22."},
-       {t: "No. Ten hours is more than the allowable increase of 8.22, so the bottleneck changes and the model has to be solved again.", ok: true, why: "Correct. With 31 hours the optimal profit is $1,354, not $1,395."}]},
-       async () => { activate(b); await setRHS(b, 31); b.complete("Outside the allowable range the shadow price no longer applies. With 31 finishing hours the optimal profit is <b>$1,354</b>, not the $1,395 that multiplying predicts."); });
+       {t: "No. Ten hours is more than the allowable increase of 8.22, so the bottleneck changes and the model has to be solved again.", ok: true, why: "Correct. With 31 hours the optimal profit is $1,354. Multiplying predicts $1,395."}]},
+       async () => { activate(b); await setRHS(b, 31); b.complete("Outside the allowable range the shadow price stops applying. With 31 finishing hours the optimal profit is <b>$1,354</b>, while multiplying predicts $1,395."); });
    },
    show: rhsShow,
    async demo(b) { await setRHS(b, 33, 1600); }}
@@ -496,32 +543,6 @@ const QUIZ = [
   {q: "Fabrication hours go from 84 to 70.", kind: "m", ans: 0, why: "A decrease of 14 is within the allowable decrease of 23.625, and the shadow price is 0, so profit does not change."},
   {q: "Finishing hours go from 21 to 15.", kind: "m", ans: -270, why: "A decrease of 6 is within the allowable decrease of 21, so −6 × $45 = −$270."}
 ];
-function runQuiz(b) {
-  let i = 0, right = 0;
-  const marks = QUIZ.map(() => ""), host = b.host;
-  const next = () => {
-    if (i >= QUIZ.length) {
-      host.innerHTML = `<div class="q live"><div class="score">${marks.map(m => `<i class="${m}"></i>`).join("")}</div><p><b>${right} of ${QUIZ.length}</b> correct on the first attempt.</p>
-        <button class="btn small again">Try again</button></div>`;
-      $(".again", host).addEventListener("click", () => runQuiz(b));
-      return b.complete(right === QUIZ.length ? "All eight correct on the first attempt." : "Check any missed case against the Sensitivity Report.");
-    }
-    const q = QUIZ[i];
-    let first = true;
-    host.innerHTML = `<div class="q live"><div class="score">${marks.map((m, j) => `<i class="${m || (j === i ? "c" : "")}"></i>`).join("")}</div>
-      <p class="quiz-q">${i + 1}. ${q.q}</p></div>`;
-    const box = host.firstElementChild;
-    const done = () => { marks[i] = first ? "r" : "w"; if (first) right++; i++; setTimeout(next, 1300); };
-    choiceQ(box, {options: [{t: "Multiply", ok: q.kind === "m", why: q.kind === "m" ? "Correct. The change is inside the allowable range." : q.why + " It is outside the allowable range, so the model has to be solved again."},
-                            {t: "Solve again", ok: q.kind === "r", why: q.kind === "r" ? q.why + " The model has to be solved again." : "The change is inside the allowable range, so multiplying works."}]},
-      () => {
-        if (q.kind === "r") return done();
-        numQ(box, {q: "Net change in weekly profit?", prefix: "$", answer: q.ans, placeholder: "e.g. −45", hint: "Multiply the change by the matching shadow price or Final Value.", right: q.why}, done);
-      });
-    box.addEventListener("click", () => { if ($(".choice.wrong", box) || $(".numin input.wrong", box)) first = false; });
-  };
-  next();
-}
 const DECODER = [
   ["vars", "Final Value", "How many of each product the optimal plan builds"], ["vars", "Reduced Cost", "For a product the plan leaves out: how much its profit must rise before building it is worthwhile"],
   ["vars", "Objective Coefficient", "The profit per board in the objective function"], ["vars", "Allowable Increase / Decrease", "How far the profit per board can move before the quantities change"],
@@ -549,19 +570,12 @@ LESSONS.push({n: 5, title: "Use the report", aside: "report-first",
    show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }},
   {title: "Eight cases",
    body: () => `<p class="note">For each case, decide whether the change in profit can be computed from the report or the model has to be solved again. The report is on the right.</p>`,
-   mount(b) { runQuiz(b); },
+   mount(b) { runQuiz(b, QUIZ); },
    show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }}
 ]});
 
 /* ═════════ shared parts for Lessons 6 and 7: whole-number models ═════════ */
 const ROUNDINGS = [[5, 10], [5, 11], [6, 10], [6, 11]];
-const intProfit = (T, S) => 50 * T + 65 * S;
-/* every whole-number plan inside a feasible region */
-function latticePts(cons) {
-  const out = [];
-  for (let T = 0; T <= PLOT.XM; T++) for (let S = 0; S <= PLOT.YM; S++) if (isFeasible(cons, T, S)) out.push([T, S]);
-  return out;
-}
 /* Lessons 6 and 7 crowd the spots the line labels normally sit in, so each view
    places the finishing and fabrication anchors itself. */
 const finCons = (c = 21, finAt = 8.6, fabAt = 10.6) => {
@@ -573,9 +587,6 @@ const finCons = (c = 21, finAt = 8.6, fabAt = 10.6) => {
 };
 /* with the bench the two lines run close together, so the labels go to opposite ends */
 const rentCons = y => y ? finCons(29, 11.5, 4.5) : finCons(21);
-/* the reason a whole-number plan fails, named the way the lessons name it */
-const BREAKS = {fab: "the fabrication limit", fin: "the finishing limit", mix: "the dealer mix rule"};
-const breaks = (cons, T, S) => { const k = cons.find(k => !satisfies(k, T, S)); return k ? BREAKS[k.cls] : null; };
 
 /* ═════════ 6 · WHOLE BOARDS ONLY ═════════ */
 LESSONS.push({n: 6, title: "Whole boards only",
@@ -630,7 +641,7 @@ LESSONS.push({n: 6, title: "Whole boards only",
   {title: "Every whole-number plan",
    goal: "Look at the plans the shop can actually run.",
    task: "Click the whole-number plan you think earns the most.",
-   body: () => `<p>The feasible region has not changed. What has changed is that only the points with whole coordinates count, and inside this region there are <b>48</b> of them.</p>
+   body: () => `<p>The feasible region stays as it was. Now only the points with whole coordinates count, and inside this region there are <b>48</b> of them.</p>
      <p>They are not evenly spread: the dealer mix rule keeps the region narrow, so <span class="v">T</span> never goes above 5 while <span class="v">S</span> reaches 14.</p>`,
    mount(b) {
      b.host.innerHTML = `<div class="res"></div>`;
@@ -641,7 +652,7 @@ LESSONS.push({n: 6, title: "Whole boards only",
        if (!isFeasible(cons, T, S)) { sayIn(b, `(${T}, ${S}) is outside the region: it breaks ${breaks(cons, T, S)}.`); return; }
        b.mem.pick = [T, S];
        const best = T === 3 && S === 12;
-       if (best) b.complete("(3, 12) earns <b>$930</b>, the most any whole-number plan earns here. It is not the rounded plan, and it is not at a corner of the region.");
+       if (best) b.complete("(3, 12) earns <b>$930</b>, the most any whole-number plan earns here. The rounded plan is a different point, and this one sits inside the region, away from every corner.");
        b.def.show(b); draw();
        sayIn(b, `(${T}, ${S}) earns <b>${money(intProfit(T, S), 0)}</b>.` + (best ? "" : " Something on this grid does better."));
      };
@@ -665,9 +676,9 @@ LESSONS.push({n: 6, title: "Whole boards only",
      <tr><td>Relaxation</td><td>The corner the graph points at</td><td>5.25</td><td>10.5</td><td><b>$945</b></td></tr>
      <tr><td>Rounded down</td><td>(5.25, 10.5) rounded to whole boards</td><td>5</td><td>10</td><td>$900</td></tr>
      <tr><td>Best whole-number plan</td><td>Searching the 48 grid points</td><td><b>3</b></td><td><b>12</b></td><td><b>$930</b></td></tr></table></div>
-     <p>Rounding gives up <b>$30</b> a week against the best whole-number plan. The more useful point is that it gives up the plan itself: the answer is two Trail boards fewer and two Summit boards more, not a nudge away from (5, 10).</p>`,
-   why: `<p>At the relaxation's corner, finishing and the dealer mix are both binding, which is what pins it to (5.25, 10.5).</p>
-     <p>At (3, 12) finishing is still binding, 21 of 21 hours, but the mix rule has 6 units of slack. The whole-number condition pushes the plan along the finishing line, away from the crossing. Nothing on the graph marks where it lands, which is why it cannot be read off the corners.</p>`,
+     <p>Rounding gives up <b>$30</b> a week against the best whole-number plan. The more useful point is that it gives up the plan itself: the answer moves two Trail boards down and two Summit boards up from the rounded point.</p>`,
+   why: `<p>At the relaxation's corner, finishing and the dealer mix are both binding, and that pins it to (5.25, 10.5).</p>
+     <p>At (3, 12) finishing is still binding, 21 of 21 hours, but the mix rule has 6 units of slack. The whole-number condition pushes the plan along the finishing line, away from the crossing. Nothing on the graph marks where it lands, so it cannot be read off the corners.</p>`,
    whyTitle: "Why the best plan moves so far",
    mount(b) { b.complete(); },
    show() {
@@ -695,8 +706,8 @@ LESSONS.push({n: 6, title: "Whole boards only",
 
   {title: "Core principles",
    goal: "Three statements to carry into the next lesson.",
-   body: () => `<div class="rules"><div class="rule">The whole-number condition changes the variables, not the constraints. The region and the lines are the same ones from Lesson 1.</div>
-     <div class="rule">The best whole-number plan need not sit at a corner, and need not sit near the relaxation's answer. Rounding is a guess, not a method.</div>
+   body: () => `<div class="rules"><div class="rule">The whole-number condition restricts the variables and leaves the constraints alone. The region and the lines are the same ones from Lesson 1.</div>
+     <div class="rule">The best whole-number plan can sit anywhere inside the region, including well away from the relaxation's answer, so rounding is only a guess and the grid has to be searched.</div>
      <div class="rule">For a maximization the relaxation's value is an <b>upper bound</b> on the whole-number optimum, so it measures what the condition costs.</div></div>`,
    mount(b) { b.complete(); },
    show() {
@@ -711,7 +722,7 @@ const RENT = {hours: 8, base: 300, even: 360};   // the station adds 8 h; worth 
 const rentBest = y => { const p = latticePts(finCons(21 + (y ? RENT.hours : 0)))
   .map(([T, S]) => [intProfit(T, S), T, S]).sort((a, c) => c[0] - a[0])[0]; return {profit: p[0], T: p[1], S: p[2]}; };
 LESSONS.push({n: 7, title: "Yes or no decisions",
-  lead: `Renting a second finishing station is not a quantity. It is taken or it is not, and that is a variable too.`,
+  lead: `Renting a second finishing station is a yes-or-no decision, and that is a variable too.`,
   blocks: [
   {title: "A variable that is 0 or 1",
    goal: "Write a take-it-or-leave-it decision as part of the model.",
@@ -725,7 +736,7 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
        <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i>, <i>S</i> ≥ 0 and whole</span><span class="m-tag">Whole boards</span></div>
        <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>y</i> = 0 or 1</span><span class="m-tag new">Rent the bench, or do not</span></div>
      </div>
-     <p>The same <span class="v">y</span> appears twice: once where it buys hours, once where it charges for them. That is what ties the cost to the capacity.</p>`,
+     <p>The same <span class="v">y</span> appears twice: once where it buys hours, once where it charges for them. The repetition ties the cost to the capacity.</p>`,
    terms: ["binary", "fixed"],
    mount(b) { b.complete(); },
    show() { view({cons: finCons(), lines: ALL, region: true}); V.lattice = latticePts(finCons()).map(([x, y]) => ({x, y})); }},
@@ -743,7 +754,7 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
        b.def.show(b); draw();
        const r = rentBest(b.mem.y);
        sayIn(b, `Finishing is capped at <b>${21 + (b.mem.y ? RENT.hours : 0)} hours</b>. The best whole-number plan is <b>(${r.T}, ${r.S})</b>, earning <b>${money(r.profit, 0)}</b> before the rent.`);
-       if (b.mem.y === 1) b.complete("With the bench, finishing allows 29 hours and the best whole-number plan becomes <b>(5, 16)</b> at <b>$1,290</b> — $360 more than the $930 without it. The rent still has to come off that.");
+       if (b.mem.y === 1) b.complete("With the bench, finishing allows 29 hours and the best whole-number plan becomes <b>(5, 16)</b> at <b>$1,290</b>, which is $360 more than the $930 without it. The rent still has to come off that.");
      }));
    },
    show(b) {
@@ -777,7 +788,7 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
   {title: "Where the decision flips",
    goal: "Find the rent at which the answer changes.",
    task: "Drag the rent until the two answers are worth the same.",
-   body: () => `<p>$300 is this week's quote. What matters for the next one is the rent at which renting stops paying.</p>`,
+   body: () => `<p>$300 is this week's quote. For the next one, the number to know is the rent at which renting stops paying.</p>`,
    mount(b) {
      const id = b.uid("rent");
      b.host.insertAdjacentHTML("afterbegin", slider({id, label: "Weekly rent for the bench", min: 0, max: 600, step: 10,
@@ -792,14 +803,14 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
          <div class="stat ${d > 0 ? "" : "muted"}"><span>Rent, net of ${money(v, 0)}</span><b class="num">${money(yes, 0)}</b></div></div>
          <p class="verdict">${Math.abs(d) < 1e-9 ? `<span class="badge">Break-even</span> at ${money(v, 0)} the two answers are worth the same`
            : d > 0 ? `<span class="badge ok">Rent it</span> ${money(d, 0)} better a week` : `<span class="badge bad">Do not rent</span> ${money(-d, 0)} worse a week`}</p></div>`;
-       if (Math.abs(v - RENT.even) < 1e-9) b.complete("The answer flips at <b>$360</b>: that is the extra profit the 8 hours unlock, so any rent below it is worth paying and any rent above it is not.");
+       if (Math.abs(v - RENT.even) < 1e-9) b.complete("The answer flips at <b>$360</b>: that is the extra profit the 8 hours unlock, so a rent below it is worth paying and a rent above it is too dear.");
      };
      b.host.insertAdjacentHTML("beforeend", `<div class="res"></div>`);
      bindSlider(id, v => money(v, 0), v => { activate(b); b.mem.set(v); });
      b.mem.set(RENT.base);
    },
    why: `<p>The 8 hours are worth $360 here, and the finishing shadow price from Lesson 4 was $45 an hour: 8 × $45 = $360. The two agree exactly.</p>
-     <p>That agreement is a property of this instance, not a rule. The shadow price describes the relaxation, where capacity can be used in any fraction. A whole-number model usually cannot take up all of it, so the gain is usually smaller than the shadow price predicts. Check it by solving, not by multiplying.</p>`,
+     <p>That agreement holds for this instance alone. The shadow price describes the relaxation, where capacity can be used in any fraction. A whole-number model usually cannot take up all of it, so the gain is usually smaller than the shadow price predicts. Check it by solving again.</p>`,
    whyTitle: "Why $360 matches 8 × $45, and why that is luck",
    show(b) {
      const cons = rentCons(1), r = rentBest(1);
@@ -824,7 +835,7 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
      ask(b, "tag", "Shop manager", "Next week the dealer asks what one more finishing hour is worth, and our model now has whole boards and the rented bench in it. What do we tell them?", "choice", {options: [
        {t: "Solve the model again with 22 hours and compare", ok: true, why: "Correct. For an integer model that is the only dependable way to answer it."},
        {t: "$45, the shadow price from the Sensitivity Report", why: "Solver writes no Sensitivity Report for a model with int or bin constraints, and $45 describes the relaxation."},
-       {t: "Nothing: sensitivity analysis does not apply to integer models", why: "The question is still answerable. What is unavailable is the report, not the answer."}]},
+       {t: "Nothing: sensitivity analysis does not apply to integer models", why: "The report is unavailable. The answer is still obtainable, by solving the model again."}]},
        () => b.complete("With whole numbers in the model, a what-if is answered by solving again. The Sensitivity Report belongs to the relaxation, and the relaxation is now only a bound."));
    },
    show() {
@@ -834,3 +845,16 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
        label: x === 5 && y === 16 ? "(5, 16)  $1,290" : ""}));
    }}
 ]});
+  /* every number Lessons 6 and 7 lean on, checked at start-up */
+  CASES.boards.selfCheck = bad => {
+    const int = solveInteger(baseCons(), PROFIT);
+    if (int.x !== 3 || int.y !== 12 || int.value !== 930) bad.push("integer optimum");
+    const ok4 = ROUNDINGS.map(p => isFeasible(baseCons(), ...p));
+    if (ok4.join() !== "true,false,false,false") bad.push("roundings");
+    if (latticePts(baseCons()).length !== 48) bad.push("integer point count");
+    const rented = solveInteger(finCons(21 + RENT.hours), PROFIT);
+    if (rented.x !== 5 || rented.y !== 16 || rented.value !== 1290) bad.push("rented optimum");
+    if (rented.value - int.value !== RENT.even) bad.push("break-even rent");
+  };
+  return LESSONS;
+};

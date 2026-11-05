@@ -1,4 +1,4 @@
-"""Independent check of every number LP Lab shows for Ridgeline Boards.
+"""Independent check of every number LP Lab shows, for both cases.
 
 Pure Python (no scipy): vertex enumeration for the LP, brute force for the
 integer model, and fine scans for the sensitivity ranges. Prints a JSON
@@ -15,6 +15,14 @@ BASE = {
     "fabrication": ((3.5, 4), 84),
     "finishing": ((1, 1.5), 21),
     "mix": ((2, -1), 0),  # -2T + S >= 0, stored as 2T - S <= 0
+}
+# the services case: V = initial evaluations, T = treatment sessions
+CLINIC_PROFIT = (200, 90)
+CLINIC = {
+    "rooms": ((2, 1.5), 36),
+    "therapist": ((2, 1), 23),
+    "care_plan": ((2, -1), 0),   # -2V + T >= 0, stored as 2V - T <= 0
+    "network_min": ((0, -1), -6),  # T >= 6, stored as -T <= -6
 }
 NONNEG = [((-1, 0), 0), ((0, -1), 0)]
 EPS = 1e-9
@@ -149,6 +157,79 @@ out = {
         "lp_gain": round(solve(rhs={"finishing": 29})[0][2] - v, 4),
         "net_at_300": int_best_at(29)[0] - 300 - integer_best[0],
         "break_even_rent": int_best_at(29)[0] - integer_best[0],
+    },
+}
+
+
+# ---- the services case -----------------------------------------------------
+def clinic_rows(rhs=None):
+    rhs = rhs or {}
+    return [(a, rhs.get(k, b)) for k, (a, b) in CLINIC.items()] + NONNEG
+
+
+def clinic_solve(c=CLINIC_PROFIT, rhs=None):
+    cons = clinic_rows(rhs)
+    best = None
+    for (a, ba), (d, bd) in itertools.combinations(cons, 2):
+        det = a[0] * d[1] - a[1] * d[0]
+        if abs(det) < EPS:
+            continue
+        v = (ba * d[1] - a[1] * bd) / det
+        t = (a[0] * bd - ba * d[0]) / det
+        if all(p[0] * v + p[1] * t <= q + 1e-7 for p, q in cons):
+            val = c[0] * v + c[1] * t
+            if best is None or val > best[2] + 1e-7:
+                best = (v, t, val)
+    return best
+
+
+def clinic_feasible(v, t, rhs=None):
+    return all(a[0] * v + a[1] * t <= b + EPS for a, b in clinic_rows(rhs))
+
+
+def clinic_lattice(rhs=None):
+    return [(v, t) for v in range(0, 12) for t in range(0, 30) if clinic_feasible(v, t, rhs)]
+
+
+def clinic_int(rhs=None):
+    return max((200 * v + 90 * t, v, t) for v, t in clinic_lattice(rhs))
+
+
+def clinic_shadow(k, h=1e-4):
+    b = CLINIC[k][1]
+    return (clinic_solve(rhs={k: b + h})[2] - clinic_solve(rhs={k: b - h})[2]) / (2 * h)
+
+
+cv, ct, cval = clinic_solve()
+cint = clinic_int()
+cover = clinic_int(rhs={"therapist": 27})
+out["clinic"] = {
+    "optimum": {"V": cv, "T": ct, "contribution": cval},
+    "lhs": {k: round(a[0] * cv + a[1] * ct, 4) for k, (a, b) in CLINIC.items()},
+    # the report writes the two >= rows in their own form, so those shadow prices flip sign
+    "shadow_price": {k: round(clinic_shadow(k) * (-1 if k in ("care_plan", "network_min") else 1), 4)
+                     for k in CLINIC},
+    "room_slack": round(36 - (2 * cv + 1.5 * ct), 4),
+    "minimum_surplus": round(ct - 6, 4),
+    "eval_leaves_at": clinic_solve((170, 90)),
+    "integer": {
+        "best": {"V": cint[1], "T": cint[2], "contribution": cint[0]},
+        "point_count": len(clinic_lattice()),
+        "max_V": max(v for v, _ in clinic_lattice()),
+        "max_T": max(t for _, t in clinic_lattice()),
+        "roundings": {f"{v},{t}": {"feasible": clinic_feasible(v, t), "contribution": 200 * v + 90 * t}
+                      for v, t in ((5, 11), (5, 12), (6, 11), (6, 12))},
+        "rounding_cost": cint[0] - (200 * 5 + 90 * 12),
+        "bound_gap": round(cval - cint[0], 4),
+    },
+    "binary": {
+        "hours": 4, "fee": 300,
+        "no_cover": {"V": cint[1], "T": cint[2], "contribution": cint[0]},
+        "covered": {"V": cover[1], "T": cover[2], "contribution": cover[0]},
+        "integer_gain": cover[0] - cint[0],
+        "lp_gain": round(clinic_solve(rhs={"therapist": 27})[2] - cval, 4),
+        "net_at_300": cover[0] - 300 - cint[0],
+        "break_even_fee": cover[0] - cint[0],
     },
 }
 print(json.dumps(out, indent=2))

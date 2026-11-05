@@ -7,7 +7,7 @@ An interactive, step-by-step guide to linear programming, built around one examp
 | Path | What it is |
 |---|---|
 | `index.html` | The built page. This is the only file to publish. |
-| `src/` | Sources: `style.css`, `solver.js` (2-variable LP + sensitivity), `graph.js` (SVG graph, including the whole-number point grid), `app.js` (model, report, components), `hero.js` (scroll-driven 3D opening), `engine.js` (lesson sections, blocks, progress), `lessons.js` (lesson content), `boot.js` (self-check, start-up), `template.html`. Fonts come from `../_shared/fonts/`. |
+| `src/` | Sources: `style.css`, `solver.js` (2-variable LP + sensitivity), `graph.js` (SVG graph, including the whole-number point grid), `app.js` (the case registry, report tables, components), `hero.js` (scroll-driven 3D opening), `engine.js` (lesson sections, blocks, progress), `lesson-kit.js` (pieces both courses share), `case-boards.js` and `case-clinic.js` (one course each), `boot.js` (self-check, start-up), `template.html`. Fonts come from `../_shared/fonts/`. |
 | `build.py` | Inlines `src/` into `index.html`. Run after any edit: `python3 build.py`. |
 | `verify.py` | Recomputes every number in the lessons with plain Python; output in `verify-output.json`. |
 
@@ -20,9 +20,35 @@ An interactive, step-by-step guide to linear programming, built around one examp
 
 This folder lives in the `ariccheng.github.io` repository under `labs/lp-lab/`, so the page is served at https://ariccheng.github.io/labs/lp-lab/. After editing `src/`, run `python3 build.py`, then commit and push the site repository.
 
+## Cases
+
+The lab teaches one worked example at a time, chosen with `?case=<id>`:
+
+| id | Case | Sector | Constraints | Optimum |
+|---|---|---|---|---|
+| `boards` | Ridgeline Boards | Manufacturing | 3 | (5.25, 10.5), $945 |
+| `clinic` | Riverside Physical Therapy | Services | 4 | (5.75, 11.5), $2,185 |
+
+The clinic's fourth constraint is a `>=` contract floor that is not binding, so
+Lesson 4 can show a zero shadow price twice: once as slack on a `<=` row and once
+as surplus on a `>=` row.
+
+The home page opens on a case picker when nothing has been chosen; after that it
+shows the chosen case's intro, with a switcher in the navigation bar.
+
+Only one case is live per page load: the plot scale, the lesson DOM and the
+saved progress all key off it, so switching cases reloads the page rather than
+rebuilding in place. Progress is stored per case (`boards:L1.0`, `clinic:L1.0`).
+
+A case carries its model, the Sensitivity Report Solver prints for it, its plot
+scale and its labels (`app.js`), plus its own course (`case-*.js`) and its own
+start-up assertions. `solver.js`, `graph.js` and `engine.js` are case-neutral.
+
 ## Lessons
 
-All seven are built; nothing on the page is a placeholder.
+Both courses have all seven, and nothing on either page is a placeholder. The
+clinic's Lesson 1 has one more block than the snowboard's, because it has a fourth
+constraint to introduce; every other lesson matches block for block.
 
 | # | Lesson | Question it answers |
 |---|---|---|

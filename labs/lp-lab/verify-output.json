@@ -186,5 +186,79 @@
     "lp_gain": 360.0,
     "net_at_300": 60,
     "break_even_rent": 360
+  },
+  "clinic": {
+    "optimum": {
+      "V": 5.75,
+      "T": 11.5,
+      "contribution": 2185.0
+    },
+    "lhs": {
+      "rooms": 28.75,
+      "therapist": 23.0,
+      "care_plan": 0.0,
+      "network_min": -11.5
+    },
+    "shadow_price": {
+      "rooms": 0.0,
+      "therapist": 95.0,
+      "care_plan": -5.0,
+      "network_min": -0.0
+    },
+    "room_slack": 7.25,
+    "minimum_surplus": 5.5,
+    "eval_leaves_at": [
+      0.0,
+      23.0,
+      2070.0
+    ],
+    "integer": {
+      "best": {
+        "V": 5,
+        "T": 13,
+        "contribution": 2170
+      },
+      "point_count": 72,
+      "max_V": 5,
+      "max_T": 23,
+      "roundings": {
+        "5,11": {
+          "feasible": true,
+          "contribution": 1990
+        },
+        "5,12": {
+          "feasible": true,
+          "contribution": 2080
+        },
+        "6,11": {
+          "feasible": false,
+          "contribution": 2190
+        },
+        "6,12": {
+          "feasible": false,
+          "contribution": 2280
+        }
+      },
+      "rounding_cost": 90,
+      "bound_gap": 15.0
+    },
+    "binary": {
+      "hours": 4,
+      "fee": 300,
+      "no_cover": {
+        "V": 5,
+        "T": 13,
+        "contribution": 2170
+      },
+      "covered": {
+        "V": 6,
+        "T": 15,
+        "contribution": 2550
+      },
+      "integer_gain": 380,
+      "lp_gain": 380.0,
+      "net_at_300": 80,
+      "break_even_fee": 380
+    }
   }
 }

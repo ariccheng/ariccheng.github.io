@@ -12,7 +12,7 @@ const QUESTIONS = [
   {k: 2, t: "What if the numbers change?", lessons: [3, 4, 5]},
   {k: 3, t: "What if the answers must be whole numbers?", lessons: [6, 7]}
 ];
-const LESSONS = [];                       // filled by lessons.js
+let LESSONS = [];                         // the live case's course, built in init()
 const SECTIONS = [];
 let CUR = null;
 
@@ -80,7 +80,7 @@ function buildLesson(l) {
     const be = document.createElement("article");
     be.className = "block reveal"; be.innerHTML = blockHTML(def, i);
     $(".flow", el).appendChild(be);
-    const key = `L${l.n}.${i}`;
+    const key = `${CASE.id}:L${l.n}.${i}`;   // progress is kept per case
     const b = {
       sec, def, el: be, i, key, mem: {},
       get host() { return $(".extra", be); },
@@ -140,7 +140,50 @@ function ping(el) {
 }
 function announce(t) { const a = $("#live"); a.textContent = ""; setTimeout(() => a.textContent = String(t).replace(/<[^>]+>/g, ""), 50); }
 
+/* ---- the home page: pick a case, then that case's intro ------------------ */
+function caseCard(c, chosen, big) {
+  const tag = chosen ? "div" : "a";
+  const href = chosen ? "" : ` href="?case=${c.id}"`;
+  return `<${tag} class="ccard${chosen ? " on" : ""}"${href}>
+    <span class="cc-sector">${c.sector}</span><b>${c.name}</b>
+    ${big ? `<p>${c.pick.title}. ${c.pick.blurb}</p>` : ""}
+    <span class="cc-note">${c.pick.note}</span>
+    ${chosen ? `<span class="cc-on">Showing this one</span>` : ""}</${tag}>`;
+}
+function renderHome() {
+  const list = Object.values(CASES), none = !CASE_ID;
+  $("#case-pick").innerHTML = `<div class="wrap">
+    <div class="pick-head${none ? " big" : ""}">
+      <h2>${none ? "Choose a case" : "Worked example"}</h2>
+      <p>${none ? "The same course, taught on one worked example. Pick the one closer to yours." :
+                  "Every lesson below uses this example. Switching reloads the page and keeps each case's progress separate."}</p>
+    </div>
+    <div class="cgrid${none ? " big" : ""}">${list.map(c => caseCard(c, !none && c.id === CASE.id, none)).join("")}</div>
+  </div>`;
+  $(".foot-case").textContent = CASE_ID ? `${CASE.name} is a teaching example.` : "Both cases are teaching examples.";
+  if (none) return;
+  const qs = QUESTIONS.map((q, i) => {
+    const have = q.lessons.filter(n => LESSONS.some(l => l.n === n));
+    const label = have.length ? `Lessons ${have[0]}\u2013${have[have.length - 1]}` : "In preparation";
+    const tag = have.length ? "a" : "div";
+    return `<${tag} class="qcard${have.length ? "" : " pending"}"${have.length ? ` href="#lesson-${have[0]}"` : ""}>
+      <span class="k">${i + 1}</span><b>${q.t}</b><span class="lessons">${label}</span></${tag}>`;
+  }).join("");
+  const first = LESSONS.length ? LESSONS[0].n : null;
+  $("#intro").innerHTML = `<div class="wrap">${CASE.intro()}
+    <div class="qband reveal"><h2>Core questions</h2>
+      <p class="lead">The lessons answer three questions in turn. Anything you can drag, click or choose is marked in violet.</p>
+      <div class="qgrid">${qs}</div>
+      ${first ? `<a class="btn primary start" href="#lesson-${first}">Start with Lesson ${first}</a>` : ""}
+    </div></div>`;
+  $("#intro").hidden = false;
+  $(".captions").innerHTML = CASE.caption.map(([t, p]) => `<div class="cap"><b>${t}</b><p>${p}</p></div>`).join("");
+}
+
 function buildNav() {
+  const other = Object.values(CASES).find(c => c.id !== CASE.id);
+  $(".nav-switch").innerHTML = CASE_ID && other
+    ? `<a class="nav-case" href="?case=${other.id}" title="Switch to the ${other.sector.toLowerCase()} case">${CASE.short}<i></i></a>` : "";
   $(".nav-links").innerHTML = LESSONS.map(l => `<a href="#lesson-${l.n}" data-n="${l.n}">
       <svg class="ring" viewBox="0 0 20 20"><circle class="bg" cx="10" cy="10" r="8"/><circle class="fg" cx="10" cy="10" r="8" pathLength="1"
         stroke-dasharray="1" stroke-dashoffset="1" transform="rotate(-90 10 10)"/></svg><span>${l.n}</span><span class="t">${l.title}</span></a>`).join("");
@@ -148,7 +191,7 @@ function buildNav() {
 }
 function updateNav() {
   for (const l of LESSONS) {
-    const n = l.blocks.length, d = l.blocks.filter((_, i) => App.prog[`L${l.n}.${i}`]).length;
+    const n = l.blocks.length, d = l.blocks.filter((_, i) => App.prog[`${CASE.id}:L${l.n}.${i}`]).length;
     const fg = $(`.nav-links a[data-n="${l.n}"] .fg`);
     if (fg) fg.setAttribute("stroke-dashoffset", (1 - d / n).toFixed(3));
   }
@@ -190,6 +233,7 @@ const CLASSROOM = {
     document.documentElement.style.setProperty("--fh", fh + "px");
   },
   enter(full = true) {
+    if (!SECTIONS.length) return;          // nothing to present until a case is chosen
     this.on = true;
     document.documentElement.classList.add("classroom");
     this.fit();
@@ -219,6 +263,8 @@ const CLASSROOM = {
 
 function init() {
   const params = new URLSearchParams(location.search);
+  LESSONS = CASE_ID ? CASE.lessons() : [];
+  renderHome();
   Hero.init();
   LESSONS.forEach(buildLesson);
   lessonFoot();
@@ -243,7 +289,9 @@ function init() {
   addEventListener("hashchange", route);
   route();
   // classroom mode
-  $(".present-btn").addEventListener("click", () => CLASSROOM.on ? CLASSROOM.exit() : CLASSROOM.enter());
+  const pbtn = $(".present-btn");
+  if (!SECTIONS.length) { pbtn.disabled = true; pbtn.title = "Choose a case first"; }
+  pbtn.addEventListener("click", () => CLASSROOM.on ? CLASSROOM.exit() : CLASSROOM.enter());
   $(".cbar .cexit").addEventListener("click", () => CLASSROOM.exit());
   $(".cbar .cprev").addEventListener("click", () => CLASSROOM.step(-1));
   $(".cbar .cnext").addEventListener("click", () => CLASSROOM.step(1));
@@ -255,5 +303,5 @@ function init() {
     if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); CLASSROOM.step(-1); }
     if (e.key === "Escape") CLASSROOM.exit();
   });
-  if (params.has("present")) CLASSROOM.enter(false);
+  if (params.has("present") && SECTIONS.length) CLASSROOM.enter(false);
 }

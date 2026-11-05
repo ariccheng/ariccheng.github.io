@@ -1,29 +1,109 @@
-/* ---- The Ridgeline model ---------------------------------------------------
-   verify.py checks every number shown in the lessons.                       */
-const PROFIT = {cx: 50, cy: 65, sense: "max"};
+/* ---- The cases -------------------------------------------------------------
+   The lab teaches one worked example at a time. A case carries its model, the
+   Sensitivity Report Solver prints for it, the plot scale, and the labels the
+   graph and the lessons use. verify.py recomputes every number in both.
+
+   Only one case is live per page load: PLOT, the lesson DOM and the saved
+   progress all key off it, so switching reloads rather than rebuilding.    */
 const lineLabelAt = t => k => {
   const s = (k.c - k.a * t) / k.b;
   return s >= 0 && s <= PLOT.YM ? [t, s] : segment(k.a, k.b, k.c)[1];
 };
-function baseCons() {
-  return [
-    {id: "fab", a: 3.5, b: 4, op: "<=", c: 84, cls: "fab", name: "Fabrication hours",
-     get label() { return `Fabrication  3.5T + 4S ≤ ${fmt(this.c)}`; }, labelAt: lineLabelAt(10.6)},
-    {id: "fin", a: 1, b: 1.5, op: "<=", c: 21, cls: "fin", name: "Finishing hours",
-     get label() { return `Finishing  T + 1.5S ≤ ${fmt(this.c)}`; }, labelAt: lineLabelAt(3.3), below: true},
-    {id: "mix", a: -2, b: 1, op: ">=", c: 0, cls: "mix", name: "Mix rule",
-     get label() { return this.c === 0 ? "Mix rule  S ≥ 2T" : `Mix rule  −2T + S ≥ ${fmt(this.c)}`; },
-     labelAt: k => [(19 - k.c) / 2, 19]}
-  ];
-}
-/* Sensitivity Report as Solver prints it (rounded the way Excel shows it) */
-const REPORT = {
-  vars: [["$B$12", "Trail boards", "5.25", "0", "50", "1E+30", "6.666667"],
-         ["$C$12", "Summit boards", "10.5", "0", "65", "10", "90"]],
-  cons: [["$B$17", "Fabrication hours", "60.375", "0", "84", "1E+30", "23.625"],
-         ["$B$18", "Finishing hours", "21", "45", "21", "8.217391", "21"],
-         ["$B$19", "Mix rule (−2T + S ≥ 0)", "0", "−2.5", "0", "14", "42"]]
+const CASES = {
+  boards: {
+    id: "boards", sector: "Manufacturing", money: "profit", short: "Snowboards", name: "Ridgeline Boards",
+    pick: {title: "A workshop that builds snowboards",
+           blurb: "Two models, two departments and a dealer agreement.",
+           note: "Manufacturing · 3 constraints"},
+    x: {sym: "T", one: "Trail board", many: "Trail boards", axis: "Trail boards, T"},
+    y: {sym: "S", one: "Summit board", many: "Summit boards", axis: "Summit boards, S"},
+    obj: {cx: 50, cy: 65, sense: "max"},
+    plot: {XM: 14, YM: 24, xGrid: 1, xTick: 2, yGrid: 2, yTick: 4},
+    cons: () => [
+      {id: "fab", a: 3.5, b: 4, op: "<=", c: 84, cls: "fab", name: "Fabrication hours", short: "the fabrication limit",
+       get label() { return `Fabrication  3.5T + 4S ≤ ${fmt(this.c)}`; }, labelAt: lineLabelAt(10.6)},
+      {id: "fin", a: 1, b: 1.5, op: "<=", c: 21, cls: "fin", name: "Finishing hours", short: "the finishing limit",
+       get label() { return `Finishing  T + 1.5S ≤ ${fmt(this.c)}`; }, labelAt: lineLabelAt(3.3), below: true},
+      {id: "mix", a: -2, b: 1, op: ">=", c: 0, cls: "mix", name: "Mix rule", short: "the dealer mix rule",
+       get label() { return this.c === 0 ? "Mix rule  S ≥ 2T" : `Mix rule  −2T + S ≥ ${fmt(this.c)}`; },
+       labelAt: k => [(19 - k.c) / 2, 19]}
+    ],
+    /* Sensitivity Report as Solver prints it (rounded the way Excel shows it) */
+    report: {
+      vars: [["$B$12", "Trail boards", "5.25", "0", "50", "1E+30", "6.666667"],
+             ["$C$12", "Summit boards", "10.5", "0", "65", "10", "90"]],
+      cons: [["$B$17", "Fabrication hours", "60.375", "0", "84", "1E+30", "23.625"],
+             ["$B$18", "Finishing hours", "21", "45", "21", "8.217391", "21"],
+             ["$B$19", "Mix rule (−2T + S ≥ 0)", "0", "−2.5", "0", "14", "42"]]
+    },
+    hero: {ux: 40, uy: 20, uz: 0.24, ox: 3, oy: 8, zTop: 1100, zLabel: "Weekly profit",
+           region: [[0, 0], [5.25, 10.5], [0, 14]], levels: [150, 300, 450, 600, 750, 900],
+           isos: [300, 600, 945], best: [5.25, 10.5, 945], other: [0, 14]},
+    caption: [["The feasible region", "The shaded base holds every production schedule the shop can carry out in one week. Height above the base is the gross profit that schedule earns."],
+              ["The best plan", "Profit rises toward a single corner of the base: 5.25 Trail and 10.5 Summit boards, worth $945 for the week."],
+              ["Seen from above", "Schedules that earn the same profit fall on parallel lines. Every lesson below works in this flat view."]]
+  },
+  clinic: {
+    id: "clinic", sector: "Services", money: "contribution", short: "Physical therapy", name: "Riverside Physical Therapy",
+    pick: {title: "A clinic that treats patients",
+           blurb: "Two visit types, one bottleneck therapist and two contract terms.",
+           note: "Services \u00b7 4 constraints"},
+    x: {sym: "V", one: "evaluation", many: "evaluations", axis: "Initial evaluations, V"},
+    y: {sym: "T", one: "treatment session", many: "treatment sessions", axis: "Treatment sessions, T"},
+    obj: {cx: 200, cy: 90, sense: "max"},
+    plot: {XM: 8, YM: 24, xGrid: 1, xTick: 1, yGrid: 2, yTick: 4},
+    cons: () => [
+      {id: "room", a: 2, b: 1.5, op: "<=", c: 36, cls: "fab", name: "Room hours", short: "the treatment-room limit",
+       get label() { return `Treatment rooms  2V + 1.5T \u2264 ${fmt(this.c)}`; }, labelAt: lineLabelAt(6.2)},
+      {id: "ther", a: 2, b: 1, op: "<=", c: 23, cls: "fin", name: "Therapist hours", short: "the therapist limit",
+       get label() { return `Therapist  2V + T \u2264 ${fmt(this.c)}`; }, labelAt: lineLabelAt(2.1), below: true},
+      {id: "plan", a: -2, b: 1, op: ">=", c: 0, cls: "mix", name: "Care-plan rule", short: "the care-plan rule",
+       get label() { return this.c === 0 ? "Care plan  T \u2265 2V" : `Care plan  \u22122V + T \u2265 ${fmt(this.c)}`; },
+       labelAt: k => [(21 - k.c) / 2 / 2.6, 21]},
+      {id: "floor", a: 0, b: 1, op: ">=", c: 6, cls: "cap", name: "Network minimum", short: "the network minimum",
+       get label() { return `Network minimum  T \u2265 ${fmt(this.c)}`; }, labelAt: k => [6.4, k.c], below: true}
+    ],
+    report: {
+      vars: [["$B$12", "Initial evaluations", "5.75", "0", "200", "1E+30", "20"],
+             ["$C$12", "Treatment sessions", "11.5", "0", "90", "10", "190"]],
+      cons: [["$B$17", "Room hours", "28.75", "0", "36", "1E+30", "7.25"],
+             ["$B$18", "Therapist hours", "23", "95", "23", "5.8", "11"],
+             ["$B$19", "Care-plan rule (\u22122V + T \u2265 0)", "0", "\u22125", "0", "23", "11"],
+             ["$B$20", "Network minimum (T \u2265 6)", "11.5", "0", "6", "5.5", "1E+30"]]
+    },
+    hero: {ux: 70, uy: 20, uz: 0.105, ox: 1.7, oy: 8, zTop: 2600, zLabel: "Weekly contribution",
+           region: [[0, 6], [3, 6], [5.75, 11.5], [0, 23]], levels: [600, 1000, 1400, 1800, 2200],
+           isos: [900, 1500, 2185], best: [5.75, 11.5, 2185], other: [0, 23]},
+    caption: [["The feasible region", "The shaded base holds every weekly schedule the clinic can staff and the contract allows. Height above the base is the contribution that schedule brings in."],
+              ["The best plan", "Contribution rises toward a single corner: 5.75 evaluations and 11.5 treatment sessions, worth $2,185 for the week."],
+              ["Seen from above", "Schedules that bring in the same money fall on parallel lines. Every lesson below works in this flat view."]]
+  }
 };
+/* the live case: ?case=<id> wins, then the last choice, then nothing chosen */
+const CASE_STORE = "lplab-case";
+function rememberCase(id) {
+  try { localStorage.setItem(CASE_STORE, id); } catch (e) { /* private mode */ }
+  return id;
+}
+function pickedCase() {
+  const q = new URLSearchParams(location.search).get("case");
+  // the picker cards and the nav switcher are plain links, so the query string
+  // is the one place every choice passes through
+  if (q && CASES[q]) return rememberCase(q);
+  try { const v = localStorage.getItem(CASE_STORE); if (v && CASES[v]) return v; } catch (e) { /* private mode */ }
+  return null;
+}
+let CASE_ID = pickedCase();
+let CASE = CASES[CASE_ID || "boards"];
+Object.assign(PLOT, CASE.plot);
+function chooseCase(id) {
+  if (!CASES[id]) return;
+  rememberCase(id);
+  location.href = location.pathname + "?case=" + id;
+}
+const PROFIT = Object.assign({}, CASE.obj);   // a copy: nothing may mutate the case
+const baseCons = () => CASE.cons();
+const REPORT = CASE.report;
 /* small line icons (24×24, drawn for this page) */
 const ICON = {
   megaphone: '<path d="M3 10v4h3l7 4.5V5.5L6 10H3z"/><path d="M16.5 9a4 4 0 0 1 0 6"/><path d="M19 6.5a7.5 7.5 0 0 1 0 11"/>',
@@ -145,13 +225,21 @@ function checkTable(cons, x, y) {
       <td class="num">${fmt(lhs(k, x, y), 3)} ${k.op === "<=" ? "≤" : "≥"} ${fmt(k.c)}</td><td class="${ok ? "y" : "n"}">${ok ? "✓" : "✕"}</td></tr>`;
   }).join("")}</table>`;
 }
+/* a constraint's left-hand side written out, e.g. "−2V + T" */
+function lhsExpr(k) {
+  const parts = [];
+  const push = (c, sym) => { if (!c) return; parts.push([c < 0 ? "−" : "+", (Math.abs(c) === 1 ? "" : fmt(Math.abs(c))) + sym]); };
+  push(k.a, CASE.x.sym); push(k.b, CASE.y.sym);
+  if (!parts.length) return "0";
+  return parts.map(([sign, t], i) => (i ? ` ${sign} ${t}` : (sign === "−" ? "−" + t : t))).join("");
+}
 function usageBars(cons, sol) {
   return `<div class="usage">${cons.map(k => {
     const used = lhs(k, sol.x, sol.y), bind = Math.abs(used - k.c) < 1e-6;
     let w, txt;
     if (k.op === "<=") { w = k.c > 0 ? Math.min(1, used / k.c) : 1; txt = bind ? "binding" : `${fmt(k.c - used, 3)} slack`; }
     else { w = bind ? 1 : .6; txt = bind ? "binding" : `${fmt(used - k.c, 3)} surplus`; }
-    const what = k.op === "<=" ? `${fmt(used, 3)} of ${fmt(k.c)} h` : `−2T + S = ${fmt(used, 3)}`;
+    const what = k.op === "<=" ? `${fmt(used, 3)} of ${fmt(k.c)} h` : `${lhsExpr(k)} = ${fmt(used, 3)}`;
     return `<div class="use"><span>${k.name}<br><small class="num" style="color:var(--muted)">${what}</small></span>
       <span class="bar"><i class="${bind ? "bind" : "slack"}" style="transform:scaleX(${w})"></i></span><em class="${bind ? "bind" : "slack"} num">${txt}</em></div>`;
   }).join("")}</div>`;
@@ -175,22 +263,22 @@ const TERMS = {
            ex: "Finishing <b>$45</b> per hour. Fabrication <b>$0</b>. Mix rule <b>−2.5</b>.", use: "Compare it with the cost of one more unit: buy if the shadow price is higher."},
   rhs:    {t: "Right-hand side (R.H. Side)", d: "The number on the right of a constraint, usually the amount of a resource that is available.",
            ex: "<b>84</b> fabrication hours, <b>21</b> finishing hours, <b>0</b> for the mix rule.", use: "Requests 3 and 4 change these numbers."},
-  binding:{t: "Binding constraint", d: "A constraint whose left-hand side equals its right-hand side at the optimal plan. The resource is used up, and the constraint is what stops the profit from going higher.",
+  binding:{t: "Binding constraint", d: "A constraint whose left-hand side equals its right-hand side at the optimal plan. The resource is used up, and the constraint holds the profit down.",
            ex: "Finishing (21 of 21 hours) and the mix rule.", use: "Only a binding constraint can have a non-zero shadow price."},
   slack:  {t: "Slack", d: "The unused amount of a ≤ constraint at the optimal plan: right-hand side minus left-hand side. A constraint with slack is not binding.",
            ex: "Fabrication: 84 − 60.375 = <b>23.625</b> hours unused.", use: "A constraint with slack has a shadow price of 0: more of it is worth nothing."},
-  resolve:{t: "Solve again", d: "When a change goes outside its allowable range, the optimal plan itself changes, so the report can no longer predict the result. Change the number in the model and run Solver again.",
+  resolve:{t: "Solve again", d: "When a change goes outside its allowable range, the optimal plan itself changes, so the report stops predicting the result. Change the number in the model and run Solver again.",
            ex: "Trail profit falls to $40 (−10, more than 6.67): the new plan is <b>(0, 14)</b> with profit <b>$910</b>.", use: "Multiply only inside the allowable range."},
   integer:{t: "Integer program", d: "A linear program with the extra condition that some variables must be whole numbers. The objective and the constraints stay linear; only the variables are restricted.",
            ex: "Ridgeline cannot ship 5.25 boards, so T and S have to be whole numbers.", use: "Add an int constraint in Solver when a fractional answer is not something the shop can make or ship."},
-  relax:  {t: "LP relaxation", d: "The same model with the whole-number condition dropped. It is the ordinary linear program, and it is the one the graph and the Sensitivity Report describe.",
+  relax:  {t: "LP relaxation", d: "The same model with the whole-number condition dropped. The graph and the Sensitivity Report both describe this version.",
            ex: "The relaxation gives (5.25, 10.5) and $945. The integer model gives (3, 12) and $930.", use: "Solve the relaxation first: it is quick, and it tells you how much the whole-number condition can cost at most."},
   bound:  {t: "Bound", d: "A number the optimal value cannot cross. For a maximization the relaxation's value is an upper bound on the integer optimum, because every whole-number plan is also a plan in the relaxation.",
            ex: "$945 is an upper bound. The best whole-number plan earns $930, so at most $15 is lost to the whole-number condition.", use: "Compare a plan you already have with the bound: a small gap means more searching is not worth it."},
-  binary: {t: "Binary variable", d: "A variable allowed to be only 0 or 1. It stands for a decision that is taken or not taken, rather than a quantity that is measured.",
+  binary: {t: "Binary variable", d: "A variable allowed to be only 0 or 1. It stands for a decision the clinic takes or refuses, where the other variables measure a quantity.",
            ex: "y = 1 if Ridgeline rents the second finishing station this week, y = 0 if it does not.", use: "Multiply the capacity the decision unlocks by y, and subtract its fixed cost times y in the objective."},
-  fixed:  {t: "Fixed cost", d: "A cost paid in full as soon as a decision is taken, whatever use it gets afterwards. It attaches to a binary variable in the objective, not to a production quantity.",
-           ex: "The rented station costs $300 for the week whether it runs one hour or eight.", use: "Weigh it against the extra profit the decision unlocks in total, not against the shadow price of one hour."},
+  fixed:  {t: "Fixed cost", d: "A cost paid in full as soon as a decision is taken, whatever use it gets afterwards. In the objective it multiplies a binary variable, while a unit cost multiplies a quantity.",
+           ex: "The rented station costs $300 for the week whether it runs one hour or eight.", use: "Weigh it against the total extra profit the decision unlocks. The shadow price of a single hour is the wrong comparison."},
   iso:    {t: "Profit line", d: "All plans that earn the same profit lie on one straight line. Its tilt is set by the profit per board of each product.",
            ex: "50T + 65S = 945 passes through the optimal corner (5.25, 10.5).", use: "Changing a profit per board tilts this line; the best corner is the last one it touches."}
 };

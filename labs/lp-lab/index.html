@@ -18,7 +18,7 @@
   --ink:#0E1424; --ink-2:#4A5368; --ink-3:#8790A3;
   --maroon:#8C1D40; --maroon-tint:rgba(140,29,64,.10);
   --gold:#FFC627; --gold-ink:#7A5600;
-  --fab:#2F5BEA; --fin:#E4572E; --mix:#0E9F7A;
+  --fab:#2F5BEA; --fin:#E4572E; --mix:#0E9F7A; --cap:#B5179E;
   --live:#6C4BFF; --live-soft:rgba(108,75,255,.14);
   --ok:#14935C; --ok-bg:#E8F6EF; --bad:#D92D20; --bad-bg:#FDEDEC;
   --ui:"Inter Tight",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
@@ -102,9 +102,39 @@ b,strong{font-weight:650}
 .h-lab.gold{fill:var(--gold-ink);font-size:15px;font-weight:700}
 .h-zlab{font:500 12px var(--ui);fill:var(--ink-3)}
 
+/* ---- case picker ----------------------------------------------------------- */
+.case-pick{padding:7vh 0 0}
+.case-pick .pick-head{max-width:900px;margin:0 auto 1.1rem}
+.case-pick .pick-head h2{margin:0 0 .3rem;font-size:clamp(20px,1.8vw,26px);font-weight:650;letter-spacing:-.02em}
+.case-pick .pick-head p{margin:0;color:var(--ink-2);font-size:.95rem;max-width:62ch}
+.case-pick .pick-head.big{text-align:center;margin-bottom:2rem}
+.case-pick .pick-head.big h2{font-size:clamp(30px,3.2vw,46px)}
+.case-pick .pick-head.big p{margin:0 auto;font-size:1.05rem}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.8rem;max-width:900px;margin:0 auto}
+.cgrid.big{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;max-width:1000px}
+.ccard{display:flex;flex-direction:column;gap:.3rem;padding:.85rem 1rem;border:1px solid var(--hair);border-radius:16px;
+  background:var(--surface);text-decoration:none;color:var(--ink);transition:transform .2s var(--ease),box-shadow .2s,border-color .2s}
+a.ccard:hover{transform:translateY(-3px);box-shadow:var(--shadow-2);border-color:#CFD5E3}
+.cgrid.big .ccard{padding:1.4rem 1.5rem 1.5rem;border-radius:20px;gap:.45rem}
+.ccard.on{border-color:var(--maroon);background:linear-gradient(180deg,#fff,#FFF9FA)}
+.cc-sector{font-size:.72rem;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.ccard.on .cc-sector{color:var(--maroon)}
+.ccard b{font-size:1.08rem;font-weight:650;letter-spacing:-.02em}
+.cgrid.big .ccard b{font-size:1.35rem}
+.ccard p{margin:.1rem 0 .3rem;color:var(--ink-2);font-size:.95rem}
+.cc-note{font-size:.78rem;color:var(--ink-3)}
+.cc-on{margin-top:.2rem;font-size:.76rem;font-weight:600;color:var(--maroon)}
+.nav-switch{margin-left:auto}
+.nav-case{display:inline-flex;align-items:center;gap:.4rem;padding:.28rem .7rem;border:1px solid var(--hair);border-radius:99px;
+  font-size:.8rem;font-weight:600;color:var(--ink-2);text-decoration:none;white-space:nowrap}
+.nav-case:hover{border-color:#C8CFDE;color:var(--ink)}
+.nav-case i{display:block;width:12px;height:12px;border:1.5px solid currentColor;border-radius:50%;
+  border-top-color:transparent;border-bottom-color:transparent}
+.intro{padding:5vh 0 6vh}
+
 /* ---- sections ------------------------------------------------------------- */
 .wrap{max-width:1640px;margin:0 auto;padding:0 clamp(16px,3vw,40px)}
-.intro{padding:10vh 0 6vh}
+
 .intro-body{max-width:900px;margin:0 auto}
 .intro h2{margin:0 0 .8rem;font-size:clamp(34px,3.6vw,54px);line-height:1.05;font-weight:650;letter-spacing:-.03em}
 .intro .lead{font-size:1.1rem;line-height:1.6;color:var(--ink-2);margin:0 0 1.6rem}
@@ -116,6 +146,7 @@ b,strong{font-weight:650}
 .dot.fab{background:var(--fab)}
 .dot.fin{background:var(--fin)}
 .dot.mix{background:var(--mix)}
+.dot.cap{background:var(--cap)}
 .m-tag .dot{width:.48rem;height:.48rem;margin-right:.38rem}
 
 /* Production Table */
@@ -341,15 +372,15 @@ a.qcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-2);border-color
 .g-tick{fill:var(--ink-3);font:500 15px var(--ui)}
 .g-title{fill:var(--ink-2);font:600 16px var(--ui)}
 .g-half{opacity:.13}
-.g-half.fab{fill:var(--fab)}.g-half.fin{fill:var(--fin)}.g-half.mix{fill:var(--mix)}
+.g-half.fab{fill:var(--fab)}.g-half.fin{fill:var(--fin)}.g-half.mix{fill:var(--mix)}.g-half.cap{fill:var(--cap)}
 /* the fill is set per element: each graph owns a gradient with its own id */
 .g-region{stroke:var(--maroon);stroke-width:2.5;stroke-linejoin:round}
 .g-region.enter{animation:fadein .6s var(--ease) both}
 .g-line{stroke-width:3.4;fill:none;stroke-linecap:round}
-.g-line.fab{stroke:var(--fab)}.g-line.fin{stroke:var(--fin)}.g-line.mix{stroke:var(--mix)}
+.g-line.fab{stroke:var(--fab)}.g-line.fin{stroke:var(--fin)}.g-line.mix{stroke:var(--mix)}.g-line.cap{stroke:var(--cap)}
 .g-line.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .7s var(--ease) forwards}
 .g-lab{font:600 15px var(--ui);paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round}
-.g-lab.fab{fill:var(--fab)}.g-lab.fin{fill:var(--fin)}.g-lab.mix{fill:var(--mix)}
+.g-lab.fab{fill:var(--fab)}.g-lab.fin{fill:var(--fin)}.g-lab.mix{fill:var(--mix)}.g-lab.cap{fill:var(--cap)}
 .g-iso{stroke:var(--maroon);stroke-width:2.8;stroke-dasharray:10 7;transition:stroke .25s}
 .g-iso.off{stroke:#A3ABBC}
 .g-isolab{font:700 17px var(--ui);fill:var(--maroon);paint-order:stroke;stroke:#fff;stroke-width:5px}
@@ -434,6 +465,8 @@ footer .reset{border:0;background:none;color:var(--ink-3);text-decoration:underl
   .nav-links a .t{display:none}
   .intro{padding:5vh 0 4vh}
   .intro h2{font-size:clamp(26px,6vw,38px)}
+  .case-pick{padding:4vh 0 0}
+  .nav-switch{display:none}
   .qband{margin-top:clamp(36px,6vh,56px);padding-top:28px}
   .qgrid{gap:10px}
   .qcard{padding:.95rem 1.1rem}
@@ -731,6 +764,7 @@ html.classroom{font-size:calc(var(--fw) / 84)}
     <path d="M4 28V12l10-4 8 10z" fill="#8C1D40" opacity=".3" stroke="#8C1D40" stroke-width="2"/><circle cx="14" cy="8" r="3.5" fill="#FFC627" stroke="#5C4300"/></svg><span class="wm-full">Linear Programming Lab</span><span class="wm-short">LP Lab</span></a>
   <button class="present-btn" title="Classroom mode: full screen, 16:9, large type. Arrow keys move between steps; Esc exits.">
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4" width="19" height="12" rx="1.5"/><path d="M12 16v4M8 20h8"/><path d="M10 8.2v3.6l3.2-1.8z" fill="currentColor"/></svg>Present</button>
+  <div class="nav-switch"></div>
   <div class="nav-links"></div>
 </nav>
 
@@ -741,103 +775,16 @@ html.classroom{font-size:calc(var(--fw) / 84)}
     <svg class="hero-svg" tabindex="0" role="img" aria-label="The feasible region with a block on top whose height is the weekly profit; the highest corner is the best plan. Drag, or use the arrow keys, to turn the view; Home resets it."></svg>
     <div class="hero-copy"><div class="tilt">
       <h1>Linear Programming Lab</h1>
-      <p>An interactive guide to linear programming, built around one production problem.</p>
+      <p>An interactive guide to linear programming, built around one worked example.</p>
     </div></div>
-    <div class="captions">
-      <div class="cap"><b>The feasible region</b><p>The shaded base holds every production schedule the shop can carry out in one week. Height above the base is the gross profit that schedule earns.</p></div>
-      <div class="cap"><b>The best plan</b><p>Profit rises toward a single corner of the base: 5.25 Trail and 10.5 Summit boards, worth $945 for the week.</p></div>
-      <div class="cap"><b>Seen from above</b><p>Schedules that earn the same profit fall on parallel lines. Every lesson below works in this flat view.</p></div>
-    </div>
+    <div class="captions"></div>
     <div class="cue">Scroll<i></i></div>
     <div class="spin-cue">Drag to rotate</div>
   </div>
 </header>
 
-  <section class="intro"><div class="wrap">
-    <div class="intro-body reveal">
-      <h2>Ridgeline Boards</h2>
-      <p class="lead">🏔️ Ridgeline Boards is a small workshop that builds two models of snowboard, the <b>Trail</b> board 🏂 and the <b>Summit</b> board 🎿. Every Monday the shop manager sets the week's production: how many of each model to build. Each board passes through two departments, fabrication and finishing, and each department has a fixed number of hours available that week. The shop's resort dealers also require at least two Summit boards for every Trail board. The question is which schedule earns the most gross profit.</p>
-
-      <div class="table-scroll">
-        <table class="case num">
-          <thead>
-            <tr>
-              <th>Resource</th>
-              <th>Trail (<i>T</i>)</th>
-              <th>Summit (<i>S</i>)</th>
-              <th>Available per week</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Gross profit per board</td>
-              <td><b>$50</b></td>
-              <td><b>$65</b></td>
-              <td class="dim">&mdash; maximize</td>
-            </tr>
-            <tr>
-              <td><span class="dot fab"></span>Fabrication hours</td>
-              <td>3.5</td>
-              <td>4.0</td>
-              <td><b>84</b></td>
-            </tr>
-            <tr>
-              <td><span class="dot fin"></span>Finishing hours</td>
-              <td>1.0</td>
-              <td>1.5</td>
-              <td><b>21</b></td>
-            </tr>
-            <tr>
-              <td><span class="dot mix"></span>Dealer mix</td>
-              <td colspan="2" style="text-align:center">At least two Summit boards per Trail board</td>
-              <td><b><i>S</i> &ge; 2<i>T</i></b></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="note">The three colours mark the three constraints, and the lines on every graph below carry the same colours.</p>
-
-      <p class="lead-sm">The same problem in standard linear programming form:</p>
-      <div class="model">
-        <div class="model-row">
-          <span class="m-type">Max</span>
-          <span class="m-expr">50<i>T</i> + 65<i>S</i></span>
-          <span class="m-tag obj">Gross profit for the week</span>
-        </div>
-        <div class="model-row sub">
-          <span class="m-type">s.t.</span>
-          <span class="m-expr">3.5<i>T</i> + 4<i>S</i> &le; 84</span>
-          <span class="m-tag"><span class="dot fab"></span>Fabrication, 84 h</span>
-        </div>
-        <div class="model-row sub">
-          <span class="m-type"></span>
-          <span class="m-expr"><i>T</i> + 1.5<i>S</i> &le; 21</span>
-          <span class="m-tag"><span class="dot fin"></span>Finishing, 21 h</span>
-        </div>
-        <div class="model-row sub">
-          <span class="m-type"></span>
-          <span class="m-expr">&minus;2<i>T</i> + <i>S</i> &ge; 0</span>
-          <span class="m-tag"><span class="dot mix"></span>Dealer mix</span>
-        </div>
-        <div class="model-row sub">
-          <span class="m-type"></span>
-          <span class="m-expr"><i>T</i>, <i>S</i> &ge; 0</span>
-          <span class="m-tag">No negative production</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="qband reveal">
-      <h2>Core questions</h2>
-      <p class="lead">The lessons answer three questions in turn. Anything you can drag, click or choose is marked in violet.</p>
-      <div class="qgrid">
-        <a class="qcard" href="#lesson-1"><span class="k">1</span><b>What can we decide, and what is the best plan?</b><span class="lessons">Lessons 1&ndash;2</span></a>
-        <a class="qcard" href="#lesson-3"><span class="k">2</span><b>What if the numbers change?</b><span class="lessons">Lessons 3&ndash;5</span></a>
-        <a class="qcard" href="#lesson-6"><span class="k">3</span><b>What if the answers must be whole numbers?</b><span class="lessons">Lessons 6&ndash;7</span></a>
-      </div>
-      <a class="btn primary start" href="#lesson-1">Start with Lesson 1</a>
-    </div>
-  </div></section>
+  <section class="case-pick" id="case-pick"></section>
+  <section class="intro" id="intro" hidden></section>
 </div>
   <div id="lessons"></div>
 </main>
@@ -845,7 +792,7 @@ html.classroom{font-size:calc(var(--fw) / 84)}
   <div class="ct"></div><div class="cdots"></div>
   <div class="cbtns"><button class="btn cprev" aria-label="Previous step">←</button><button class="btn cnext" aria-label="Next step">→</button><button class="btn cexit">Exit</button></div>
 </div>
-<footer><div class="wrap">Linear Programming Lab, by Aric Cheng, W. P. Carey School of Business, Arizona State University. Ridgeline Boards is a teaching example.
+<footer><div class="wrap">Linear Programming Lab, by Aric Cheng, W. P. Carey School of Business, Arizona State University. <span class="foot-case"></span>
   Your progress stays in this browser. <button class="reset">Reset my progress</button></div></footer>
 <div id="live" class="sr" aria-live="polite"></div>
 
@@ -1040,14 +987,17 @@ function sensitivity(cons, obj) {
    that a line or corner that is already on screen is updated in place and
    only new elements play their entrance animation.                          */
 const NS = "http://www.w3.org/2000/svg";
-const PLOT = {W: 760, H: 560, L: 66, R: 26, T: 22, B: 58, XM: 14, YM: 24};
+/* W..B are the drawing box and never change; XM, YM and the tick steps are
+   filled in from the active case by app.js before the first Graph is built. */
+const PLOT = {W: 760, H: 560, L: 66, R: 26, T: 22, B: 58,
+              XM: 14, YM: 24, xGrid: 1, xTick: 2, yGrid: 2, yTick: 4};
 const X = v => PLOT.L + (PLOT.W - PLOT.L - PLOT.R) * v / PLOT.XM;
 const Y = v => PLOT.H - PLOT.B - (PLOT.H - PLOT.B - PLOT.T) * v / PLOT.YM;
 const fromPx = (px, py) => [(px - PLOT.L) / (PLOT.W - PLOT.L - PLOT.R) * PLOT.XM,
                             (PLOT.H - PLOT.B - py) / (PLOT.H - PLOT.B - PLOT.T) * PLOT.YM];
 
 /* clip the plot box with half-planes a*x + b*y <= c (Sutherland–Hodgman) */
-const BOX = [[0, 0], [PLOT.XM, 0], [PLOT.XM, PLOT.YM], [0, PLOT.YM]];
+const box = () => [[0, 0], [PLOT.XM, 0], [PLOT.XM, PLOT.YM], [0, PLOT.YM]];
 function clipPoly(poly, rows) {
   for (const r of rows) {
     const f = p => r.a * p[0] + r.b * p[1] - r.c, out = [];
@@ -1120,15 +1070,15 @@ class Graph {
   }
   drawAxes() {
     let g = "", a = "";
-    for (let v = 0; v <= PLOT.XM; v += 1) g += `<line x1="${X(v)}" y1="${Y(0)}" x2="${X(v)}" y2="${Y(PLOT.YM)}"/>`;
-    for (let v = 0; v <= PLOT.YM; v += 2) g += `<line x1="${X(0)}" y1="${Y(v)}" x2="${X(PLOT.XM)}" y2="${Y(v)}"/>`;
+    for (let v = 0; v <= PLOT.XM; v += PLOT.xGrid) g += `<line x1="${X(v)}" y1="${Y(0)}" x2="${X(v)}" y2="${Y(PLOT.YM)}"/>`;
+    for (let v = 0; v <= PLOT.YM; v += PLOT.yGrid) g += `<line x1="${X(0)}" y1="${Y(v)}" x2="${X(PLOT.XM)}" y2="${Y(v)}"/>`;
     this.svg.querySelector(".g-grid").innerHTML = g;
     a += `<line class="g-axis" x1="${X(0)}" y1="${Y(0)}" x2="${X(PLOT.XM)}" y2="${Y(0)}"/>
           <line class="g-axis" x1="${X(0)}" y1="${Y(0)}" x2="${X(0)}" y2="${Y(PLOT.YM)}"/>`;
-    for (let v = 0; v <= PLOT.XM; v += 2) a += `<text class="g-tick" x="${X(v)}" y="${Y(0) + 22}" text-anchor="middle">${v}</text>`;
-    for (let v = 0; v <= PLOT.YM; v += 4) a += `<text class="g-tick" x="${X(0) - 10}" y="${Y(v) + 5}" text-anchor="end">${v}</text>`;
-    a += `<text class="g-title" x="${X(PLOT.XM)}" y="${PLOT.H - 10}" text-anchor="end">Trail boards, T</text>
-          <text class="g-title" transform="translate(18 ${Y(PLOT.YM)}) rotate(-90)" text-anchor="end">Summit boards, S</text>`;
+    for (let v = 0; v <= PLOT.XM; v += PLOT.xTick) a += `<text class="g-tick" x="${X(v)}" y="${Y(0) + 22}" text-anchor="middle">${v}</text>`;
+    for (let v = 0; v <= PLOT.YM; v += PLOT.yTick) a += `<text class="g-tick" x="${X(0) - 10}" y="${Y(v) + 5}" text-anchor="end">${v}</text>`;
+    a += `<text class="g-title" x="${X(PLOT.XM)}" y="${PLOT.H - 10}" text-anchor="end">${CASE.x.axis}</text>
+          <text class="g-title" transform="translate(18 ${Y(PLOT.YM)}) rotate(-90)" text-anchor="end">${CASE.y.axis}</text>`;
     this.L("axes").innerHTML = a;
   }
   /* keyed element helper: returns [el, isNew] */
@@ -1149,13 +1099,13 @@ class Graph {
       const k = v.cons[h.i];
       keepHalf.add(h.cls);
       const [el] = this.keyed("half", h.cls, "polygon", "g-half " + h.cls);
-      el.setAttribute("points", polyStr(clipPoly(BOX, asLE(k))));
+      el.setAttribute("points", polyStr(clipPoly(box(), asLE(k))));
     }
     this.prune("half", keepHalf);
     /* feasible region */
     const keepReg = new Set();
     if (v.region) {
-      const poly = clipPoly(BOX, (v.regionCons || v.cons).flatMap(asLE));
+      const poly = clipPoly(box(), (v.regionCons || v.cons).flatMap(asLE));
       if (poly.length > 2) {
         keepReg.add("r");
         const [el, fresh] = this.keyed("region", "r", "polygon");
@@ -1300,32 +1250,112 @@ function curveChart(o) {
   return `<svg class="curve" viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.aria}">${s}</svg>`;
 }
 
-/* ---- The Ridgeline model ---------------------------------------------------
-   verify.py checks every number shown in the lessons.                       */
-const PROFIT = {cx: 50, cy: 65, sense: "max"};
+/* ---- The cases -------------------------------------------------------------
+   The lab teaches one worked example at a time. A case carries its model, the
+   Sensitivity Report Solver prints for it, the plot scale, and the labels the
+   graph and the lessons use. verify.py recomputes every number in both.
+
+   Only one case is live per page load: PLOT, the lesson DOM and the saved
+   progress all key off it, so switching reloads rather than rebuilding.    */
 const lineLabelAt = t => k => {
   const s = (k.c - k.a * t) / k.b;
   return s >= 0 && s <= PLOT.YM ? [t, s] : segment(k.a, k.b, k.c)[1];
 };
-function baseCons() {
-  return [
-    {id: "fab", a: 3.5, b: 4, op: "<=", c: 84, cls: "fab", name: "Fabrication hours",
-     get label() { return `Fabrication  3.5T + 4S ≤ ${fmt(this.c)}`; }, labelAt: lineLabelAt(10.6)},
-    {id: "fin", a: 1, b: 1.5, op: "<=", c: 21, cls: "fin", name: "Finishing hours",
-     get label() { return `Finishing  T + 1.5S ≤ ${fmt(this.c)}`; }, labelAt: lineLabelAt(3.3), below: true},
-    {id: "mix", a: -2, b: 1, op: ">=", c: 0, cls: "mix", name: "Mix rule",
-     get label() { return this.c === 0 ? "Mix rule  S ≥ 2T" : `Mix rule  −2T + S ≥ ${fmt(this.c)}`; },
-     labelAt: k => [(19 - k.c) / 2, 19]}
-  ];
-}
-/* Sensitivity Report as Solver prints it (rounded the way Excel shows it) */
-const REPORT = {
-  vars: [["$B$12", "Trail boards", "5.25", "0", "50", "1E+30", "6.666667"],
-         ["$C$12", "Summit boards", "10.5", "0", "65", "10", "90"]],
-  cons: [["$B$17", "Fabrication hours", "60.375", "0", "84", "1E+30", "23.625"],
-         ["$B$18", "Finishing hours", "21", "45", "21", "8.217391", "21"],
-         ["$B$19", "Mix rule (−2T + S ≥ 0)", "0", "−2.5", "0", "14", "42"]]
+const CASES = {
+  boards: {
+    id: "boards", sector: "Manufacturing", money: "profit", short: "Snowboards", name: "Ridgeline Boards",
+    pick: {title: "A workshop that builds snowboards",
+           blurb: "Two models, two departments and a dealer agreement.",
+           note: "Manufacturing · 3 constraints"},
+    x: {sym: "T", one: "Trail board", many: "Trail boards", axis: "Trail boards, T"},
+    y: {sym: "S", one: "Summit board", many: "Summit boards", axis: "Summit boards, S"},
+    obj: {cx: 50, cy: 65, sense: "max"},
+    plot: {XM: 14, YM: 24, xGrid: 1, xTick: 2, yGrid: 2, yTick: 4},
+    cons: () => [
+      {id: "fab", a: 3.5, b: 4, op: "<=", c: 84, cls: "fab", name: "Fabrication hours", short: "the fabrication limit",
+       get label() { return `Fabrication  3.5T + 4S ≤ ${fmt(this.c)}`; }, labelAt: lineLabelAt(10.6)},
+      {id: "fin", a: 1, b: 1.5, op: "<=", c: 21, cls: "fin", name: "Finishing hours", short: "the finishing limit",
+       get label() { return `Finishing  T + 1.5S ≤ ${fmt(this.c)}`; }, labelAt: lineLabelAt(3.3), below: true},
+      {id: "mix", a: -2, b: 1, op: ">=", c: 0, cls: "mix", name: "Mix rule", short: "the dealer mix rule",
+       get label() { return this.c === 0 ? "Mix rule  S ≥ 2T" : `Mix rule  −2T + S ≥ ${fmt(this.c)}`; },
+       labelAt: k => [(19 - k.c) / 2, 19]}
+    ],
+    /* Sensitivity Report as Solver prints it (rounded the way Excel shows it) */
+    report: {
+      vars: [["$B$12", "Trail boards", "5.25", "0", "50", "1E+30", "6.666667"],
+             ["$C$12", "Summit boards", "10.5", "0", "65", "10", "90"]],
+      cons: [["$B$17", "Fabrication hours", "60.375", "0", "84", "1E+30", "23.625"],
+             ["$B$18", "Finishing hours", "21", "45", "21", "8.217391", "21"],
+             ["$B$19", "Mix rule (−2T + S ≥ 0)", "0", "−2.5", "0", "14", "42"]]
+    },
+    hero: {ux: 40, uy: 20, uz: 0.24, ox: 3, oy: 8, zTop: 1100, zLabel: "Weekly profit",
+           region: [[0, 0], [5.25, 10.5], [0, 14]], levels: [150, 300, 450, 600, 750, 900],
+           isos: [300, 600, 945], best: [5.25, 10.5, 945], other: [0, 14]},
+    caption: [["The feasible region", "The shaded base holds every production schedule the shop can carry out in one week. Height above the base is the gross profit that schedule earns."],
+              ["The best plan", "Profit rises toward a single corner of the base: 5.25 Trail and 10.5 Summit boards, worth $945 for the week."],
+              ["Seen from above", "Schedules that earn the same profit fall on parallel lines. Every lesson below works in this flat view."]]
+  },
+  clinic: {
+    id: "clinic", sector: "Services", money: "contribution", short: "Physical therapy", name: "Riverside Physical Therapy",
+    pick: {title: "A clinic that treats patients",
+           blurb: "Two visit types, one bottleneck therapist and two contract terms.",
+           note: "Services \u00b7 4 constraints"},
+    x: {sym: "V", one: "evaluation", many: "evaluations", axis: "Initial evaluations, V"},
+    y: {sym: "T", one: "treatment session", many: "treatment sessions", axis: "Treatment sessions, T"},
+    obj: {cx: 200, cy: 90, sense: "max"},
+    plot: {XM: 8, YM: 24, xGrid: 1, xTick: 1, yGrid: 2, yTick: 4},
+    cons: () => [
+      {id: "room", a: 2, b: 1.5, op: "<=", c: 36, cls: "fab", name: "Room hours", short: "the treatment-room limit",
+       get label() { return `Treatment rooms  2V + 1.5T \u2264 ${fmt(this.c)}`; }, labelAt: lineLabelAt(6.2)},
+      {id: "ther", a: 2, b: 1, op: "<=", c: 23, cls: "fin", name: "Therapist hours", short: "the therapist limit",
+       get label() { return `Therapist  2V + T \u2264 ${fmt(this.c)}`; }, labelAt: lineLabelAt(2.1), below: true},
+      {id: "plan", a: -2, b: 1, op: ">=", c: 0, cls: "mix", name: "Care-plan rule", short: "the care-plan rule",
+       get label() { return this.c === 0 ? "Care plan  T \u2265 2V" : `Care plan  \u22122V + T \u2265 ${fmt(this.c)}`; },
+       labelAt: k => [(21 - k.c) / 2 / 2.6, 21]},
+      {id: "floor", a: 0, b: 1, op: ">=", c: 6, cls: "cap", name: "Network minimum", short: "the network minimum",
+       get label() { return `Network minimum  T \u2265 ${fmt(this.c)}`; }, labelAt: k => [6.4, k.c], below: true}
+    ],
+    report: {
+      vars: [["$B$12", "Initial evaluations", "5.75", "0", "200", "1E+30", "20"],
+             ["$C$12", "Treatment sessions", "11.5", "0", "90", "10", "190"]],
+      cons: [["$B$17", "Room hours", "28.75", "0", "36", "1E+30", "7.25"],
+             ["$B$18", "Therapist hours", "23", "95", "23", "5.8", "11"],
+             ["$B$19", "Care-plan rule (\u22122V + T \u2265 0)", "0", "\u22125", "0", "23", "11"],
+             ["$B$20", "Network minimum (T \u2265 6)", "11.5", "0", "6", "5.5", "1E+30"]]
+    },
+    hero: {ux: 70, uy: 20, uz: 0.105, ox: 1.7, oy: 8, zTop: 2600, zLabel: "Weekly contribution",
+           region: [[0, 6], [3, 6], [5.75, 11.5], [0, 23]], levels: [600, 1000, 1400, 1800, 2200],
+           isos: [900, 1500, 2185], best: [5.75, 11.5, 2185], other: [0, 23]},
+    caption: [["The feasible region", "The shaded base holds every weekly schedule the clinic can staff and the contract allows. Height above the base is the contribution that schedule brings in."],
+              ["The best plan", "Contribution rises toward a single corner: 5.75 evaluations and 11.5 treatment sessions, worth $2,185 for the week."],
+              ["Seen from above", "Schedules that bring in the same money fall on parallel lines. Every lesson below works in this flat view."]]
+  }
 };
+/* the live case: ?case=<id> wins, then the last choice, then nothing chosen */
+const CASE_STORE = "lplab-case";
+function rememberCase(id) {
+  try { localStorage.setItem(CASE_STORE, id); } catch (e) { /* private mode */ }
+  return id;
+}
+function pickedCase() {
+  const q = new URLSearchParams(location.search).get("case");
+  // the picker cards and the nav switcher are plain links, so the query string
+  // is the one place every choice passes through
+  if (q && CASES[q]) return rememberCase(q);
+  try { const v = localStorage.getItem(CASE_STORE); if (v && CASES[v]) return v; } catch (e) { /* private mode */ }
+  return null;
+}
+let CASE_ID = pickedCase();
+let CASE = CASES[CASE_ID || "boards"];
+Object.assign(PLOT, CASE.plot);
+function chooseCase(id) {
+  if (!CASES[id]) return;
+  rememberCase(id);
+  location.href = location.pathname + "?case=" + id;
+}
+const PROFIT = Object.assign({}, CASE.obj);   // a copy: nothing may mutate the case
+const baseCons = () => CASE.cons();
+const REPORT = CASE.report;
 /* small line icons (24×24, drawn for this page) */
 const ICON = {
   megaphone: '<path d="M3 10v4h3l7 4.5V5.5L6 10H3z"/><path d="M16.5 9a4 4 0 0 1 0 6"/><path d="M19 6.5a7.5 7.5 0 0 1 0 11"/>',
@@ -1447,13 +1477,21 @@ function checkTable(cons, x, y) {
       <td class="num">${fmt(lhs(k, x, y), 3)} ${k.op === "<=" ? "≤" : "≥"} ${fmt(k.c)}</td><td class="${ok ? "y" : "n"}">${ok ? "✓" : "✕"}</td></tr>`;
   }).join("")}</table>`;
 }
+/* a constraint's left-hand side written out, e.g. "−2V + T" */
+function lhsExpr(k) {
+  const parts = [];
+  const push = (c, sym) => { if (!c) return; parts.push([c < 0 ? "−" : "+", (Math.abs(c) === 1 ? "" : fmt(Math.abs(c))) + sym]); };
+  push(k.a, CASE.x.sym); push(k.b, CASE.y.sym);
+  if (!parts.length) return "0";
+  return parts.map(([sign, t], i) => (i ? ` ${sign} ${t}` : (sign === "−" ? "−" + t : t))).join("");
+}
 function usageBars(cons, sol) {
   return `<div class="usage">${cons.map(k => {
     const used = lhs(k, sol.x, sol.y), bind = Math.abs(used - k.c) < 1e-6;
     let w, txt;
     if (k.op === "<=") { w = k.c > 0 ? Math.min(1, used / k.c) : 1; txt = bind ? "binding" : `${fmt(k.c - used, 3)} slack`; }
     else { w = bind ? 1 : .6; txt = bind ? "binding" : `${fmt(used - k.c, 3)} surplus`; }
-    const what = k.op === "<=" ? `${fmt(used, 3)} of ${fmt(k.c)} h` : `−2T + S = ${fmt(used, 3)}`;
+    const what = k.op === "<=" ? `${fmt(used, 3)} of ${fmt(k.c)} h` : `${lhsExpr(k)} = ${fmt(used, 3)}`;
     return `<div class="use"><span>${k.name}<br><small class="num" style="color:var(--muted)">${what}</small></span>
       <span class="bar"><i class="${bind ? "bind" : "slack"}" style="transform:scaleX(${w})"></i></span><em class="${bind ? "bind" : "slack"} num">${txt}</em></div>`;
   }).join("")}</div>`;
@@ -1477,22 +1515,22 @@ const TERMS = {
            ex: "Finishing <b>$45</b> per hour. Fabrication <b>$0</b>. Mix rule <b>−2.5</b>.", use: "Compare it with the cost of one more unit: buy if the shadow price is higher."},
   rhs:    {t: "Right-hand side (R.H. Side)", d: "The number on the right of a constraint, usually the amount of a resource that is available.",
            ex: "<b>84</b> fabrication hours, <b>21</b> finishing hours, <b>0</b> for the mix rule.", use: "Requests 3 and 4 change these numbers."},
-  binding:{t: "Binding constraint", d: "A constraint whose left-hand side equals its right-hand side at the optimal plan. The resource is used up, and the constraint is what stops the profit from going higher.",
+  binding:{t: "Binding constraint", d: "A constraint whose left-hand side equals its right-hand side at the optimal plan. The resource is used up, and the constraint holds the profit down.",
            ex: "Finishing (21 of 21 hours) and the mix rule.", use: "Only a binding constraint can have a non-zero shadow price."},
   slack:  {t: "Slack", d: "The unused amount of a ≤ constraint at the optimal plan: right-hand side minus left-hand side. A constraint with slack is not binding.",
            ex: "Fabrication: 84 − 60.375 = <b>23.625</b> hours unused.", use: "A constraint with slack has a shadow price of 0: more of it is worth nothing."},
-  resolve:{t: "Solve again", d: "When a change goes outside its allowable range, the optimal plan itself changes, so the report can no longer predict the result. Change the number in the model and run Solver again.",
+  resolve:{t: "Solve again", d: "When a change goes outside its allowable range, the optimal plan itself changes, so the report stops predicting the result. Change the number in the model and run Solver again.",
            ex: "Trail profit falls to $40 (−10, more than 6.67): the new plan is <b>(0, 14)</b> with profit <b>$910</b>.", use: "Multiply only inside the allowable range."},
   integer:{t: "Integer program", d: "A linear program with the extra condition that some variables must be whole numbers. The objective and the constraints stay linear; only the variables are restricted.",
            ex: "Ridgeline cannot ship 5.25 boards, so T and S have to be whole numbers.", use: "Add an int constraint in Solver when a fractional answer is not something the shop can make or ship."},
-  relax:  {t: "LP relaxation", d: "The same model with the whole-number condition dropped. It is the ordinary linear program, and it is the one the graph and the Sensitivity Report describe.",
+  relax:  {t: "LP relaxation", d: "The same model with the whole-number condition dropped. The graph and the Sensitivity Report both describe this version.",
            ex: "The relaxation gives (5.25, 10.5) and $945. The integer model gives (3, 12) and $930.", use: "Solve the relaxation first: it is quick, and it tells you how much the whole-number condition can cost at most."},
   bound:  {t: "Bound", d: "A number the optimal value cannot cross. For a maximization the relaxation's value is an upper bound on the integer optimum, because every whole-number plan is also a plan in the relaxation.",
            ex: "$945 is an upper bound. The best whole-number plan earns $930, so at most $15 is lost to the whole-number condition.", use: "Compare a plan you already have with the bound: a small gap means more searching is not worth it."},
-  binary: {t: "Binary variable", d: "A variable allowed to be only 0 or 1. It stands for a decision that is taken or not taken, rather than a quantity that is measured.",
+  binary: {t: "Binary variable", d: "A variable allowed to be only 0 or 1. It stands for a decision the clinic takes or refuses, where the other variables measure a quantity.",
            ex: "y = 1 if Ridgeline rents the second finishing station this week, y = 0 if it does not.", use: "Multiply the capacity the decision unlocks by y, and subtract its fixed cost times y in the objective."},
-  fixed:  {t: "Fixed cost", d: "A cost paid in full as soon as a decision is taken, whatever use it gets afterwards. It attaches to a binary variable in the objective, not to a production quantity.",
-           ex: "The rented station costs $300 for the week whether it runs one hour or eight.", use: "Weigh it against the extra profit the decision unlocks in total, not against the shadow price of one hour."},
+  fixed:  {t: "Fixed cost", d: "A cost paid in full as soon as a decision is taken, whatever use it gets afterwards. In the objective it multiplies a binary variable, while a unit cost multiplies a quantity.",
+           ex: "The rented station costs $300 for the week whether it runs one hour or eight.", use: "Weigh it against the total extra profit the decision unlocks. The shadow price of a single hour is the wrong comparison."},
   iso:    {t: "Profit line", d: "All plans that earn the same profit lie on one straight line. Its tilt is set by the profit per board of each product.",
            ex: "50T + 65S = 945 passes through the optimal corner (5.25, 10.5).", use: "Changing a profit per board tilts this line; the best corner is the last one it touches."}
 };
@@ -1554,9 +1592,11 @@ function stampRequest(n) {
    down, where the contour lines on the top face land on the floor as lines
    of equal profit. The page state is a pure function of scroll progress p. */
 const Hero = (() => {
-  const UX = 40, UY = 20, UZ = 0.24;                 // px per Trail board, Summit board, dollar
-  const REGION = [[0, 0], [5.25, 10.5], [0, 14]];
-  const LEVELS = [150, 300, 450, 600, 750, 900];
+  /* scale and shape come from the live case */
+  const HC = () => CASE.hero;
+  const UX = () => HC().ux, UY = () => HC().uy, UZ = () => HC().uz;
+  const REGION = () => HC().region;
+  const LEVELS = () => HC().levels;
   let svg, scene, track, tilt, cue, spinCue, caps, W = 0, H = 0, cur = 0, target = 0, raf = 0;
   let dAz = 0, dEl = 0, grab = null, spun = false;   // rotation the reader added by hand, in degrees
 
@@ -1594,29 +1634,29 @@ const Hero = (() => {
     const k = Math.min(W * (narrow ? .8 : .5) / 560, H * .66 / 480) * mix(1.12, 1, m);
     const cx = W * mix(.5, narrow ? .5 : .62, m), cy = H * mix(.86, .55, m);
     /* the camera turns around the block first, then around the whole graph */
-    const ox = mix(3 * UX, 280, m), oy = mix(8 * UY, 240, m);
+    const ox = mix(HC().ox * UX(), 280, m), oy = mix(HC().oy * UY(), 240, m);
     const P = (T, S, Z = 0) => {
-      const x = T * UX - ox, y = S * UY - oy, xr = x * ca - y * sa, yr = x * sa + y * ca;
-      return [cx + xr * k, cy - (yr * se + Z * UZ * ce) * k, yr];
+      const x = T * UX() - ox, y = S * UY() - oy, xr = x * ca - y * sa, yr = x * sa + y * ca;
+      return [cx + xr * k, cy - (yr * se + Z * UZ() * ce) * k, yr];
     };
     const pt = (q) => q[0].toFixed(1) + "," + q[1].toFixed(1);
     const line = (a, b, cls, extra = "") => `<line class="${cls}" x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" ${extra}/>`;
-    const zOf = (T, S) => 50 * T + 65 * S;
+    const zOf = (T, S) => CASE.obj.cx * T + CASE.obj.cy * S;
     const late = ramp(p, .8, .95), oblique = 1 - ramp(m, .6, 1);
     let s = "";
     /* floor grid */
     s += `<g class="h-grid">`;
-    for (let t = 0; t <= 14; t += 1) s += line(P(t, 0), P(t, 24), "");
-    for (let v = 0; v <= 24; v += 2) s += line(P(0, v), P(14, v), "");
+    for (let t = 0; t <= PLOT.XM; t += PLOT.xGrid) s += line(P(t, 0), P(t, PLOT.YM), "");
+    for (let v = 0; v <= PLOT.YM; v += PLOT.yGrid) s += line(P(0, v), P(PLOT.XM, v), "");
     s += `</g>`;
-    s += line(P(0, 0), P(14, 0), "h-axis") + line(P(0, 0), P(0, 24), "h-axis");
+    s += line(P(0, 0), P(PLOT.XM, 0), "h-axis") + line(P(0, 0), P(0, PLOT.YM), "h-axis");
     if (late > 0) {
       s += `<g opacity="${late}">`;
-      for (let t = 2; t <= 14; t += 2) { const q = P(t, 0); s += `<text class="h-tick" x="${q[0]}" y="${q[1] + 18}" text-anchor="middle">${t}</text>`; }
-      for (let v = 4; v <= 24; v += 4) { const q = P(0, v); s += `<text class="h-tick" x="${q[0] - 8}" y="${q[1] + 4}" text-anchor="end">${v}</text>`; }
-      const xl = P(14, 0), yl = P(0, 24);
-      s += `<text class="h-zlab" x="${xl[0]}" y="${xl[1] + 36}" text-anchor="end">Trail boards, T</text>
-            <text class="h-zlab" x="${yl[0] + 10}" y="${yl[1] + 4}">Summit boards, S</text></g>`;
+      for (let t = PLOT.xTick; t <= PLOT.XM; t += PLOT.xTick) { const q = P(t, 0); s += `<text class="h-tick" x="${q[0]}" y="${q[1] + 18}" text-anchor="middle">${t}</text>`; }
+      for (let v = PLOT.yTick; v <= PLOT.YM; v += PLOT.yTick) { const q = P(0, v); s += `<text class="h-tick" x="${q[0] - 8}" y="${q[1] + 4}" text-anchor="end">${v}</text>`; }
+      const xl = P(PLOT.XM, 0), yl = P(0, PLOT.YM);
+      s += `<text class="h-zlab" x="${xl[0]}" y="${xl[1] + 36}" text-anchor="end">${CASE.x.axis}</text>
+            <text class="h-zlab" x="${yl[0] + 10}" y="${yl[1] + 4}">${CASE.y.axis}</text></g>`;
     }
     /* constraint lines on the floor */
     for (const k2 of baseCons()) {
@@ -1624,38 +1664,39 @@ const Hero = (() => {
       if (seg) s += line(P(...seg[0]), P(...seg[1]), "h-cl", `style="stroke:var(--${k2.cls})"`);
     }
     /* footprint and equal-profit lines on the floor */
-    s += `<polygon class="h-foot" points="${REGION.map(v => pt(P(...v))).join(" ")}"/>`;
-    if (late > 0) for (const L of [300, 600, 945]) {
-      const seg = segment(50, 65, L);
+    s += `<polygon class="h-foot" points="${REGION().map(v => pt(P(...v))).join(" ")}"/>`;
+    if (late > 0) for (const L of HC().isos) {
+      const seg = segment(CASE.obj.cx, CASE.obj.cy, L);
       if (seg) s += line(P(...seg[0]), P(...seg[1]), "h-iso", `opacity="${late}"`);
     }
     /* the block: walls far-to-near, then the top face */
-    const walls = REGION.map((v, i) => {
-      const w = REGION[(i + 1) % REGION.length];
+    const walls = REGION().map((v, i) => {
+      const w = REGION()[(i + 1) % REGION().length];
       const quad = [P(...v), P(...w), P(...w, zOf(...w)), P(...v, zOf(...v))];
       return {quad, depth: (quad[0][2] + quad[1][2]) / 2};
     }).sort((a, b) => b.depth - a.depth);
     for (const w of walls) s += `<polygon class="h-wall" points="${w.quad.map(pt).join(" ")}" fill="rgba(140,29,64,${(.1 + .12 * oblique).toFixed(3)})"/>`;
-    s += `<polygon class="h-top" points="${REGION.map(v => pt(P(...v, zOf(...v)))).join(" ")}" fill="url(#heroTop)" fill-opacity="${(1 - .55 * late).toFixed(3)}"/>`;
-    for (const L of LEVELS) {
-      const seg = insideSeg(50, 65, L);
+    s += `<polygon class="h-top" points="${REGION().map(v => pt(P(...v, zOf(...v)))).join(" ")}" fill="url(#heroTop)" fill-opacity="${(1 - .55 * late).toFixed(3)}"/>`;
+    for (const L of LEVELS()) {
+      const seg = insideSeg(CASE.obj.cx, CASE.obj.cy, L);
       if (seg) s += line(P(...seg[0], L), P(...seg[1], L), "h-contour");
     }
     /* height axis, fading out as the view flattens */
     if (oblique > .02) {
-      const a = P(0, 0), b = P(0, 0, 1100);
-      s += `<g opacity="${oblique}">${line(a, b, "h-axis")}<text class="h-zlab" x="${b[0] - 8}" y="${b[1] - 6}" text-anchor="end">Weekly profit</text></g>`;
+      const a = P(0, 0), b = P(0, 0, HC().zTop);
+      s += `<g opacity="${oblique}">${line(a, b, "h-axis")}<text class="h-zlab" x="${b[0] - 8}" y="${b[1] - 6}" text-anchor="end">${HC().zLabel}</text></g>`;
     }
     /* the best plan */
-    const top = P(5.25, 10.5, 945), foot = P(5.25, 10.5);
+    const B = HC().best;
+    const top = P(B[0], B[1], B[2]), foot = P(B[0], B[1]);
     if (oblique > .02) s += line(top, foot, "h-drop", `opacity="${oblique}"`);
     s += `<circle class="h-glow" cx="${top[0]}" cy="${top[1]}" r="${16 + 6 * Math.sin(p * 18)}" opacity=".28"/>
           <circle class="h-apex" cx="${top[0]}" cy="${top[1]}" r="8"/>
-          <text class="h-lab gold" x="${top[0] + 14}" y="${top[1] - 10}">$945</text>`;
+          <text class="h-lab gold" x="${top[0] + 14}" y="${top[1] - 10}">${money(B[2], 0)}</text>`;
     if (late > 0) {
-      const c = P(0, 14);
-      s += `<text class="h-lab" opacity="${late}" x="${c[0] + 12}" y="${c[1] - 8}">(0, 14)</text>
-            <text class="h-lab" opacity="${late}" x="${top[0] + 14}" y="${top[1] + 26}">(5.25, 10.5)</text>`;
+      const c = P(...HC().other);
+      s += `<text class="h-lab" opacity="${late}" x="${c[0] + 12}" y="${c[1] - 8}">(${fmt(HC().other[0])}, ${fmt(HC().other[1])})</text>
+            <text class="h-lab" opacity="${late}" x="${top[0] + 14}" y="${top[1] + 26}">(${fmt(B[0])}, ${fmt(B[1])})</text>`;
     }
     svg.querySelector(".h-draw").innerHTML = s;
 
@@ -1748,7 +1789,7 @@ const QUESTIONS = [
   {k: 2, t: "What if the numbers change?", lessons: [3, 4, 5]},
   {k: 3, t: "What if the answers must be whole numbers?", lessons: [6, 7]}
 ];
-const LESSONS = [];                       // filled by lessons.js
+let LESSONS = [];                         // the live case's course, built in init()
 const SECTIONS = [];
 let CUR = null;
 
@@ -1816,7 +1857,7 @@ function buildLesson(l) {
     const be = document.createElement("article");
     be.className = "block reveal"; be.innerHTML = blockHTML(def, i);
     $(".flow", el).appendChild(be);
-    const key = `L${l.n}.${i}`;
+    const key = `${CASE.id}:L${l.n}.${i}`;   // progress is kept per case
     const b = {
       sec, def, el: be, i, key, mem: {},
       get host() { return $(".extra", be); },
@@ -1876,7 +1917,50 @@ function ping(el) {
 }
 function announce(t) { const a = $("#live"); a.textContent = ""; setTimeout(() => a.textContent = String(t).replace(/<[^>]+>/g, ""), 50); }
 
+/* ---- the home page: pick a case, then that case's intro ------------------ */
+function caseCard(c, chosen, big) {
+  const tag = chosen ? "div" : "a";
+  const href = chosen ? "" : ` href="?case=${c.id}"`;
+  return `<${tag} class="ccard${chosen ? " on" : ""}"${href}>
+    <span class="cc-sector">${c.sector}</span><b>${c.name}</b>
+    ${big ? `<p>${c.pick.title}. ${c.pick.blurb}</p>` : ""}
+    <span class="cc-note">${c.pick.note}</span>
+    ${chosen ? `<span class="cc-on">Showing this one</span>` : ""}</${tag}>`;
+}
+function renderHome() {
+  const list = Object.values(CASES), none = !CASE_ID;
+  $("#case-pick").innerHTML = `<div class="wrap">
+    <div class="pick-head${none ? " big" : ""}">
+      <h2>${none ? "Choose a case" : "Worked example"}</h2>
+      <p>${none ? "The same course, taught on one worked example. Pick the one closer to yours." :
+                  "Every lesson below uses this example. Switching reloads the page and keeps each case's progress separate."}</p>
+    </div>
+    <div class="cgrid${none ? " big" : ""}">${list.map(c => caseCard(c, !none && c.id === CASE.id, none)).join("")}</div>
+  </div>`;
+  $(".foot-case").textContent = CASE_ID ? `${CASE.name} is a teaching example.` : "Both cases are teaching examples.";
+  if (none) return;
+  const qs = QUESTIONS.map((q, i) => {
+    const have = q.lessons.filter(n => LESSONS.some(l => l.n === n));
+    const label = have.length ? `Lessons ${have[0]}\u2013${have[have.length - 1]}` : "In preparation";
+    const tag = have.length ? "a" : "div";
+    return `<${tag} class="qcard${have.length ? "" : " pending"}"${have.length ? ` href="#lesson-${have[0]}"` : ""}>
+      <span class="k">${i + 1}</span><b>${q.t}</b><span class="lessons">${label}</span></${tag}>`;
+  }).join("");
+  const first = LESSONS.length ? LESSONS[0].n : null;
+  $("#intro").innerHTML = `<div class="wrap">${CASE.intro()}
+    <div class="qband reveal"><h2>Core questions</h2>
+      <p class="lead">The lessons answer three questions in turn. Anything you can drag, click or choose is marked in violet.</p>
+      <div class="qgrid">${qs}</div>
+      ${first ? `<a class="btn primary start" href="#lesson-${first}">Start with Lesson ${first}</a>` : ""}
+    </div></div>`;
+  $("#intro").hidden = false;
+  $(".captions").innerHTML = CASE.caption.map(([t, p]) => `<div class="cap"><b>${t}</b><p>${p}</p></div>`).join("");
+}
+
 function buildNav() {
+  const other = Object.values(CASES).find(c => c.id !== CASE.id);
+  $(".nav-switch").innerHTML = CASE_ID && other
+    ? `<a class="nav-case" href="?case=${other.id}" title="Switch to the ${other.sector.toLowerCase()} case">${CASE.short}<i></i></a>` : "";
   $(".nav-links").innerHTML = LESSONS.map(l => `<a href="#lesson-${l.n}" data-n="${l.n}">
       <svg class="ring" viewBox="0 0 20 20"><circle class="bg" cx="10" cy="10" r="8"/><circle class="fg" cx="10" cy="10" r="8" pathLength="1"
         stroke-dasharray="1" stroke-dashoffset="1" transform="rotate(-90 10 10)"/></svg><span>${l.n}</span><span class="t">${l.title}</span></a>`).join("");
@@ -1884,7 +1968,7 @@ function buildNav() {
 }
 function updateNav() {
   for (const l of LESSONS) {
-    const n = l.blocks.length, d = l.blocks.filter((_, i) => App.prog[`L${l.n}.${i}`]).length;
+    const n = l.blocks.length, d = l.blocks.filter((_, i) => App.prog[`${CASE.id}:L${l.n}.${i}`]).length;
     const fg = $(`.nav-links a[data-n="${l.n}"] .fg`);
     if (fg) fg.setAttribute("stroke-dashoffset", (1 - d / n).toFixed(3));
   }
@@ -1926,6 +2010,7 @@ const CLASSROOM = {
     document.documentElement.style.setProperty("--fh", fh + "px");
   },
   enter(full = true) {
+    if (!SECTIONS.length) return;          // nothing to present until a case is chosen
     this.on = true;
     document.documentElement.classList.add("classroom");
     this.fit();
@@ -1955,6 +2040,8 @@ const CLASSROOM = {
 
 function init() {
   const params = new URLSearchParams(location.search);
+  LESSONS = CASE_ID ? CASE.lessons() : [];
+  renderHome();
   Hero.init();
   LESSONS.forEach(buildLesson);
   lessonFoot();
@@ -1979,7 +2066,9 @@ function init() {
   addEventListener("hashchange", route);
   route();
   // classroom mode
-  $(".present-btn").addEventListener("click", () => CLASSROOM.on ? CLASSROOM.exit() : CLASSROOM.enter());
+  const pbtn = $(".present-btn");
+  if (!SECTIONS.length) { pbtn.disabled = true; pbtn.title = "Choose a case first"; }
+  pbtn.addEventListener("click", () => CLASSROOM.on ? CLASSROOM.exit() : CLASSROOM.enter());
   $(".cbar .cexit").addEventListener("click", () => CLASSROOM.exit());
   $(".cbar .cprev").addEventListener("click", () => CLASSROOM.step(-1));
   $(".cbar .cnext").addEventListener("click", () => CLASSROOM.step(1));
@@ -1991,20 +2080,13 @@ function init() {
     if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); CLASSROOM.step(-1); }
     if (e.key === "Escape") CLASSROOM.exit();
   });
-  if (params.has("present")) CLASSROOM.enter(false);
+  if (params.has("present") && SECTIONS.length) CLASSROOM.enter(false);
 }
 
-/* ---- Lessons (phase 1: 2, 3, 5, 6, 7) ------------------------------------- */
-const ALL = [0, 1, 2];
-const MODEL_HTML = `<div class="model">
-  <div class="model-row"><span class="m-type">Max</span><span class="m-expr">50<i>T</i> + 65<i>S</i></span><span class="m-tag obj">Gross profit for the week</span></div>
-  <div class="model-row sub"><span class="m-type">s.t.</span><span class="m-expr">3.5<i>T</i> + 4<i>S</i> ≤ 84</span><span class="m-tag"><span class="dot fab"></span>Fabrication, 84 h</span></div>
-  <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i> + 1.5<i>S</i> ≤ 21</span><span class="m-tag"><span class="dot fin"></span>Finishing, 21 h</span></div>
-  <div class="model-row sub"><span class="m-type"></span><span class="m-expr">−2<i>T</i> + <i>S</i> ≥ 0</span><span class="m-tag"><span class="dot mix"></span>Dealer mix</span></div>
-  <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i>, <i>S</i> ≥ 0</span><span class="m-tag">No negative production</span></div>
-</div>`;
-const regionView = (o = {}) => view(Object.assign({lines: ALL, region: true, corners: true}, o));
-const bestLabel = c => Math.abs(c[0] - 5.25) < 1e-6 && Math.abs(c[1] - 10.5) < 1e-6 ? "(5.25, 10.5)  $945" : `(${fmt(c[0])}, ${fmt(c[1])})`;
+/* ---- Lesson kit ------------------------------------------------------------
+   Pieces both courses use. Anything that carries a case's own numbers lives
+   in that case's file instead.                                            */
+
 /* animate a number, calling fn on every frame (used when an answer moves the graph) */
 function animateValue(from, to, ms, fn) {
   return new Promise(res => {
@@ -2016,6 +2098,165 @@ function animateValue(from, to, ms, fn) {
     requestAnimationFrame(tick);
   });
 }
+/* the three boxes a lesson body is built from */
+const defBox = t => `<div class="defn"><span class="dl">Definition</span><p>${t}</p></div>`;
+const exBox = h => `<div class="exbox"><span class="dl">At ${CASE.name.split(" ")[0]}</span><div>${h}</div></div>`;
+const scenario = (ico, who, ask) => `<div class="scen"><div class="scen-h"><span class="req-ico">${icon(ico)}</span>
+  <div><span class="dl">Scenario</span><b>${who}</b></div></div><p class="scen-q">${ask}</p><div class="scen-a"></div></div>`;
+
+/* the side panel: one table of the report, with the page's column lit, plus an optional extra */
+function sidePanel(b, o = {}) {
+  const p = b.panel(reportTables(Object.assign({only: o.table}, o.focus || {}, {rows: o.rows})) + (o.extra || ""));
+  if (o.wait) $$(".report", p).forEach(t => t.classList.add("waiting"));
+  $$("td.hot", p).forEach(td => td.addEventListener("click", () => {
+    $$("td.sel", p).forEach(x => x.classList.remove("sel"));
+    td.classList.add("sel");
+    o.onCell && o.onCell(td.dataset.t, +td.dataset.r, +td.dataset.c);
+  }));
+  return p;
+}
+const sayIn = (b, html) => { const r = $(".res", b.host); if (r) r.innerHTML = `<p class="feedback">${html}</p>`; };
+
+/* a manager's question: the card sits in the block, the question goes inside it */
+function ask(b, ico, who, q, kind, spec, onRight) {
+  b.host.insertAdjacentHTML("beforeend", scenario(ico, who, q));
+  const a = $(".scen-a", b.host);
+  (kind === "num" ? numQ : choiceQ)(a, spec, onRight);
+  a.firstElementChild.classList.add("live");
+}
+
+/* ---- whole-number models --------------------------------------------------- */
+const intProfit = (x, y) => CASE.obj.cx * x + CASE.obj.cy * y;
+/* every whole-number plan inside a feasible region */
+function latticePts(cons) {
+  const out = [];
+  for (let x = 0; x <= PLOT.XM; x++) for (let y = 0; y <= PLOT.YM; y++) if (isFeasible(cons, x, y)) out.push([x, y]);
+  return out;
+}
+/* the reason a whole-number plan fails, named the way the lessons name it */
+const breaks = (cons, x, y) => { const k = cons.find(k => !satisfies(k, x, y)); return k ? k.short : null; };
+
+/* ---- the eight-case quiz that closes each course --------------------------- */
+function runQuiz(b, QUIZ) {
+  let i = 0, right = 0;
+  const marks = QUIZ.map(() => ""), host = b.host;
+  const next = () => {
+    if (i >= QUIZ.length) {
+      host.innerHTML = `<div class="q live"><div class="score">${marks.map(m => `<i class="${m}"></i>`).join("")}</div><p><b>${right} of ${QUIZ.length}</b> correct on the first attempt.</p>
+        <button class="btn small again">Try again</button></div>`;
+      $(".again", host).addEventListener("click", () => runQuiz(b, QUIZ));
+      return b.complete(right === QUIZ.length ? "All eight correct on the first attempt." : "Check any missed case against the Sensitivity Report.");
+    }
+    const q = QUIZ[i];
+    let first = true;
+    host.innerHTML = `<div class="q live"><div class="score">${marks.map((m, j) => `<i class="${m || (j === i ? "c" : "")}"></i>`).join("")}</div>
+      <p class="quiz-q">${i + 1}. ${q.q}</p></div>`;
+    const box = host.firstElementChild;
+    const done = () => { marks[i] = first ? "r" : "w"; if (first) right++; i++; setTimeout(next, 1300); };
+    choiceQ(box, {options: [{t: "Multiply", ok: q.kind === "m", why: q.kind === "m" ? "Correct. The change is inside the allowable range." : q.why + " It is outside the allowable range, so the model has to be solved again."},
+                            {t: "Solve again", ok: q.kind === "r", why: q.kind === "r" ? q.why + " The model has to be solved again." : "The change is inside the allowable range, so multiplying works."}]},
+      () => {
+        if (q.kind === "r") return done();
+        numQ(box, {q: `Net change in weekly ${CASE.money}?`, prefix: "$", answer: q.ans, placeholder: "e.g. \u221245", hint: "Multiply the change by the matching shadow price or Final Value.", right: q.why}, done);
+      });
+    box.addEventListener("click", () => { if ($(".choice.wrong", box) || $(".numin input.wrong", box)) first = false; });
+  };
+  next();
+}
+
+/* the home page for this case */
+CASES.boards.intro = () => `
+    <div class="intro-body reveal">
+      <h2>Ridgeline Boards</h2>
+      <p class="lead">🏔️ Ridgeline Boards is a small workshop that builds two models of snowboard, the <b>Trail</b> board 🏂 and the <b>Summit</b> board 🎿. Every Monday the shop manager sets the week's production: how many of each model to build. Each board passes through two departments, fabrication and finishing, and each department has a fixed number of hours available that week. The shop's resort dealers also require at least two Summit boards for every Trail board. The question is which schedule earns the most gross profit.</p>
+
+      <div class="table-scroll">
+        <table class="case num">
+          <thead>
+            <tr>
+              <th>Resource</th>
+              <th>Trail (<i>T</i>)</th>
+              <th>Summit (<i>S</i>)</th>
+              <th>Available per week</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gross profit per board</td>
+              <td><b>$50</b></td>
+              <td><b>$65</b></td>
+              <td class="dim">&mdash; maximize</td>
+            </tr>
+            <tr>
+              <td><span class="dot fab"></span>Fabrication hours</td>
+              <td>3.5</td>
+              <td>4.0</td>
+              <td><b>84</b></td>
+            </tr>
+            <tr>
+              <td><span class="dot fin"></span>Finishing hours</td>
+              <td>1.0</td>
+              <td>1.5</td>
+              <td><b>21</b></td>
+            </tr>
+            <tr>
+              <td><span class="dot mix"></span>Dealer mix</td>
+              <td colspan="2" style="text-align:center">At least two Summit boards per Trail board</td>
+              <td><b><i>S</i> &ge; 2<i>T</i></b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">The three colours mark the three constraints, and the lines on every graph below carry the same colours.</p>
+
+      <p class="lead-sm">The same problem in standard linear programming form:</p>
+      <div class="model">
+        <div class="model-row">
+          <span class="m-type">Max</span>
+          <span class="m-expr">50<i>T</i> + 65<i>S</i></span>
+          <span class="m-tag obj">Gross profit for the week</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type">s.t.</span>
+          <span class="m-expr">3.5<i>T</i> + 4<i>S</i> &le; 84</span>
+          <span class="m-tag"><span class="dot fab"></span>Fabrication, 84 h</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr"><i>T</i> + 1.5<i>S</i> &le; 21</span>
+          <span class="m-tag"><span class="dot fin"></span>Finishing, 21 h</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr">&minus;2<i>T</i> + <i>S</i> &ge; 0</span>
+          <span class="m-tag"><span class="dot mix"></span>Dealer mix</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr"><i>T</i>, <i>S</i> &ge; 0</span>
+          <span class="m-tag">No negative production</span>
+        </div>
+      </div>
+    </div>
+`;
+
+/* ---- The snowboard course --------------------------------------------------
+   Ridgeline Boards: two products, two departments, one dealer agreement.
+   Everything here is this case's own; the shared pieces are in lesson-kit.js.
+   Runs inside a function so the two courses can use the same helper names. */
+CASES.boards.lessons = function () {
+  const LESSONS = [];
+
+const ALL = [0, 1, 2];
+const MODEL_HTML = `<div class="model">
+  <div class="model-row"><span class="m-type">Max</span><span class="m-expr">50<i>T</i> + 65<i>S</i></span><span class="m-tag obj">Gross profit for the week</span></div>
+  <div class="model-row sub"><span class="m-type">s.t.</span><span class="m-expr">3.5<i>T</i> + 4<i>S</i> ≤ 84</span><span class="m-tag"><span class="dot fab"></span>Fabrication, 84 h</span></div>
+  <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i> + 1.5<i>S</i> ≤ 21</span><span class="m-tag"><span class="dot fin"></span>Finishing, 21 h</span></div>
+  <div class="model-row sub"><span class="m-type"></span><span class="m-expr">−2<i>T</i> + <i>S</i> ≥ 0</span><span class="m-tag"><span class="dot mix"></span>Dealer mix</span></div>
+  <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i>, <i>S</i> ≥ 0</span><span class="m-tag">No negative production</span></div>
+</div>`;
+const regionView = (o = {}) => view(Object.assign({lines: ALL, region: true, corners: true}, o));
+const bestLabel = c => Math.abs(c[0] - 5.25) < 1e-6 && Math.abs(c[1] - 10.5) < 1e-6 ? "(5.25, 10.5)  $945" : `(${fmt(c[0])}, ${fmt(c[1])})`;
 const pointMsg = (k, x, y, ok) => `<p class="feedback ${ok ? "ok" : "bad"}">Plan (${fmt(x, 1)}, ${fmt(y, 1)}): LHS evaluates to ${fmt(lhs(k, x, y), 2)} ${k.op === "<=" ? "≤" : "≥"} ${k.c}.
   ${ok ? "✓ Satisfies constraint." : "✕ Violates capacity limit. Choose a point on the feasible side."}</p>`;
 
@@ -2176,22 +2417,6 @@ LESSONS.push({n: 2, title: "Find the best plan",
    show() { regionView({best: true, cornerLabel: bestLabel}); }}
 ]});
 
-/* ═════════ shared parts for Lessons 3–5: Sensitivity Analysis ═════════ */
-const defBox = t => `<div class="defn"><span class="dl">Definition</span><p>${t}</p></div>`;
-const exBox = h => `<div class="exbox"><span class="dl">At Ridgeline</span><div>${h}</div></div>`;
-const scenario = (ico, who, ask) => `<div class="scen"><div class="scen-h"><span class="req-ico">${icon(ico)}</span>
-  <div><span class="dl">Scenario</span><b>${who}</b></div></div><p class="scen-q">${ask}</p><div class="scen-a"></div></div>`;
-/* the side panel: one table of the report, with the page's column lit, plus an optional extra */
-function sidePanel(b, o = {}) {
-  const p = b.panel(reportTables(Object.assign({only: o.table}, o.focus || {}, {rows: o.rows})) + (o.extra || ""));
-  if (o.wait) $$(".report", p).forEach(t => t.classList.add("waiting"));
-  $$("td.hot", p).forEach(td => td.addEventListener("click", () => {
-    $$("td.sel", p).forEach(x => x.classList.remove("sel"));
-    td.classList.add("sel");
-    o.onCell && o.onCell(td.dataset.t, +td.dataset.r, +td.dataset.c);
-  }));
-  return p;
-}
 function explainCell(t, r, c) {
   const row = REPORT[t][r], name = row[1].toLowerCase();
   if (t === "vars") return [null, null,
@@ -2209,7 +2434,6 @@ function explainCell(t, r, c) {
     `Shadow price holds for capacity increases of up to ${row[5] === "1E+30" ? "any amount" : `${row[5]}${r < 2 ? " hours" : ""}`}.`,
     `Shadow price holds for capacity reductions of up to ${row[6]}${r < 2 ? " hours" : ""}.`][c];
 }
-const sayIn = (b, html) => { const r = $(".res", b.host); if (r) r.innerHTML = `<p class="feedback">${html}</p>`; };
 
 /* profit pages (Lesson 3): sliders change a profit per board; the panel shows the
    Variable Cells table and compares the report's prediction with a fresh solve */
@@ -2287,13 +2511,6 @@ function setRHS(b, to, ms = 800) {
   if (el) return tween(el, to, ms);
   return animateValue(b.mem.c, to, ms, v => { b.mem.c = v; rhsShow(b); });
 }
-/* manager's question: the card sits in the block, the question goes inside it */
-function ask(b, ico, who, q, kind, spec, onRight) {
-  b.host.insertAdjacentHTML("beforeend", scenario(ico, who, q));
-  const a = $(".scen-a", b.host);
-  (kind === "num" ? numQ : choiceQ)(a, spec, onRight);
-  a.firstElementChild.classList.add("live");
-}
 
 /* ═════════ 5 · THE REPORT: PRODUCTS (Variable Cells) ═════════ */
 const TRAIL40 = {vars: [["$B$12", "Trail boards", "0", "−3.333333", "40", "3.333333", "1E+30"],
@@ -2302,7 +2519,7 @@ LESSONS.push({n: 3, title: "The report: products", aside: "report-first",
   lead: `Read the <span class="ph">Variable Cells</span> table in Excel's Sensitivity Report: what it says about a change in the profit per board.`,
   blocks: [
   {title: "The Sensitivity Report at a glance",
-   body: () => `<p>Solver reports the optimal plan: <b>5.25 Trail</b> and <b>10.5 Summit</b> boards a week, for a gross profit of <b>$945</b>. Prices and capacities change from week to week, and the <b>Sensitivity Report</b> says how far each one can move before this plan is no longer the best one.</p>
+   body: () => `<p>Solver reports the optimal plan: <b>5.25 Trail</b> and <b>10.5 Summit</b> boards a week, for a gross profit of <b>$945</b>. Prices and capacities change from week to week, and the <b>Sensitivity Report</b> says how far each one can move before a different plan becomes the best one.</p>
      <div class="pair"><div>${icon("tag")}<b>Variable Cells</b><span>One row per board: how many to build, and the profit each one carries.</span></div>
      <div>${icon("gauge")}<b>Constraints</b><span>One row per resource: how much the plan uses, how much is available, and what one more unit is worth (Lesson 4).</span></div></div>
      <p class="note">Click any column header for its definition. In Solver, 1E+30 means there is no limit.</p>`,
@@ -2366,7 +2583,7 @@ LESSONS.push({n: 3, title: "The report: products", aside: "report-first",
      ask(b, "megaphone", "Sales", "Stronger demand lets the shop raise the Summit profit from $65 to $70, a gain of $5 a board. Do the quantities change, and what happens to weekly profit?",
        "num", {prefix: "$", answer: 52.5, hint: "A rise of $5 is within the allowable increase of $10, so the quantities do not change. Multiply the change by Summit's Final Value, 10.5 boards.",
                right: "Correct. 5 × 10.5 = $52.50 more profit a week."},
-       async () => { activate(b); await setProfit(b, "cy", 70); b.complete("The $5 rise is within the allowable increase of $10, so the quantities stay at 5.25 Trail and 10.5 Summit. Weekly profit rises by 5 × 10.5 = <b>$52.50</b>, to $997.50. Above $75 the optimal corner moves to (0, 14) and multiplying no longer works."); });
+       async () => { activate(b); await setProfit(b, "cy", 70); b.complete("The $5 rise is within the allowable increase of $10, so the quantities stay at 5.25 Trail and 10.5 Summit. Weekly profit rises by 5 × 10.5 = <b>$52.50</b>, to $997.50. Above $75 the optimal corner moves to (0, 14) and multiplying stops working."); });
    },
    show: profitShow,
    async demo(b) { await setProfit(b, "cy", 80); await sleep(600); await setProfit(b, "cy", 65); }},
@@ -2413,7 +2630,7 @@ LESSONS.push({n: 4, title: "The report: resources",
      b.mem.w = "fin"; b.mem.c = 21;
      ask(b, "clock", "Purchasing", "Weekend overtime, temporary staff or a leased machine all change how many hours a department has. Which part of the model does that change?", "choice", {options: [
        {t: "The R.H. Side of the constraint", ok: true, why: "Correct. More capacity means a larger right-hand side."}, {t: "The profit per board", why: "Profit per board is an objective coefficient, covered in Lesson 3."},
-       {t: "The Final Value", why: "Final Value is how much the plan uses, not how much is available."}]},
+       {t: "The Final Value", why: "Final Value is the amount the plan uses. The capacity available is the R.H. Side."}]},
        () => b.complete("A change in capacity is a change in the <b>R.H. Side</b>. The Shadow Price column says what one more hour is worth."));
    },
    show: rhsShow},
@@ -2440,7 +2657,7 @@ LESSONS.push({n: 4, title: "The report: resources",
    mount(b) {
      rhsSlider(b, "fab");
      ask(b, "truck", "Purchasing", "A nearby machine shop offers 10 extra fabrication hours. What is the most the shop should pay an hour?", "choice", {options: [
-       {t: "$45", why: "$45 is the shadow price for finishing, not fabrication."}, {t: "$30", why: "That is the wage for finishing overtime."},
+       {t: "$45", why: "$45 is the finishing shadow price. Fabrication's is $0."}, {t: "$30", why: "That is the wage for finishing overtime."},
        {t: "$0", ok: true, why: "Correct. Fabrication hours are already going unused, so more of them cannot raise profit."}]},
        async () => { activate(b); await setRHS(b, 94); b.complete("Turn it down. Fabrication already has 23.625 unused hours, so 10 more leave weekly profit at $945. They are worth <b>$0</b>."); });
    },
@@ -2474,8 +2691,8 @@ LESSONS.push({n: 4, title: "The report: resources",
      rhsSlider(b, "fin");
      ask(b, "clock", "Finishing supervisor", "If the finishing crew offers 10 overtime hours instead of 4, will weekly profit rise by 10 × $45 = $450?", "choice", {options: [
        {t: "Yes, profit rises by $450.", why: "Ten hours is more than the allowable increase of 8.22."},
-       {t: "No. Ten hours is more than the allowable increase of 8.22, so the bottleneck changes and the model has to be solved again.", ok: true, why: "Correct. With 31 hours the optimal profit is $1,354, not $1,395."}]},
-       async () => { activate(b); await setRHS(b, 31); b.complete("Outside the allowable range the shadow price no longer applies. With 31 finishing hours the optimal profit is <b>$1,354</b>, not the $1,395 that multiplying predicts."); });
+       {t: "No. Ten hours is more than the allowable increase of 8.22, so the bottleneck changes and the model has to be solved again.", ok: true, why: "Correct. With 31 hours the optimal profit is $1,354. Multiplying predicts $1,395."}]},
+       async () => { activate(b); await setRHS(b, 31); b.complete("Outside the allowable range the shadow price stops applying. With 31 finishing hours the optimal profit is <b>$1,354</b>, while multiplying predicts $1,395."); });
    },
    show: rhsShow,
    async demo(b) { await setRHS(b, 33, 1600); }}
@@ -2492,32 +2709,6 @@ const QUIZ = [
   {q: "Fabrication hours go from 84 to 70.", kind: "m", ans: 0, why: "A decrease of 14 is within the allowable decrease of 23.625, and the shadow price is 0, so profit does not change."},
   {q: "Finishing hours go from 21 to 15.", kind: "m", ans: -270, why: "A decrease of 6 is within the allowable decrease of 21, so −6 × $45 = −$270."}
 ];
-function runQuiz(b) {
-  let i = 0, right = 0;
-  const marks = QUIZ.map(() => ""), host = b.host;
-  const next = () => {
-    if (i >= QUIZ.length) {
-      host.innerHTML = `<div class="q live"><div class="score">${marks.map(m => `<i class="${m}"></i>`).join("")}</div><p><b>${right} of ${QUIZ.length}</b> correct on the first attempt.</p>
-        <button class="btn small again">Try again</button></div>`;
-      $(".again", host).addEventListener("click", () => runQuiz(b));
-      return b.complete(right === QUIZ.length ? "All eight correct on the first attempt." : "Check any missed case against the Sensitivity Report.");
-    }
-    const q = QUIZ[i];
-    let first = true;
-    host.innerHTML = `<div class="q live"><div class="score">${marks.map((m, j) => `<i class="${m || (j === i ? "c" : "")}"></i>`).join("")}</div>
-      <p class="quiz-q">${i + 1}. ${q.q}</p></div>`;
-    const box = host.firstElementChild;
-    const done = () => { marks[i] = first ? "r" : "w"; if (first) right++; i++; setTimeout(next, 1300); };
-    choiceQ(box, {options: [{t: "Multiply", ok: q.kind === "m", why: q.kind === "m" ? "Correct. The change is inside the allowable range." : q.why + " It is outside the allowable range, so the model has to be solved again."},
-                            {t: "Solve again", ok: q.kind === "r", why: q.kind === "r" ? q.why + " The model has to be solved again." : "The change is inside the allowable range, so multiplying works."}]},
-      () => {
-        if (q.kind === "r") return done();
-        numQ(box, {q: "Net change in weekly profit?", prefix: "$", answer: q.ans, placeholder: "e.g. −45", hint: "Multiply the change by the matching shadow price or Final Value.", right: q.why}, done);
-      });
-    box.addEventListener("click", () => { if ($(".choice.wrong", box) || $(".numin input.wrong", box)) first = false; });
-  };
-  next();
-}
 const DECODER = [
   ["vars", "Final Value", "How many of each product the optimal plan builds"], ["vars", "Reduced Cost", "For a product the plan leaves out: how much its profit must rise before building it is worthwhile"],
   ["vars", "Objective Coefficient", "The profit per board in the objective function"], ["vars", "Allowable Increase / Decrease", "How far the profit per board can move before the quantities change"],
@@ -2545,19 +2736,12 @@ LESSONS.push({n: 5, title: "Use the report", aside: "report-first",
    show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }},
   {title: "Eight cases",
    body: () => `<p class="note">For each case, decide whether the change in profit can be computed from the report or the model has to be solved again. The report is on the right.</p>`,
-   mount(b) { runQuiz(b); },
+   mount(b) { runQuiz(b, QUIZ); },
    show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }}
 ]});
 
 /* ═════════ shared parts for Lessons 6 and 7: whole-number models ═════════ */
 const ROUNDINGS = [[5, 10], [5, 11], [6, 10], [6, 11]];
-const intProfit = (T, S) => 50 * T + 65 * S;
-/* every whole-number plan inside a feasible region */
-function latticePts(cons) {
-  const out = [];
-  for (let T = 0; T <= PLOT.XM; T++) for (let S = 0; S <= PLOT.YM; S++) if (isFeasible(cons, T, S)) out.push([T, S]);
-  return out;
-}
 /* Lessons 6 and 7 crowd the spots the line labels normally sit in, so each view
    places the finishing and fabrication anchors itself. */
 const finCons = (c = 21, finAt = 8.6, fabAt = 10.6) => {
@@ -2569,9 +2753,6 @@ const finCons = (c = 21, finAt = 8.6, fabAt = 10.6) => {
 };
 /* with the bench the two lines run close together, so the labels go to opposite ends */
 const rentCons = y => y ? finCons(29, 11.5, 4.5) : finCons(21);
-/* the reason a whole-number plan fails, named the way the lessons name it */
-const BREAKS = {fab: "the fabrication limit", fin: "the finishing limit", mix: "the dealer mix rule"};
-const breaks = (cons, T, S) => { const k = cons.find(k => !satisfies(k, T, S)); return k ? BREAKS[k.cls] : null; };
 
 /* ═════════ 6 · WHOLE BOARDS ONLY ═════════ */
 LESSONS.push({n: 6, title: "Whole boards only",
@@ -2626,7 +2807,7 @@ LESSONS.push({n: 6, title: "Whole boards only",
   {title: "Every whole-number plan",
    goal: "Look at the plans the shop can actually run.",
    task: "Click the whole-number plan you think earns the most.",
-   body: () => `<p>The feasible region has not changed. What has changed is that only the points with whole coordinates count, and inside this region there are <b>48</b> of them.</p>
+   body: () => `<p>The feasible region stays as it was. Now only the points with whole coordinates count, and inside this region there are <b>48</b> of them.</p>
      <p>They are not evenly spread: the dealer mix rule keeps the region narrow, so <span class="v">T</span> never goes above 5 while <span class="v">S</span> reaches 14.</p>`,
    mount(b) {
      b.host.innerHTML = `<div class="res"></div>`;
@@ -2637,7 +2818,7 @@ LESSONS.push({n: 6, title: "Whole boards only",
        if (!isFeasible(cons, T, S)) { sayIn(b, `(${T}, ${S}) is outside the region: it breaks ${breaks(cons, T, S)}.`); return; }
        b.mem.pick = [T, S];
        const best = T === 3 && S === 12;
-       if (best) b.complete("(3, 12) earns <b>$930</b>, the most any whole-number plan earns here. It is not the rounded plan, and it is not at a corner of the region.");
+       if (best) b.complete("(3, 12) earns <b>$930</b>, the most any whole-number plan earns here. The rounded plan is a different point, and this one sits inside the region, away from every corner.");
        b.def.show(b); draw();
        sayIn(b, `(${T}, ${S}) earns <b>${money(intProfit(T, S), 0)}</b>.` + (best ? "" : " Something on this grid does better."));
      };
@@ -2661,9 +2842,9 @@ LESSONS.push({n: 6, title: "Whole boards only",
      <tr><td>Relaxation</td><td>The corner the graph points at</td><td>5.25</td><td>10.5</td><td><b>$945</b></td></tr>
      <tr><td>Rounded down</td><td>(5.25, 10.5) rounded to whole boards</td><td>5</td><td>10</td><td>$900</td></tr>
      <tr><td>Best whole-number plan</td><td>Searching the 48 grid points</td><td><b>3</b></td><td><b>12</b></td><td><b>$930</b></td></tr></table></div>
-     <p>Rounding gives up <b>$30</b> a week against the best whole-number plan. The more useful point is that it gives up the plan itself: the answer is two Trail boards fewer and two Summit boards more, not a nudge away from (5, 10).</p>`,
-   why: `<p>At the relaxation's corner, finishing and the dealer mix are both binding, which is what pins it to (5.25, 10.5).</p>
-     <p>At (3, 12) finishing is still binding, 21 of 21 hours, but the mix rule has 6 units of slack. The whole-number condition pushes the plan along the finishing line, away from the crossing. Nothing on the graph marks where it lands, which is why it cannot be read off the corners.</p>`,
+     <p>Rounding gives up <b>$30</b> a week against the best whole-number plan. The more useful point is that it gives up the plan itself: the answer moves two Trail boards down and two Summit boards up from the rounded point.</p>`,
+   why: `<p>At the relaxation's corner, finishing and the dealer mix are both binding, and that pins it to (5.25, 10.5).</p>
+     <p>At (3, 12) finishing is still binding, 21 of 21 hours, but the mix rule has 6 units of slack. The whole-number condition pushes the plan along the finishing line, away from the crossing. Nothing on the graph marks where it lands, so it cannot be read off the corners.</p>`,
    whyTitle: "Why the best plan moves so far",
    mount(b) { b.complete(); },
    show() {
@@ -2691,8 +2872,8 @@ LESSONS.push({n: 6, title: "Whole boards only",
 
   {title: "Core principles",
    goal: "Three statements to carry into the next lesson.",
-   body: () => `<div class="rules"><div class="rule">The whole-number condition changes the variables, not the constraints. The region and the lines are the same ones from Lesson 1.</div>
-     <div class="rule">The best whole-number plan need not sit at a corner, and need not sit near the relaxation's answer. Rounding is a guess, not a method.</div>
+   body: () => `<div class="rules"><div class="rule">The whole-number condition restricts the variables and leaves the constraints alone. The region and the lines are the same ones from Lesson 1.</div>
+     <div class="rule">The best whole-number plan can sit anywhere inside the region, including well away from the relaxation's answer, so rounding is only a guess and the grid has to be searched.</div>
      <div class="rule">For a maximization the relaxation's value is an <b>upper bound</b> on the whole-number optimum, so it measures what the condition costs.</div></div>`,
    mount(b) { b.complete(); },
    show() {
@@ -2707,7 +2888,7 @@ const RENT = {hours: 8, base: 300, even: 360};   // the station adds 8 h; worth 
 const rentBest = y => { const p = latticePts(finCons(21 + (y ? RENT.hours : 0)))
   .map(([T, S]) => [intProfit(T, S), T, S]).sort((a, c) => c[0] - a[0])[0]; return {profit: p[0], T: p[1], S: p[2]}; };
 LESSONS.push({n: 7, title: "Yes or no decisions",
-  lead: `Renting a second finishing station is not a quantity. It is taken or it is not, and that is a variable too.`,
+  lead: `Renting a second finishing station is a yes-or-no decision, and that is a variable too.`,
   blocks: [
   {title: "A variable that is 0 or 1",
    goal: "Write a take-it-or-leave-it decision as part of the model.",
@@ -2721,7 +2902,7 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
        <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i>, <i>S</i> ≥ 0 and whole</span><span class="m-tag">Whole boards</span></div>
        <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>y</i> = 0 or 1</span><span class="m-tag new">Rent the bench, or do not</span></div>
      </div>
-     <p>The same <span class="v">y</span> appears twice: once where it buys hours, once where it charges for them. That is what ties the cost to the capacity.</p>`,
+     <p>The same <span class="v">y</span> appears twice: once where it buys hours, once where it charges for them. The repetition ties the cost to the capacity.</p>`,
    terms: ["binary", "fixed"],
    mount(b) { b.complete(); },
    show() { view({cons: finCons(), lines: ALL, region: true}); V.lattice = latticePts(finCons()).map(([x, y]) => ({x, y})); }},
@@ -2739,7 +2920,7 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
        b.def.show(b); draw();
        const r = rentBest(b.mem.y);
        sayIn(b, `Finishing is capped at <b>${21 + (b.mem.y ? RENT.hours : 0)} hours</b>. The best whole-number plan is <b>(${r.T}, ${r.S})</b>, earning <b>${money(r.profit, 0)}</b> before the rent.`);
-       if (b.mem.y === 1) b.complete("With the bench, finishing allows 29 hours and the best whole-number plan becomes <b>(5, 16)</b> at <b>$1,290</b> — $360 more than the $930 without it. The rent still has to come off that.");
+       if (b.mem.y === 1) b.complete("With the bench, finishing allows 29 hours and the best whole-number plan becomes <b>(5, 16)</b> at <b>$1,290</b>, which is $360 more than the $930 without it. The rent still has to come off that.");
      }));
    },
    show(b) {
@@ -2773,7 +2954,7 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
   {title: "Where the decision flips",
    goal: "Find the rent at which the answer changes.",
    task: "Drag the rent until the two answers are worth the same.",
-   body: () => `<p>$300 is this week's quote. What matters for the next one is the rent at which renting stops paying.</p>`,
+   body: () => `<p>$300 is this week's quote. For the next one, the number to know is the rent at which renting stops paying.</p>`,
    mount(b) {
      const id = b.uid("rent");
      b.host.insertAdjacentHTML("afterbegin", slider({id, label: "Weekly rent for the bench", min: 0, max: 600, step: 10,
@@ -2788,14 +2969,14 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
          <div class="stat ${d > 0 ? "" : "muted"}"><span>Rent, net of ${money(v, 0)}</span><b class="num">${money(yes, 0)}</b></div></div>
          <p class="verdict">${Math.abs(d) < 1e-9 ? `<span class="badge">Break-even</span> at ${money(v, 0)} the two answers are worth the same`
            : d > 0 ? `<span class="badge ok">Rent it</span> ${money(d, 0)} better a week` : `<span class="badge bad">Do not rent</span> ${money(-d, 0)} worse a week`}</p></div>`;
-       if (Math.abs(v - RENT.even) < 1e-9) b.complete("The answer flips at <b>$360</b>: that is the extra profit the 8 hours unlock, so any rent below it is worth paying and any rent above it is not.");
+       if (Math.abs(v - RENT.even) < 1e-9) b.complete("The answer flips at <b>$360</b>: that is the extra profit the 8 hours unlock, so a rent below it is worth paying and a rent above it is too dear.");
      };
      b.host.insertAdjacentHTML("beforeend", `<div class="res"></div>`);
      bindSlider(id, v => money(v, 0), v => { activate(b); b.mem.set(v); });
      b.mem.set(RENT.base);
    },
    why: `<p>The 8 hours are worth $360 here, and the finishing shadow price from Lesson 4 was $45 an hour: 8 × $45 = $360. The two agree exactly.</p>
-     <p>That agreement is a property of this instance, not a rule. The shadow price describes the relaxation, where capacity can be used in any fraction. A whole-number model usually cannot take up all of it, so the gain is usually smaller than the shadow price predicts. Check it by solving, not by multiplying.</p>`,
+     <p>That agreement holds for this instance alone. The shadow price describes the relaxation, where capacity can be used in any fraction. A whole-number model usually cannot take up all of it, so the gain is usually smaller than the shadow price predicts. Check it by solving again.</p>`,
    whyTitle: "Why $360 matches 8 × $45, and why that is luck",
    show(b) {
      const cons = rentCons(1), r = rentBest(1);
@@ -2820,7 +3001,7 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
      ask(b, "tag", "Shop manager", "Next week the dealer asks what one more finishing hour is worth, and our model now has whole boards and the rented bench in it. What do we tell them?", "choice", {options: [
        {t: "Solve the model again with 22 hours and compare", ok: true, why: "Correct. For an integer model that is the only dependable way to answer it."},
        {t: "$45, the shadow price from the Sensitivity Report", why: "Solver writes no Sensitivity Report for a model with int or bin constraints, and $45 describes the relaxation."},
-       {t: "Nothing: sensitivity analysis does not apply to integer models", why: "The question is still answerable. What is unavailable is the report, not the answer."}]},
+       {t: "Nothing: sensitivity analysis does not apply to integer models", why: "The report is unavailable. The answer is still obtainable, by solving the model again."}]},
        () => b.complete("With whole numbers in the model, a what-if is answered by solving again. The Sensitivity Report belongs to the relaxation, and the relaxation is now only a bound."));
    },
    show() {
@@ -2830,29 +3011,941 @@ LESSONS.push({n: 7, title: "Yes or no decisions",
        label: x === 5 && y === 16 ? "(5, 16)  $1,290" : ""}));
    }}
 ]});
+  /* every number Lessons 6 and 7 lean on, checked at start-up */
+  CASES.boards.selfCheck = bad => {
+    const int = solveInteger(baseCons(), PROFIT);
+    if (int.x !== 3 || int.y !== 12 || int.value !== 930) bad.push("integer optimum");
+    const ok4 = ROUNDINGS.map(p => isFeasible(baseCons(), ...p));
+    if (ok4.join() !== "true,false,false,false") bad.push("roundings");
+    if (latticePts(baseCons()).length !== 48) bad.push("integer point count");
+    const rented = solveInteger(finCons(21 + RENT.hours), PROFIT);
+    if (rented.x !== 5 || rented.y !== 16 || rented.value !== 1290) bad.push("rented optimum");
+    if (rented.value - int.value !== RENT.even) bad.push("break-even rent");
+  };
+  return LESSONS;
+};
+
+/* the home page for this case */
+CASES.clinic.intro = () => `
+    <div class="intro-body reveal">
+      <h2>Riverside Physical Therapy</h2>
+      <p class="lead">🏥 Riverside Physical Therapy is a solo practice that bills two kinds of visit, an <b>initial evaluation</b> 📋 and a <b>treatment session</b> 🩺. Every Monday the owner sets the week's schedule: how many of each to book. One therapist delivers all of them, and the treatment rooms are shared with the practice next door. The payer contract adds two terms of its own. The question is which schedule brings in the most contribution.</p>
+
+      <div class="table-scroll">
+        <table class="case num">
+          <thead>
+            <tr>
+              <th>Resource or term</th>
+              <th>Evaluation (<i>V</i>)</th>
+              <th>Treatment (<i>T</i>)</th>
+              <th>Available per week</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Contribution per visit</td>
+              <td><b>$200</b></td>
+              <td><b>$90</b></td>
+              <td class="dim">&mdash; maximize</td>
+            </tr>
+            <tr>
+              <td><span class="dot fab"></span>Treatment room hours</td>
+              <td>2.0</td>
+              <td>1.5</td>
+              <td><b>36</b></td>
+            </tr>
+            <tr>
+              <td><span class="dot fin"></span>Therapist hours</td>
+              <td>2.0</td>
+              <td>1.0</td>
+              <td><b>23</b></td>
+            </tr>
+            <tr>
+              <td><span class="dot mix"></span>Care-plan rule</td>
+              <td colspan="2" style="text-align:center">At least two treatment sessions per evaluation</td>
+              <td><b><i>T</i> &ge; 2<i>V</i></b></td>
+            </tr>
+            <tr>
+              <td><span class="dot cap"></span>Network minimum</td>
+              <td colspan="2" style="text-align:center">At least six treatment sessions a week</td>
+              <td><b><i>T</i> &ge; 6</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">An evaluation pays better per therapist hour than a treatment session does, so the payer writes the care-plan rule into the contract. The four colours mark the four constraints, and the lines on every graph below carry the same colours.</p>
+
+      <p class="lead-sm">The same problem in standard linear programming form:</p>
+      <div class="model">
+        <div class="model-row">
+          <span class="m-type">Max</span>
+          <span class="m-expr">200<i>V</i> + 90<i>T</i></span>
+          <span class="m-tag obj">Contribution for the week</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type">s.t.</span>
+          <span class="m-expr">2<i>V</i> + 1.5<i>T</i> &le; 36</span>
+          <span class="m-tag"><span class="dot fab"></span>Treatment rooms, 36 h</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr">2<i>V</i> + <i>T</i> &le; 23</span>
+          <span class="m-tag"><span class="dot fin"></span>Therapist, 23 h</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr">&minus;2<i>V</i> + <i>T</i> &ge; 0</span>
+          <span class="m-tag"><span class="dot mix"></span>Care-plan rule</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr"><i>T</i> &ge; 6</span>
+          <span class="m-tag"><span class="dot cap"></span>Network minimum</span>
+        </div>
+        <div class="model-row sub">
+          <span class="m-type"></span>
+          <span class="m-expr"><i>V</i>, <i>T</i> &ge; 0</span>
+          <span class="m-tag">No negative visits</span>
+        </div>
+      </div>
+    </div>
+`;
+
+/* ---- The clinic course -----------------------------------------------------
+   Riverside Physical Therapy: two visit types, two resources and two contract
+   terms. Four constraints, so Lesson 1 has one more half-plane than the
+   snowboard course; every other lesson matches it block for block.
+   Shared pieces are in lesson-kit.js. Runs inside a function so both courses
+   can use the same helper names.                                          */
+CASES.clinic.lessons = function () {
+  const LESSONS = [];
+  const ALL = [0, 1, 2, 3];
+  const MODEL_HTML = `<div class="model">
+  <div class="model-row"><span class="m-type">Max</span><span class="m-expr">200<i>V</i> + 90<i>T</i></span><span class="m-tag obj">Contribution for the week</span></div>
+  <div class="model-row sub"><span class="m-type">s.t.</span><span class="m-expr">2<i>V</i> + 1.5<i>T</i> ≤ 36</span><span class="m-tag"><span class="dot fab"></span>Treatment rooms, 36 h</span></div>
+  <div class="model-row sub"><span class="m-type"></span><span class="m-expr">2<i>V</i> + <i>T</i> ≤ 23</span><span class="m-tag"><span class="dot fin"></span>Therapist, 23 h</span></div>
+  <div class="model-row sub"><span class="m-type"></span><span class="m-expr">−2<i>V</i> + <i>T</i> ≥ 0</span><span class="m-tag"><span class="dot mix"></span>Care-plan rule</span></div>
+  <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i> ≥ 6</span><span class="m-tag"><span class="dot cap"></span>Network minimum</span></div>
+  <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>V</i>, <i>T</i> ≥ 0</span><span class="m-tag">No negative visits</span></div>
+</div>`;
+  const regionView = (o = {}) => view(Object.assign({lines: ALL, region: true, corners: true}, o));
+  const bestLabel = c => Math.abs(c[0] - 5.75) < 1e-6 && Math.abs(c[1] - 11.5) < 1e-6
+    ? "(5.75, 11.5)  $2,185" : `(${fmt(c[0])}, ${fmt(c[1])})`;
+  const pointMsg = (k, x, y, ok) => `<p class="feedback ${ok ? "ok" : "bad"}">Schedule (${fmt(x, 1)}, ${fmt(y, 1)}): LHS evaluates to ${fmt(lhs(k, x, y), 2)} ${k.op === "<=" ? "≤" : "≥"} ${k.c}.
+    ${ok ? "✓ Satisfies constraint." : "✕ Outside the limit. Choose a point on the feasible side."}</p>`;
+
+  /* ═════════ 1 · DRAW WHAT IS POSSIBLE ═════════ */
+  function sideBlock(i, title, task, rightMsg, demoPt, why) {
+    return {
+      title, task, goal: "Find the side of the line that satisfies the constraint.",
+      body: () => `<p>A constraint draws a line on the graph. Every schedule that satisfies it lies on one side of that line, including the line itself.</p>`,
+      why,
+      show(b) {
+        const done = App.prog[b.key];
+        view({lines: ALL.slice(0, i + 1), halves: ALL.slice(0, done ? i + 1 : i).map(j => ({i: j, cls: baseCons()[j].cls}))});
+        if (done) return;
+        b.click((x, y) => {
+          if (x < 0 || y < 0) return;
+          const k = V.cons[i], ok = satisfies(k, x, y);
+          V.points = [{x, y, ok}];
+          b.host.innerHTML = pointMsg(k, x, y, ok);
+          if (ok) { V.halves = V.halves.concat({i, cls: k.cls}); b.complete(rightMsg); b.click(null); }
+          draw();
+        }, "Click a point on the graph");
+      },
+      async demo(b) { b.sec.graph.onClick && b.sec.graph.onClick(...demoPt); }
+    };
+  }
+  LESSONS.push({n: 1, title: "Draw what is possible",
+    lead: `Each constraint cuts the graph in two. The schedules that satisfy all four form the <span class="ph">feasible region</span>.`,
+    blocks: [
+    {title: "Every point is a week's schedule",
+     goal: "Read a point on the graph as one week of care.",
+     body: () => `<p>Every point on this plane is one week at the clinic: <span class="v">V</span> initial evaluations and <span class="v">T</span> treatment sessions.
+       The model below says which points the clinic can staff, and what each one contributes.</p>${MODEL_HTML}`,
+     mount(b) { b.complete(); },
+     show() { view(); }},
+    sideBlock(0, "Treatment room hours", "Click any point on the feasible side of the blue line (2V + 1.5T ≤ 36).",
+      "Points below the blue line use no more than 36 room hours. That side is now shaded.", [2, 6],
+      "To find which side satisfies a constraint, substitute any point into it. The origin (0, 0) is the quickest: seeing nobody uses no rooms, which is under the limit."),
+    sideBlock(1, "Therapist hours", "Click any point on the feasible side of the coral line (2V + T ≤ 23).",
+      "Points below the coral line use no more than 23 therapist hours.", [2, 8],
+      "An evaluation takes 2 therapist-hours and a treatment session 1. The therapist is the only clinician, so this line is the one that will turn out to matter."),
+    sideBlock(2, "Care-plan rule", "Click any point on the feasible side of the green line (T ≥ 2V).",
+      "Points above the green line satisfy the care-plan rule: at least two treatment sessions for every evaluation.", [2, 12],
+      "The payer will not reimburse an evaluation that leads nowhere, so the contract requires a course of treatment to follow it. T ≥ 2V rearranges to −2V + T ≥ 0, and the points above the green line satisfy it."),
+    sideBlock(3, "Network minimum", "Click any point on the feasible side of the magenta line (T ≥ 6).",
+      "Points above the magenta line meet the network minimum of six treatment sessions a week.", [3, 10],
+      "Staying in network carries a floor as well as a ratio: at least six treatment sessions a week. It is a horizontal line, because it says nothing about evaluations."),
+    {title: "The feasible region",
+     goal: "See which schedules satisfy all four constraints at once.",
+     body: () => `<p>The area where <b>every</b> constraint holds is the <b>feasible region</b>, shaded in maroon.
+       Any point inside it is a <b>feasible solution</b>: the clinic has the therapist time and the rooms to deliver it, and the contract allows it.</p>
+       <p>The region has four <b>corners</b>: (0, 6), (0, 23), (3, 6) and (5.75, 11.5).</p>`,
+     why: "The non-negativity conditions V ≥ 0 and T ≥ 0 keep the region in the first quadrant. The clinic cannot deliver a negative number of visits.",
+     mount(b) { b.complete(); },
+     show() { regionView(); }},
+    {title: "Test a schedule",
+     goal: "Check one schedule against all four constraints.",
+     task: "Drag the violet probe around the graph. Find an infeasible schedule, then move it back inside the region.",
+     body: () => `<p>A schedule is feasible only if it satisfies all four constraints. The table below updates as you move the probe.</p>`,
+     mount(b) {
+       b.host.innerHTML = `<div class="ptbtns"><button class="btn pick small" data-p="3,10">(3, 10)</button><button class="btn pick small" data-p="5,14">(5, 14)</button>
+         <button class="btn pick small" data-p="7,8">(7, 8)</button></div><div class="res"></div>`;
+       b.mem.p = [3, 10]; b.mem.seen = new Set();
+       b.mem.test = (x, y) => {
+         activate(b);
+         const cons = baseCons(), ok = isFeasible(cons, x, y), value = CASE.obj.cx * x + CASE.obj.cy * y;
+         b.mem.p = [x, y]; b.mem.seen.add(ok);
+         V.probe = {x, y, ok, onMove: b.mem.test};
+         $(".res", b.host).innerHTML = `<p style="margin:.6rem 0 0"><b class="num">(${fmt(x, 1)}, ${fmt(y, 1)})</b> <span class="badge ${ok ? "ok" : "bad"}">${ok ? "Feasible" : "Infeasible"}</span>
+           <span class="note num">weekly contribution ${money(value, 0)}</span></p>${checkTable(cons, x, y)}`;
+         draw();
+         if (b.mem.seen.size === 2) b.complete("Inside the shaded region every limit holds. Cross any boundary and at least one constraint fails.");
+       };
+       $$(".pick", b.host).forEach(x => x.addEventListener("click", () => b.mem.test(...x.dataset.p.split(",").map(Number))));
+     },
+     show(b) { regionView(); b.mem.test(...b.mem.p); b.click(b.mem.test, "Drag the violet dot, or click anywhere on the grid"); },
+     async demo(b) { await animateValue(0, 1, 1400, t => b.mem.test(3 + 3 * t, 10 + 2 * t)); }},
+    {title: "Unused capacity (slack and surplus)",
+     goal: "Tell a binding constraint from one with room to spare.",
+     body: () => `<p>Two of the four lines sit away from the best corner.</p>
+       <p>At the corner (5.75, 11.5) the clinic uses <b>28.75</b> of its 36 room hours, leaving <b>7.25 hours unused</b>. That unused amount on a ≤ constraint is its <b>slack</b>.</p>
+       <p>The network minimum is the other kind. It asks for 6 treatment sessions and the schedule delivers 11.5, so it clears the floor by <b>5.5 sessions</b>. On a ≥ constraint that margin is called <b>surplus</b>.</p>
+       <p>Therapist hours and the care-plan rule are what actually limit the clinic.</p>`,
+     why: "<p>Slack and surplus are the same idea from opposite sides: how far a constraint is from being tight. Both matter in Lesson 4, where a constraint with either one turns out to be worth nothing at the margin.</p>",
+     whyTitle: "Slack, surplus, and why both are zero at a binding constraint",
+     mount(b) { b.complete(); },
+     show() {
+       regionView();
+       const s = V.cons[0], t = (s.c - (s.a * 5.75 + s.b * 11.5)) / (s.a * s.a + s.b * s.b);
+       const px = 5.75 + s.a * t, py = 11.5 + s.b * t;
+       V.extra = [`<line class="g-gap" x1="${X(5.75)}" y1="${Y(11.5)}" x2="${X(px)}" y2="${Y(py)}"/>
+         <text class="g-gaplab" x="${X((5.75 + px) / 2) + 10}" y="${Y((11.5 + py) / 2) + 18}">7.25 h unused</text>`];
+     }}
+  ]});
+
+  /* ═════════ 2 · FIND THE BEST PLAN ═════════ */
+  const BEST_V = 2185, LOW_V = 540;   // the best and the worst corner of the region
+  function isoBlock(b, start, onMove) {
+    const id = b.uid("iso");
+    /* the step has to divide 2,185, or the line can never stop on the optimum */
+    b.host.innerHTML = `${slider({id, label: "Contribution target", min: 0, max: 3200, step: 5, value: start, fmt: v => money(v, 0)})}
+      <div class="stat" id="${id}-stat"><span>Feasible schedules at this level</span><b class="num" id="${id}-msg"></b></div>`;
+    b.mem.iso = start;
+    b.mem.setIso = v => {
+      /* the network minimum puts a floor under the region too: (0, 6) is worth $540 */
+      const high = v > BEST_V + 1e-9, low = v < LOW_V - 1e-9, off = high || low;
+      b.mem.iso = v;
+      if (CUR === b.sec && b.sec.active === b) { V.iso = {cx: 200, cy: 90, value: v, off, label: off ? `${money(v, 0)}: no feasible schedule` : `Contribution ${money(v, 0)}`}; draw(); }
+      $(`#${id}-msg`).textContent = high ? "None feasible (exceeds capacity)"
+        : low ? "None feasible (below the network minimum)"
+        : v === BEST_V ? "Unique optimum: (5.75, 11.5)"
+        : v === LOW_V ? "One schedule only: (0, 6)"
+        : "Multiple feasible schedules";
+      $(`#${id}-stat`).className = "stat " + (off ? "bad" : "ok");
+      onMove && onMove(v);
+    };
+    bindSlider(id, v => money(v, 0), v => { activate(b); b.mem.setIso(v); });
+    b.mem.setIso(start);
+  }
+  LESSONS.push({n: 2, title: "Find the best plan",
+    lead: `Slide a contribution line across the feasible region. The last point it touches is the <span class="ph">optimal schedule</span>.`,
+    blocks: [
+    {title: "Equal-contribution lines",
+     goal: "See which schedules bring in the same money.", task: "Drag the contribution target and watch the line move.",
+     body: () => `<p>Every point on the dashed line brings in the same contribution. A $900 target is the line 200<span class="v">V</span> + 90<span class="v">T</span> = 900.</p>`,
+     why: "Changing the target changes only the constant on the right, so the line moves without turning. Every one of these lines has the same slope, −200/90.",
+     mount(b) { isoBlock(b, 900, v => { if (Math.abs(v - 900) >= 500) b.complete("The line moves parallel to itself. A higher target puts it further from the origin."); }); },
+     show(b) { regionView(); b.mem.setIso(b.mem.iso); },
+     async demo(b) { await tween($("#" + b.uid("iso")), 1800); }},
+    {title: "Maximizing the objective",
+     goal: "Find the highest contribution the region allows.", task: "Raise the target until the line is about to leave the feasible region.",
+     body: () => `<p>The clinic wants the highest weekly contribution its therapist time allows.</p>`,
+     mount(b) { isoBlock(b, 1400, v => { if (v >= 2180) b.complete("The last point the line touches is (5.75, 11.5), a contribution of $2,185 for the week."); }); },
+     show(b) { regionView(); b.mem.setIso(b.mem.iso); },
+     async demo(b) { await tween($("#" + b.uid("iso")), 2185, 1400); }},
+    {title: "The optimal schedule",
+     goal: "Read the optimal schedule and what it brings in.",
+     body: () => `<p>The <b>optimal solution</b> is the feasible schedule that maximizes the objective function.</p>
+       <div class="readout"><div class="stat"><span>Initial evaluations (V)</span><b class="num">5.75</b></div>
+       <div class="stat"><span>Treatment sessions (T)</span><b class="num">11.5</b></div>
+       <div class="stat ok"><span>Optimal weekly contribution</span><b class="num best-p">$2,185</b></div></div>`,
+     why: "A schedule of 5.75 evaluations a week is an average rate: 23 evaluations over four weeks. When the answer has to be a whole number, the problem becomes an integer program, which is Lesson 6.",
+     mount(b) { b.complete(); },
+     show(b) { regionView({best: true, cornerLabel: bestLabel, iso: {cx: 200, cy: 90, value: 2185}}); const e = $(".best-p", b.el); e.dataset.v = 0; countTo(e, 2185); }},
+    {title: "The Corner Point Theorem",
+     goal: "Check the answer by computing the contribution at every corner.", task: "Click each of the four corners to compute its contribution.",
+     body: () => `<p>If a linear program has an optimal solution, that solution is at one of the <b>corners</b> of the feasible region. With four corners here, computing the contribution at each one settles the question.</p>`,
+     mount(b) {
+       b.host.innerHTML = `<table class="checks num"><tr><td>(0, 6)</td><td>200(0) + 90(6)</td><td data-c="0">?</td></tr>
+         <tr><td>(3, 6)</td><td>200(3) + 90(6)</td><td data-c="1">?</td></tr>
+         <tr><td>(0, 23)</td><td>200(0) + 90(23)</td><td data-c="2">?</td></tr>
+         <tr><td>(5.75, 11.5)</td><td>200(5.75) + 90(11.5)</td><td data-c="3">?</td></tr></table>`;
+       const C = [[0, 6], [3, 6], [0, 23], [5.75, 11.5]], seen = new Set();
+       b.mem.C = C;
+       b.mem.show = i => {
+         seen.add(i);
+         const td = $(`td[data-c="${i}"]`, b.host); td.dataset.v = 0; countTo(td, 200 * C[i][0] + 90 * C[i][1]);
+         if (seen.size === 4) {
+           $(`td[data-c="3"]`, b.host).parentElement.style.background = "#FFF2C2";
+           if (b.sec.active === b) { V.best = true; V.cornerLabel = bestLabel; draw(); }
+           b.complete("(5.75, 11.5) brings in $2,185, more than the other three corners. It matches what the contribution line found.");
+         }
+       };
+     },
+     show(b) {
+       regionView({best: !!App.prog[b.key], cornerLabel: App.prog[b.key] ? bestLabel : null});
+       b.click((x, y) => { const i = b.mem.C.findIndex(c => Math.hypot(X(c[0]) - X(x), Y(c[1]) - Y(y)) < 30); if (i >= 0) b.mem.show(i); }, "Click a corner");
+     },
+     async demo(b) { for (const i of [0, 1, 2, 3]) { b.mem.show(i); await sleep(650); } }},
+    {title: "Core principles",
+     goal: "Three definitions to carry into the next lessons.",
+     body: () => `<div class="rules"><div class="rule">A <b>feasible solution</b> satisfies every constraint. The <b>feasible region</b> holds all of them.</div>
+       <div class="rule">The <b>optimal solution</b> is the feasible schedule achieving the best objective value (highest contribution or lowest cost).</div>
+       <div class="rule"><b>Corner Point Theorem:</b> if a linear program has an optimal solution, that solution is at a corner of the feasible region.</div></div>`,
+     mount(b) { b.complete(); },
+     show() { regionView({best: true, cornerLabel: bestLabel}); }}
+  ]});
+
+  /* ═════════ shared parts for Lessons 3–5: Sensitivity Analysis ═════════ */
+  function explainCell(t, r, c) {
+    const row = REPORT[t][r], name = row[1].toLowerCase();
+    if (t === "vars") return [null, null,
+      `The optimal schedule books ${row[2]} ${name} a week.`,
+      `Reduced cost is ${row[3]}: the schedule books this visit type.`,
+      `Contribution per visit in the objective: $${row[4]}.`,
+      `Contribution per visit can rise by ${row[5] === "1E+30" ? "any amount: there is no limit" : "$" + row[5]} before the optimal schedule changes.`,
+      `Contribution per visit can fall by up to $${row[6]} before the optimal schedule changes.`][c];
+    const res = ["treatment room hours", "therapist hours", "the care-plan right-hand side", "the network minimum"][r];
+    return [null, null,
+      ["Uses 28.75 of the 36 room hours, leaving 7.25 hours of slack.",
+       "Uses all 23 therapist hours, so the constraint is binding.",
+       "At the optimal corner −2V + T = 0, so the care-plan rule is binding.",
+       "The schedule books 11.5 treatment sessions against a floor of 6, a surplus of 5.5."][r],
+      `Shadow price is ${row[3]}: one more unit of ${res} changes weekly contribution by ${row[3]}.`,
+      `Right-hand side: ${row[4]}${r < 2 ? " hours" : ""}.`,
+      `Shadow price holds for increases of up to ${row[5] === "1E+30" ? "any amount" : `${row[5]}${r < 2 ? " hours" : ""}`}.`,
+      `Shadow price holds for reductions of up to ${row[6] === "1E+30" ? "any amount" : `${row[6]}${r < 2 ? " hours" : ""}`}.`][c];
+  }
+
+  /* contribution pages (Lesson 3): sliders change a contribution per visit */
+  const TREAT = {min: 40, max: 160, band: [-100, 100], mark: 90, legend: "<span>$40</span><span>green: allowable range</span><span>$160</span>"};
+  const EVAL = {min: 120, max: 320, band: [180, 2000], mark: 200, legend: "<span>$120</span><span>green: allowable range</span><span>$320</span>"};
+  function profitReadout(m) {
+    const sol = solveLP(baseCons(), {cx: m.cx, cy: m.cy, sense: "max"});
+    const inside = m.cy <= 100 + 1e-9 && m.cx >= 180 - 1e-9, dc = (m.cx - 200) * 5.75 + (m.cy - 90) * 11.5;
+    return {sol, inside, html: `<div class="readout tight">
+      <div class="stat ${inside ? "ok" : "bad"}"><span>Optimal schedule at ${money(m.cx)} / ${money(m.cy)}</span><b class="num">V ${fmt(sol.x)}, T ${fmt(sol.y)}</b></div>
+      <div class="panel-row"><div class="stat ${inside ? "" : "muted"}"><span>Report: 2,185 ${dc < 0 ? "−" : "+"} ${fmt(Math.abs(dc))}</span><b class="num">${money(2185 + dc)}</b></div>
+      <div class="stat"><span>Solved again</span><b class="num">${money(sol.value)}</b></div></div>
+      <p class="verdict">${inside ? `<span class="badge ok">✓ Schedule unchanged</span> the report's number is exact` : `<span class="badge bad">✕ Schedule changed</span> solve again; the report's number is wrong`}</p></div>`};
+  }
+  function profitShow(b) {
+    const m = b.mem, r = profitReadout(m);
+    view({lines: ALL, region: true, corners: true, best: true, obj: {cx: m.cx, cy: m.cy, sense: "max"},
+          iso: {cx: m.cx, cy: m.cy, value: r.sol.value, label: `Contribution ${money(r.sol.value)}`}, animate: false});
+    if (CUR === b.sec && b.sec.active === b) { draw(); sidePanel(b, {table: "vars", focus: b.def.focus, extra: r.html}); }
+    return r;
+  }
+  function profitSliders(b, which, onChange) {
+    b.mem.cx = 200; b.mem.cy = 90;
+    b.host.insertAdjacentHTML("afterbegin", which.map(w => slider(Object.assign({id: b.uid(w),
+      label: w === "cy" ? "Contribution per treatment session" : "Contribution per evaluation",
+      step: 5, value: b.mem[w], fmt: v => money(v)}, w === "cy" ? TREAT : EVAL))).join(""));
+    which.forEach(w => bindSlider(b.uid(w), v => money(v), v => { b.mem[w] = v; activate(b); const r = profitShow(b); onChange && onChange(b.mem, r.inside); }));
+  }
+  function setProfit(b, w, to) {
+    const el = $("#" + b.uid(w));
+    if (el) return tween(el, to, 800);
+    return animateValue(b.mem[w], to, 800, v => { b.mem[w] = v; profitShow(b); });
+  }
+
+  /* hours pages (Lesson 4): a slider or a dragged line changes a right-hand side */
+  const RHS = {
+    ther: {i: 1, label: "Therapist hours available", min: 0, max: 40, step: .25, base: 23, band: [12, 28.8], xt: [0, 12, 23, 40], sp: 95, lab: "slope 95 = shadow price"},
+    room: {i: 0, label: "Treatment room hours available", min: 20, max: 60, step: .5, base: 36, band: [28.75, 1e9], xt: [20, 30, 36, 60], sp: 0, lab: "slope 0 = shadow price"},
+    plan: {i: 2, label: "Care-plan right-hand side", min: -16, max: 26, step: .5, base: 0, band: [-11, 23], xt: [-16, -8, 0, 23], sp: -5, lab: "slope −5 = shadow price"},
+    floor: {i: 3, label: "Network minimum", min: 0, max: 20, step: .5, base: 6, band: [0, 11.5], xt: [0, 6, 12, 20], sp: 0, lab: "slope 0 = shadow price"}
+  };
+  const SAMPLES = {};
+  function samples(w) {
+    if (SAMPLES[w]) return SAMPLES[w];
+    const R = RHS[w], out = [];
+    for (let k = 0; k <= 160; k++) { const c = R.min + (R.max - R.min) * k / 160, cons = baseCons(); cons[R.i].c = c; out.push([c, solveLP(cons, PROFIT).value ?? null]); }
+    return (SAMPLES[w] = out);
+  }
+  function rhsShow(b) {
+    const m = b.mem, R = RHS[m.w], cons = baseCons(); cons[R.i].c = m.c;
+    m.seen = m.seen || [R.base, R.base];
+    m.seen[0] = Math.min(m.seen[0], m.c); m.seen[1] = Math.max(m.seen[1], m.c);
+    const sl = $("#" + b.uid("rhs"));
+    view({cons, lines: ALL, region: true, corners: true, best: true, animate: false,
+          drag: sl ? {i: R.i, at: m.w === "plan" ? .55 : .8, onDrag: c => { sl.value = Math.max(R.min, Math.min(R.max, Math.round(c / R.step) * R.step)); sl.dispatchEvent(new Event("input")); }} : null});
+    if (!(CUR === b.sec && b.sec.active === b)) return solveLP(cons, PROFIT);
+    const sol = draw(), all = samples(m.w), span = [Math.max(R.min, R.band[0]), Math.min(R.max, R.band[1])];
+    const head = `<h4>${R.label.replace(" available", "")}: <b>${fmt(m.c, 2)}</b>${sol.status === "infeasible" ? "" : `, optimal contribution <b>${money(sol.value)}</b>`}</h4>`;
+    const usage = sol.status === "infeasible" ? `<p class="feedback bad">No feasible schedule.</p>` : usageBars(cons, sol);
+    const curve = curveChart({x0: R.min, x1: R.max, y0: 0, y1: 3000, xt: R.xt, yt: [0, 1500, 3000], all,
+      seen: all.filter(p => p[0] >= m.seen[0] - 1e-9 && p[0] <= m.seen[1] + 1e-9), band: span, bandLabel: R.lab, now: [m.c, sol.value ?? null],
+      xlabel: R.label.replace(" available", ""), tan: [[span[0], 2185 + R.sp * (span[0] - R.base)], [span[1], 2185 + R.sp * (span[1] - R.base)]],
+      aria: "Optimal contribution against the right-hand side"});
+    const extra = b.def.extra === "usage" ? `<div class="pextra">${head}${usage}</div>` :
+                  b.def.extra === "curve" ? `<div class="pextra">${head}${curve}</div>` : `<div class="pextra panel-row"><div>${head}${usage}</div><div>${curve}</div></div>`;
+    sidePanel(b, {table: "cons", focus: b.def.focus, extra});
+    return sol;
+  }
+  function rhsSlider(b, w, onChange, opts = {}) {
+    const R = RHS[w];
+    b.mem.w = w; b.mem.c = R.base; if (opts.seen) b.mem.seen = opts.seen.slice();
+    b.host.insertAdjacentHTML("afterbegin", slider({id: b.uid("rhs"), label: R.label, min: R.min, max: R.max, step: R.step, value: R.base, fmt: v => fmt(v, 2), band: R.band, mark: R.base}));
+    bindSlider(b.uid("rhs"), v => fmt(v, 2), v => { b.mem.c = v; activate(b); const sol = rhsShow(b); onChange && onChange(v, sol); });
+  }
+  function setRHS(b, to, ms = 800) {
+    const el = $("#" + b.uid("rhs"));
+    if (el) return tween(el, to, ms);
+    return animateValue(b.mem.c, to, ms, v => { b.mem.c = v; rhsShow(b); });
+  }
+
+  /* ═════════ 3 · THE REPORT: VISITS (Variable Cells) ═════════ */
+  const EVAL170 = {vars: [["$B$12", "Initial evaluations", "0", "−10", "170", "10", "1E+30"],
+                          ["$C$12", "Treatment sessions", "23", "0", "90", "1E+30", "5"]]};
+  LESSONS.push({n: 3, title: "The report: visits", aside: "report-first",
+    lead: `Read the <span class="ph">Variable Cells</span> table in Excel's Sensitivity Report: what it says about a change in what a visit contributes.`,
+    blocks: [
+    {title: "The Sensitivity Report at a glance",
+     body: () => `<p>Solver reports the optimal schedule: <b>5.75 evaluations</b> and <b>11.5 treatment sessions</b> a week, for a contribution of <b>$2,185</b>. Reimbursement rates and staffing change from week to week, and the <b>Sensitivity Report</b> says how far each one can move before a different schedule becomes the best one.</p>
+       <div class="pair"><div>${icon("tag")}<b>Variable Cells</b><span>One row per visit type: how many to book, and what each one contributes.</span></div>
+       <div>${icon("gauge")}<b>Constraints</b><span>One row per resource or contract term, four in all: how much the schedule uses, what is available, and what one more unit is worth (Lesson 4).</span></div></div>
+       <p class="note">Click any column header for its definition. In Solver, 1E+30 means there is no limit.</p>`,
+     mount(b) { b.complete(); },
+     show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }},
+    {title: "Final Value",
+     body: () => defBox("How many of each visit type the optimal schedule books.") +
+       exBox(`Book <b>5.75</b> evaluations and <b>11.5</b> treatment sessions a week. This is the gold corner on the graph.`),
+     task: "Click both Final Value numbers in the table.",
+     mount(b) {
+       b.host.innerHTML = `<div class="res"></div>`; b.mem.seen = new Set();
+       b.mem.cell = (t, r, c) => { sayIn(b, explainCell(t, r, c)); if (t === "vars" && c === 2) b.mem.seen.add(r);
+         if (b.mem.seen.size === 2) { V.cornerLabel = bestLabel; draw(); b.host.querySelector(".scen") || ask(b, "board", "Practice owner",
+           "According to this report, how many of each visit should we book this week?", "choice", {options: [
+             {t: "5.75 evaluations and 11.5 treatment sessions", ok: true, why: "Correct. Final Value is the quantity to book."},
+             {t: "200 evaluations and 90 treatment sessions", why: "Those are the contributions per visit, in the Objective Coefficient column."}]},
+           () => b.complete("Final Value gives the week's schedule: 5.75 evaluations and 11.5 treatment sessions, or 23 and 46 over four weeks. The other columns say how far a contribution can move before that schedule changes.")); } };
+     },
+     show(b) { regionView({best: true}); sidePanel(b, {table: "vars", focus: {cols: [2]}, wait: true, onCell: b.mem.cell}); },
+     async demo(b) { for (const r of [0, 1]) { $(`.panel td[data-t="vars"][data-r="${r}"][data-c="2"]`, b.sec.el).click(); await sleep(600); } }},
+    {title: "Reduced Cost",
+     body: () => defBox("For a visit type the schedule leaves out, the reduced cost is how much its contribution must rise before booking it is worthwhile. For a type the schedule books, it is zero.") +
+       exBox(`The schedule books both types, so both reduced costs are <b>$0</b>. A non-zero reduced cost appears only if an evaluation's contribution falls to $170.`),
+     task: "Switch the evaluation contribution to $170 and read the table again.",
+     mount(b) {
+       b.mem.cut = false;
+       b.host.innerHTML = `<div class="seg live"><button class="on" data-v="0">Evaluation $200</button><button data-v="1">Evaluation $170</button></div><div class="res"></div>`;
+       $$(".seg button", b.host).forEach(x => x.addEventListener("click", () => {
+         activate(b); b.mem.cut = x.dataset.v === "1";
+         $$(".seg button", b.host).forEach(y => y.classList.toggle("on", y === x));
+         b.def.show(b); draw();
+         if (b.mem.cut && !b.host.querySelector(".scen")) ask(b, "store", "Billing lead",
+           "A payer renegotiation would cut the evaluation rate to $170, and Solver then books no evaluations at all. By how much must the rate recover before booking them is worthwhile again?",
+           "num", {prefix: "$", answer: 10, tol: .02, hint: "Check the evaluation's Reduced Cost in the table: −10.",
+                   right: "Correct. The evaluation contribution must rise by $10, to $180, before the schedule books them again."},
+           () => b.complete("The evaluation's reduced cost is −$10: its contribution must rise by $10, to $180, before the schedule books evaluations again."));
+       }));
+     },
+     show(b) {
+       const cut = b.mem.cut;
+       regionView({best: true, cornerLabel: bestLabel, obj: {cx: cut ? 170 : 200, cy: 90, sense: "max"}});
+       sidePanel(b, {table: "vars", focus: {cols: [2, 3]}, rows: cut ? EVAL170 : null,
+         extra: `<p class="verdict">${cut ? `At $170 the optimal schedule moves to <b>(0, 23)</b>, a contribution of <b>$2,070</b>, with no evaluations at all.` : `At $200 the optimal schedule books both visit types.`}</p>`});
+     },
+     async demo(b) { $$(".seg button", b.host)[1].click(); }},
+    {title: "Objective Coefficient",
+     body: () => defBox("The contribution per visit that each type carries in the objective function.") +
+       exBox(`In Max <b>200</b>V + <b>90</b>T the contributions are $200 an evaluation and $90 a treatment session. The two coefficients set the slope of the contribution line.`),
+     mount(b) {
+       ask(b, "tag", "Billing lead", "If a payer updates its fee schedule, which column of this table changes?", "choice", {options: [
+         {t: "Objective Coefficient", ok: true, why: "Correct. A rate change moves the contribution per visit."},
+         {t: "Final Value", why: "Final Value is the quantity booked. It changes only if the rate change moves the optimal corner."},
+         {t: "Reduced Cost", why: "Reduced Cost applies to a visit type the schedule does not book."}]},
+         () => b.complete("A rate change moves an <b>Objective Coefficient</b>. Allowable Increase and Allowable Decrease say how far it can move before the schedule changes."));
+     },
+     show(b) { regionView({best: true, cornerLabel: bestLabel, iso: {cx: 200, cy: 90, value: 2185, label: "200V + 90T = 2,185"}}); sidePanel(b, {table: "vars", focus: {cols: [4]}}); }},
+    {title: "Allowable Increase",
+     focus: {cols: [4, 5]},
+     body: () => defBox("How far an objective coefficient can <b>rise</b> before the optimal schedule changes.") +
+       exBox(`Treatment: $90 + <b>$10</b> = <b>$100</b>. The schedule is unchanged as long as a treatment session stays at or below $100. The evaluation shows 1E+30, so there is no upper limit.`),
+     task: "Drag the treatment contribution up to $100, then past it, and watch the optimal corner.",
+     mount(b) {
+       profitSliders(b, ["cy"]);
+       ask(b, "megaphone", "Practice owner", "A payer raises the treatment rate from $90 to $95, a gain of $5 a session. Do the quantities change, and what happens to weekly contribution?",
+         "num", {prefix: "$", answer: 57.5, hint: "A rise of $5 is within the allowable increase of $10, so the quantities do not change. Multiply the change by the treatment Final Value, 11.5 sessions.",
+                 right: "Correct. 5 × 11.5 = $57.50 more a week."},
+         async () => { activate(b); await setProfit(b, "cy", 95); b.complete("The $5 rise is within the allowable increase of $10, so the schedule stays at 5.75 evaluations and 11.5 treatment sessions. Weekly contribution rises by 5 × 11.5 = <b>$57.50</b>, to $2,242.50. Above $100 the optimal corner moves to (0, 23) and multiplying stops working."); });
+     },
+     show: profitShow,
+     async demo(b) { await setProfit(b, "cy", 110); await sleep(600); await setProfit(b, "cy", 90); }},
+    {title: "Allowable Decrease",
+     focus: {cols: [4, 6]},
+     body: () => defBox("How far an objective coefficient can <b>fall</b> before the optimal schedule changes.") +
+       exBox(`Evaluation: $200 − <b>$20</b> = <b>$180</b>. The schedule is unchanged as long as an evaluation stays at or above $180. For a treatment session the allowable decrease is $190.`),
+     task: "Drag the evaluation contribution below $180 and watch the optimal corner move.",
+     mount(b) {
+       profitSliders(b, ["cx"]);
+       ask(b, "store", "Billing lead", "A renegotiation would cut the evaluation rate from $200 to $170, a drop of $30. Can the change in contribution be read off the report by multiplying?",
+         "choice", {options: [{t: "Yes. Contribution falls by 30 × 5.75 = $172.50, to $2,012.50.", why: "The allowable decrease is only $20, so a $30 drop is outside the range."},
+                              {t: "No. A $30 drop is more than the allowable decrease of $20, so the schedule changes and the model has to be solved again.", ok: true, why: "Correct. Solving again gives 0 evaluations and 23 treatment sessions, a contribution of $2,070."}]},
+         async () => { activate(b); await setProfit(b, "cx", 170); b.complete("A $30 drop is more than the allowable decrease of $20. The optimal schedule moves to <b>0 evaluations and 23 treatment sessions</b>, a contribution of <b>$2,070</b>. Outside the allowable range, multiplying does not work."); });
+     },
+     show: profitShow,
+     async demo(b) { await setProfit(b, "cx", 170); }}
+  ]});
+
+  /* ═════════ 4 · THE REPORT: RESOURCES AND TERMS (Constraints) ═════════ */
+  LESSONS.push({n: 4, title: "The report: resources",
+    lead: `Read the <span class="ph">Constraints</span> table in Excel's Sensitivity Report: which of the four is the bottleneck, and what one more hour of it is worth.`,
+    blocks: [
+    {title: "Final Value: what the schedule uses",
+     body: () => defBox("The left-hand side of the constraint at the optimal solution: how much of the resource the schedule uses, or what level it reaches on a contract term.") +
+       exBox(`Rooms use <b>28.75</b> of 36 hours. The therapist uses all <b>23</b>. The care-plan left-hand side is <b>0</b>, and the schedule books <b>11.5</b> treatment sessions against a floor of 6.`) +
+       `<div class="pair"><div><b>Binding</b><span>Nothing left over. The therapist and the care-plan rule.</span></div><div><b>Slack or surplus</b><span>Room to spare. Rooms have 7.25 hours of slack; the network minimum has 5.5 sessions of surplus.</span></div></div>`,
+     task: "Click the Final Value of each of the four constraints.",
+     extra: "usage", focus: {cols: [2, 4]},
+     mount(b) {
+       b.mem.w = "ther"; b.mem.c = 23; b.host.innerHTML = `<div class="res"></div>`; b.mem.seen = new Set();
+       b.mem.cell = (t, r, c) => { sayIn(b, explainCell(t, r, c)); if (c === 2) b.mem.seen.add(r);
+         if (b.mem.seen.size === 4 && !b.host.querySelector(".scen")) ask(b, "gauge", "Practice owner", "Which of the four is the bottleneck?", "choice", {options: [
+           {t: "Therapist hours, which are fully used", ok: true, why: "Correct. The therapist is fully used, so the constraint is binding."},
+           {t: "Treatment rooms, which carry the most hours", why: "Rooms still have 7.25 hours unused."},
+           {t: "The network minimum, because it is a contract term", why: "The schedule clears that floor by 5.5 sessions, so it has room to spare."}]},
+           () => b.complete("The <b>therapist</b> limits the clinic, together with the care-plan rule. Rooms have <b>7.25 hours of slack</b> and the network minimum <b>5.5 sessions of surplus</b>. The next steps ask what one more unit of each is worth.")); };
+     },
+     show(b) { rhsShow(b); $$(".panel td.hot", b.sec.el).forEach(td => td.addEventListener("click", () => b.mem.cell(td.dataset.t, +td.dataset.r, +td.dataset.c))); $$('.panel .report', b.sec.el).forEach(t => t.classList.add("waiting")); },
+     async demo(b) { for (const r of [0, 1, 2, 3]) { $(`.panel td[data-t="cons"][data-r="${r}"][data-c="2"]`, b.sec.el).click(); await sleep(500); } }},
+    {title: "Constraint R.H. Side",
+     body: () => defBox("The constant on the right of a constraint: the capacity available, or the level a contract requires.") +
+       exBox(`<b>36</b> room hours, <b>23</b> therapist hours, <b>0</b> for the care-plan rule and <b>6</b> for the network minimum.`),
+     extra: "usage", focus: {cols: [4]},
+     mount(b) {
+       b.mem.w = "ther"; b.mem.c = 23;
+       ask(b, "clock", "Practice owner", "Per-diem cover, a longer clinic day or renting a third room all change what is available. Which part of the model does that change?", "choice", {options: [
+         {t: "The R.H. Side of the constraint", ok: true, why: "Correct. More capacity means a larger right-hand side."},
+         {t: "The contribution per visit", why: "That is an objective coefficient, covered in Lesson 3."},
+         {t: "The Final Value", why: "Final Value is the amount the schedule uses. The capacity available is the R.H. Side."}]},
+         () => b.complete("A change in capacity is a change in the <b>R.H. Side</b>. The Shadow Price column says what one more hour is worth."));
+     },
+     show: rhsShow},
+    {title: "Shadow Price (Dual Value)",
+     body: () => defBox("The change in optimal contribution from one more unit of capacity, as long as the change stays inside the allowable range.") +
+       exBox(`Therapist: <b>$95</b> an hour. Rooms: <b>$0</b>. Care-plan rule: <b>−$5</b>. Network minimum: <b>$0</b>.`),
+     task: "Drag the coral therapist line outward a few hours, or use the slider. Contribution rises by $95 an hour.",
+     extra: "curve", focus: {cells: [["cons", 1, 3]], cols: [3]},
+     why: "<p>The owner's salary is already in the budget and does not change with this decision. The <b>$95 shadow price</b> is the gross contribution one more therapist hour brings in. A per-diem therapist costs $60 an hour, so the net gain is $95 − $60 = <b>$35 an hour</b>.</p>",
+     whyTitle: "Why compare a $95 shadow price with a $60 rate?",
+     mount(b) {
+       rhsSlider(b, "ther");
+       ask(b, "clock", "Scheduler", "A per-diem therapist offers four hours this week at $60 an hour. What happens to weekly contribution if the clinic takes them?",
+         "num", {prefix: "$", answer: 140, hint: "Four more hours is within the allowable increase of 5.8, so the shadow price holds. Each hour brings in $95 and costs $60.", right: "Correct. 4 × ($95 − $60) = $140."},
+         async () => { activate(b); await setRHS(b, 27); b.complete("Take the hours. Each one brings in <b>$95</b> and costs $60, so four hours add 4 × $35 = <b>$140</b> to the week."); });
+     },
+     show: rhsShow,
+     async demo(b) { await setRHS(b, 27, 1000); }},
+    {title: "Two shadow prices of zero",
+     body: () => defBox("A constraint that is not binding has a shadow price of zero. It does not matter whether the room to spare is slack on a ≤ constraint or surplus on a ≥ constraint.") +
+       exBox(`Rooms have 36 − 28.75 = <b>7.25</b> hours of slack. The network minimum asks for 6 sessions and the schedule books 11.5, a <b>5.5</b> session surplus. Both shadow prices are <b>$0</b>.`),
+     task: "Drag the blue room line, then switch to the magenta floor. Contribution stays at $2,185 until a line cuts into the region.",
+     extra: "both", focus: {cells: [["cons", 0, 2], ["cons", 0, 3], ["cons", 3, 2], ["cons", 3, 3]]},
+     mount(b) {
+       rhsSlider(b, "room");
+       b.host.insertAdjacentHTML("beforeend", `<div class="seg live"><button class="on" data-w="room">Treatment rooms</button><button data-w="floor">Network minimum</button></div><div class="res"></div>`);
+       $$(".seg button", b.host).forEach(x => x.addEventListener("click", () => {
+         activate(b);
+         $$(".seg button", b.host).forEach(y => y.classList.toggle("on", y === x));
+         const w = x.dataset.w, R = RHS[w];
+         const el = $("#" + b.uid("rhs"));
+         b.mem.w = w; b.mem.c = R.base; b.mem.seen = [R.base, R.base];
+         el.min = R.min; el.max = R.max; el.step = R.step; el.value = R.base;
+         $(`label[for="${b.uid("rhs")}"]`).textContent = R.label;
+         el.dispatchEvent(new Event("input"));
+       }));
+       ask(b, "truck", "Practice owner", "The suite next door offers us eight more room hours a week. What is the most we should pay an hour?", "choice", {options: [
+         {t: "$95", why: "$95 is the therapist shadow price. The rooms' is $0."}, {t: "$60", why: "That is the per-diem therapist rate."},
+         {t: "$0", ok: true, why: "Correct. Room hours are already going unused, so more of them cannot raise contribution."}]},
+         async () => { activate(b); await setRHS(b, 48); b.complete("Turn it down. Rooms already have 7.25 unused hours, so eight more leave weekly contribution at $2,185. They are worth <b>$0</b>. The network minimum is worth nothing at the margin for the same reason, from the other side."); });
+     },
+     show: rhsShow,
+     async demo(b) { await setRHS(b, 30, 1200); await sleep(400); await setRHS(b, 36, 700); }},
+    {title: "A negative shadow price",
+     body: () => defBox("When raising a right-hand side tightens the constraint and shrinks the feasible region, the shadow price is negative: contribution falls.") +
+       exBox(`The care-plan rule −2V + T ≥ 0 has a shadow price of <b>−5</b>. Raising its right-hand side demands even more treatment beyond twice the evaluations, which moves the schedule away from the best mix.`),
+     task: "Try both buttons.",
+     extra: "curve", focus: {cells: [["cons", 2, 3]], cols: [3]},
+     mount(b) {
+       rhsSlider(b, "plan");
+       b.host.insertAdjacentHTML("beforeend", `<div class="ptbtns live"><button class="btn pick small" data-v="2">Raise to +2</button><button class="btn pick small" data-v="-4">Lower to −4</button></div><div class="res"></div>`);
+       $$(".pick", b.host).forEach(x => x.addEventListener("click", async () => {
+         await setRHS(b, +x.dataset.v, 600);
+         sayIn(b, x.dataset.v === "2" ? "2 × (−5) = −$10. Contribution drops to $2,175." : "−4 × (−5) = +$20. Contribution rises to $2,205.");
+       }));
+       ask(b, "megaphone", "Payer contact", "A stricter contract would require two treatment sessions beyond twice the evaluation count (T ≥ 2V + 2). What does that term cost the clinic a week?",
+         "num", {prefix: "$", answer: -10, placeholder: "e.g. −20", hint: "The right-hand side rises from 0 to 2. Multiply the change by the shadow price (−5).", right: "Correct. 2 × (−5) = −$10."},
+         () => b.complete("The stricter term costs <b>$10</b> a week: the right-hand side rises by 2, times a shadow price of −5."));
+     },
+     show: rhsShow,
+     async demo(b) { $$(".pick", b.host)[0].click(); await sleep(1100); $$(".pick", b.host)[1].click(); }},
+    {title: "Allowable range for a constraint",
+     body: () => defBox("The range of right-hand side values over which the shadow price stays the same.") +
+       exBox(`Therapist: allowable increase <b>5.8</b>, allowable decrease <b>11</b>. The $95 shadow price holds from <b>12 to 28.8 hours</b>.`),
+     task: "Drag the therapist capacity past 28.8 hours and watch where the contribution curve flattens.",
+     extra: "curve", focus: {cells: [["cons", 1, 3], ["cons", 1, 5], ["cons", 1, 6]], cols: [5, 6]},
+     whyTitle: "Why the shadow price drops to zero at 28.8 hours",
+     why: "<p>Up to 28.8 hours the optimal corner slides along the care-plan line and each hour adds $95. At 28.8 hours the rooms are used up as well, and from there the rooms are the binding constraint.</p><p>Past that point another therapist hour buys nothing, so the shadow price falls all the way to <b>$0</b> and the curve goes flat.</p>",
+     mount(b) {
+       rhsSlider(b, "ther");
+       ask(b, "clock", "Scheduler", "If the per-diem therapist offers 8 hours instead of 4, will weekly contribution rise by 8 × $95 = $760?", "choice", {options: [
+         {t: "Yes, contribution rises by $760.", why: "Eight hours is more than the allowable increase of 5.8."},
+         {t: "No. Eight hours is more than the allowable increase of 5.8, so the bottleneck changes and the model has to be solved again.", ok: true, why: "Correct. With 31 hours the optimal contribution is $2,736. Multiplying predicts $2,945."}]},
+         async () => { activate(b); await setRHS(b, 31); b.complete("Outside the allowable range the shadow price stops applying. With 31 therapist hours the optimal contribution is <b>$2,736</b>, while multiplying predicts $2,945, because the rooms run out first."); });
+     },
+     show: rhsShow,
+     async demo(b) { await setRHS(b, 34, 1600); }}
+  ]});
+
+  /* ═════════ 5 · USE THE REPORT ═════════ */
+  const QUIZ = [
+    {q: "Therapist hours go from 23 to 25.", kind: "m", ans: 190, why: "An increase of 2 is within the allowable increase of 5.8, so 2 × $95 = $190."},
+    {q: "Therapist hours go from 23 to 31.", kind: "r", why: "An increase of 8 is more than the allowable increase of 5.8."},
+    {q: "A treatment session goes from $90 to $95.", kind: "m", ans: 57.5, why: "An increase of 5 is within the allowable increase of 10, so 5 × 11.5 = $57.50."},
+    {q: "A treatment session goes from $90 to $85.", kind: "m", ans: -57.5, why: "A decrease of 5 is within the allowable decrease of 190, so −5 × 11.5 = −$57.50."},
+    {q: "An evaluation goes from $200 to $230.", kind: "m", ans: 172.5, why: "The allowable increase is 1E+30, so there is no limit: 30 × 5.75 = $172.50."},
+    {q: "An evaluation goes from $200 to $170.", kind: "r", why: "A decrease of 30 is more than the allowable decrease of 20."},
+    {q: "Room hours go from 36 to 30.", kind: "m", ans: 0, why: "A decrease of 6 is within the allowable decrease of 7.25, and the shadow price is 0, so contribution does not change."},
+    {q: "Therapist hours go from 23 to 18.", kind: "m", ans: -475, why: "A decrease of 5 is within the allowable decrease of 11, so −5 × $95 = −$475."}
+  ];
+  const DECODER = [
+    ["vars", "Final Value", "How many of each visit type the optimal schedule books"],
+    ["vars", "Reduced Cost", "For a visit type the schedule leaves out: how much its contribution must rise before booking it is worthwhile"],
+    ["vars", "Objective Coefficient", "The contribution per visit in the objective function"],
+    ["vars", "Allowable Increase / Decrease", "How far a contribution can move before the quantities change"],
+    ["cons", "Final Value", "How much of the resource the schedule uses, or the level it reaches on a contract term"],
+    ["cons", "Shadow Price", "What one more unit of capacity is worth"],
+    ["cons", "Constraint R.H. Side", "The capacity available, or the level a contract requires"],
+    ["cons", "Allowable Increase / Decrease", "How far it can move before the shadow price changes"]];
+  LESSONS.push({n: 5, title: "Use the report", aside: "report-first",
+    lead: `Decide, from the report alone, when a change in contribution can be computed by hand and when the model has to be solved again.`,
+    blocks: [
+    {title: "When to multiply and when to solve again",
+     body: () => `<div class="table-scroll"><table class="rtable"><tr><th>What changed</th><th>Range to check</th><th>Inside the allowable range</th><th>Outside it</th></tr>
+       <tr><td>${icon("tag")} Contribution per visit</td><td>Allowable Increase / Decrease in <b>Variable Cells</b></td><td>The quantities do not change: Δ contribution = Δ rate × <b>Final Value</b></td><td rowspan="2" class="stop">Solve again with Solver</td></tr>
+       <tr><td>${icon("gauge")} Capacity or contract level</td><td>Allowable Increase / Decrease in <b>Constraints</b></td><td>Δ contribution = Δ capacity × <b>Shadow Price</b></td></tr></table></div>
+       <p class="note">The cases from Lessons 3 and 4:</p>
+       <div class="table-scroll"><table class="rtable small"><tr><td>Treatment $90 → $95</td><td>+5 ≤ 10</td><td>+5 × 11.5 = <b>+$57.50</b></td></tr>
+       <tr><td>Evaluation $200 → $170</td><td>30 > 20</td><td class="stop">Solve again with Solver ($2,070)</td></tr>
+       <tr><td>4 per-diem hours at $60</td><td>4 ≤ 5.8</td><td>4 × ($95 − $60) = <b>+$140</b></td></tr>
+       <tr><td>8 extra room hours</td><td>constraint has slack</td><td>worth <b>$0</b></td></tr>
+       <tr><td>8 per-diem therapist hours</td><td>8 > 5.8</td><td class="stop">Solve again with Solver ($2,736)</td></tr></table></div>`,
+     mount(b) { b.complete(); },
+     show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }},
+    {title: "Column reference",
+     body: () => `<p class="note">What each column of the Sensitivity Report means:</p>
+       <div class="table-scroll"><table class="rtable small">${DECODER.map(([t, n, m]) => `<tr><td>${icon(t === "vars" ? "tag" : "gauge")} <b>${n}</b></td><td>${m}</td></tr>`).join("")}</table></div>`,
+     mount(b) { b.complete(); },
+     show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }},
+    {title: "Eight cases",
+     body: () => `<p class="note">For each case, decide whether the change in contribution can be computed from the report or the model has to be solved again. The report is on the right.</p>`,
+     mount(b) { runQuiz(b, QUIZ); },
+     show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }}
+  ]});
+
+  /* ═════════ 6 · WHOLE VISITS ONLY ═════════ */
+  const ROUNDINGS = [[5, 11], [5, 12], [6, 11], [6, 12]];
+  /* Lessons 6 and 7 fill the wedge with points, so the therapist label moves
+     out past the region where nothing else sits */
+  const therCons = (c = 23) => { const k = baseCons(); k[1].c = c; k[1].labelAt = lineLabelAt(c / 23 * 7); return k; };
+  LESSONS.push({n: 6, title: "Whole visits only",
+    lead: `The schedule says 5.75 evaluations. Require whole visits and the best schedule moves off the corner the graph pointed at.`,
+    blocks: [
+    {title: "A schedule the clinic cannot book",
+     goal: "See where the corner answer stops being usable.",
+     body: () => `<p>Lessons 1 and 2 ended at the corner (5.75, 11.5), worth $2,185 a week. Lesson 2 read that as an average rate: 23 evaluations and 46 treatment sessions over four weeks.</p>
+       <p>If the week has to stand on its own, that reading is not available. A visit is an appointment on a calendar, so <span class="v">V</span> and <span class="v">T</span> have to be whole numbers. The model is the same except for one line.</p>
+       <div class="model">
+         <div class="model-row"><span class="m-type">Max</span><span class="m-expr">200<i>V</i> + 90<i>T</i></span><span class="m-tag obj">Contribution for the week</span></div>
+         <div class="model-row sub"><span class="m-type">s.t.</span><span class="m-expr">2<i>V</i> + 1.5<i>T</i> ≤ 36</span><span class="m-tag"><span class="dot fab"></span>Treatment rooms</span></div>
+         <div class="model-row sub"><span class="m-type"></span><span class="m-expr">2<i>V</i> + <i>T</i> ≤ 23</span><span class="m-tag"><span class="dot fin"></span>Therapist</span></div>
+         <div class="model-row sub"><span class="m-type"></span><span class="m-expr">−2<i>V</i> + <i>T</i> ≥ 0</span><span class="m-tag"><span class="dot mix"></span>Care-plan rule</span></div>
+         <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i> ≥ 6</span><span class="m-tag"><span class="dot cap"></span>Network minimum</span></div>
+         <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>V</i>, <i>T</i> ≥ 0 and whole</span><span class="m-tag new">The new condition</span></div>
+       </div>
+       <p class="note">Dropping that last condition gives back the ordinary linear program. That version has a name, because the rest of this lesson keeps returning to it.</p>`,
+     terms: ["integer", "relax"],
+     mount(b) { b.complete(); },
+     show() { regionView({cons: therCons(), best: true, cornerLabel: bestLabel}); }},
+    {title: "Rounding the answer",
+     goal: "Test the obvious fix.",
+     task: "Try each of the four ways to round (5.75, 11.5) to whole visits.",
+     body: () => `<p>The first instinct is to round. There are four ways to do it, and the graph says which of them the clinic could actually book.</p>`,
+     mount(b) {
+       b.mem.seen = new Set(); b.mem.cur = null;
+       b.host.innerHTML = `<div class="ptbtns">${ROUNDINGS.map(([v, t]) =>
+         `<button class="btn pick small" data-p="${v},${t}">(${v}, ${t})</button>`).join("")}</div><div class="res"></div>`;
+       b.mem.test = (v, t) => {
+         activate(b);
+         const cons = therCons(), ok = isFeasible(cons, v, t);
+         b.mem.cur = [v, t, ok]; b.mem.seen.add(v + "," + t);
+         b.def.show(b); draw();
+         $(".res", b.host).innerHTML = `<p style="margin:.6rem 0 0"><b class="num">(${v}, ${t})</b>
+           <span class="badge ${ok ? "ok" : "bad"}">${ok ? "Feasible" : "Infeasible"}</span>
+           <span class="note num">${ok ? "worth " + money(intProfit(v, t), 0) : "breaks " + breaks(cons, v, t)}</span></p>${checkTable(cons, v, t)}`;
+         if (b.mem.seen.size === 4) b.complete("Two of the four can be booked. The better of them, (5, 12), is worth <b>$2,080</b>, which falls $105 short of the relaxation. The next steps find a whole-number schedule that beats it.");
+       };
+       $$(".pick", b.host).forEach(x => x.addEventListener("click", () => b.mem.test(...x.dataset.p.split(",").map(Number))));
+     },
+     show(b) {
+       regionView({cons: therCons(), best: true, cornerLabel: bestLabel});
+       if (b.mem.cur) {
+         const [v, t, ok] = b.mem.cur;
+         V.lattice = [{x: v, y: t, cls: ok ? "sel" : "bad", below: true,
+                       label: `(${v}, ${t})  ${ok ? money(intProfit(v, t), 0) : "infeasible"}`}];
+       }
+     },
+     async demo(b) { for (const [v, t] of ROUNDINGS) { b.mem.test(v, t); await sleep(900); } }},
+    {title: "Every whole-number schedule",
+     goal: "Look at the schedules the clinic can actually book.",
+     task: "Click the whole-number schedule you think brings in the most.",
+     body: () => `<p>The feasible region stays as it was. Now only the points with whole coordinates count, and inside this region there are <b>72</b> of them.</p>
+       <p>The care-plan rule keeps the region a narrow wedge, so <span class="v">V</span> never goes above 5 while <span class="v">T</span> reaches 23.</p>`,
+     mount(b) {
+       b.host.innerHTML = `<div class="res"></div>`;
+       b.mem.pick = null;
+       b.mem.test = (v, t) => {
+         activate(b);
+         const cons = therCons();
+         if (!isFeasible(cons, v, t)) { sayIn(b, `(${v}, ${t}) is outside the region: it breaks ${breaks(cons, v, t)}.`); return; }
+         b.mem.pick = [v, t];
+         const best = v === 5 && t === 13;
+         if (best) b.complete("(5, 13) brings in <b>$2,170</b>, the most any whole-number schedule brings in here. Every rounding of the corner is a different point, and this one sits inside the region, away from every corner.");
+         b.def.show(b); draw();
+         sayIn(b, `(${v}, ${t}) brings in <b>${money(intProfit(v, t), 0)}</b>.` + (best ? "" : " Something on this grid does better."));
+       };
+     },
+     show(b) {
+       view({cons: therCons(), lines: ALL, region: true});
+       const done = App.prog[b.key];
+       V.lattice = latticePts(therCons()).map(([x, y]) => {
+         const picked = b.mem.pick && b.mem.pick[0] === x && b.mem.pick[1] === y;
+         const best = done && x === 5 && y === 13;
+         return {x, y, cls: best ? "best" : picked ? "sel" : "", below: true,
+                 label: best || picked ? `(${x}, ${y})  ${money(intProfit(x, y), 0)}` : ""};
+       });
+       b.click((x, y) => b.mem.test(Math.round(x), Math.round(y)), "Click a whole-number point");
+     },
+     async demo(b) { b.mem.test(5, 11); await sleep(900); b.mem.test(5, 12); await sleep(900); b.mem.test(5, 13); }},
+    {title: "What rounding costs",
+     goal: "Compare the three answers side by side.",
+     body: () => `<div class="table-scroll"><table class="rtable"><tr><th>Schedule</th><th>Where it comes from</th><th>Evaluations</th><th>Treatment</th><th>Contribution</th></tr>
+       <tr><td>Relaxation</td><td>The corner the graph points at</td><td>5.75</td><td>11.5</td><td><b>$2,185</b></td></tr>
+       <tr><td>Best rounding</td><td>(5.75, 11.5) rounded to whole visits</td><td>5</td><td>12</td><td>$2,080</td></tr>
+       <tr><td>Best whole-number schedule</td><td>Searching the 72 grid points</td><td>5</td><td><b>13</b></td><td><b>$2,170</b></td></tr></table></div>
+       <p>Rounding gives up <b>$90</b> a week against the best whole-number schedule. Rounding down, to (5, 11), gives up <b>$180</b>.</p>
+       <p>The answer sits away from every rounding of the corner: it books one more treatment session than any of them allows, and the therapist hours it frees come from the evaluation that was rounded away.</p>`,
+     why: `<p>At the relaxation's corner, therapist hours and the care-plan rule are both binding, and that pins it to (5.75, 11.5).</p>
+       <p>At (5, 13) the therapist is still fully booked, 23 hours of 23, but the care-plan rule now has 3 sessions of room. The whole-number condition slides the schedule along the therapist line, away from the crossing. Nothing on the graph marks where it lands, so it cannot be read off the corners.</p>`,
+     whyTitle: "Why the best schedule leaves the corner",
+     mount(b) { b.complete(); },
+     show() {
+       view({cons: therCons(), lines: ALL, region: true, corners: true, best: true, cornerLabel: bestLabel});
+       V.lattice = [{x: 5, y: 13, cls: "best", below: true, label: "(5, 13)  $2,170"},
+                    {x: 5, y: 12, cls: "bad", below: true, label: "(5, 12)  $2,080"}];
+     }},
+    {title: "The relaxation as a bound",
+     goal: "Get something useful out of the easy model.",
+     body: () => defBox("For a maximization, the relaxation's optimal value is an upper bound on the whole-number model: every whole-number schedule is also a schedule in the relaxation, so none of them can bring in more.") +
+       exBox(`The relaxation brings in <b>$2,185</b> and the best whole-number schedule brings in <b>$2,170</b>. The gap is <b>$15</b>, and that is the whole cost of the whole-number condition.`),
+     terms: ["bound"],
+     mount(b) {
+       ask(b, "gauge", "Practice owner", "Solver reports $2,185 for the relaxation, and we have a whole-number schedule worth $2,170. Before searching any further, how much could a better whole-number schedule add at most?",
+         "num", {prefix: "$", answer: 15, hint: "No whole-number schedule can beat the relaxation. Subtract the schedule you have from the bound.",
+                 right: "Correct. $2,185 − $2,170 = $15, so at most $15 is still on the table."},
+         () => b.complete("The bound caps what is left: at most <b>$15</b>. A gap that small is usually the point to stop searching and book the week."));
+     },
+     show() {
+       view({cons: therCons(), lines: ALL, region: true, corners: true, best: true, cornerLabel: bestLabel,
+             iso: {cx: 200, cy: 90, value: 2185, label: "Relaxation  $2,185"}});
+       V.lattice = [{x: 5, y: 13, cls: "best", below: true, label: "(5, 13)  $2,170"}];
+     }},
+    {title: "Core principles",
+     goal: "Three statements to carry into the next lesson.",
+     body: () => `<div class="rules"><div class="rule">The whole-number condition restricts the variables and leaves the constraints alone. The region and the four lines are the ones from Lesson 1.</div>
+       <div class="rule">The best whole-number schedule can sit anywhere inside the region, including well away from every rounding of the corner, so rounding is only a guess and the grid has to be searched.</div>
+       <div class="rule">For a maximization the relaxation's value is an <b>upper bound</b> on the whole-number optimum, so it measures what the condition costs.</div></div>`,
+     mount(b) { b.complete(); },
+     show() {
+       view({cons: therCons(), lines: ALL, region: true, corners: true, best: true, cornerLabel: bestLabel});
+       V.lattice = latticePts(therCons()).map(([x, y]) => ({x, y, cls: x === 5 && y === 13 ? "best" : "", below: true,
+         label: x === 5 && y === 13 ? "(5, 13)  $2,170" : ""}));
+     }}
+  ]});
+
+  /* ═════════ 7 · YES OR NO DECISIONS ═════════ */
+  const COVER = {hours: 4, base: 300, even: 380};   // per-diem cover adds 4 h; worth taking below $380
+  const coverCons = y => y ? therCons(23 + COVER.hours) : therCons();
+  const coverBest = y => { const p = latticePts(coverCons(y))
+    .map(([v, t]) => [intProfit(v, t), v, t]).sort((a, c) => c[0] - a[0])[0]; return {value: p[0], V: p[1], T: p[2]}; };
+  LESSONS.push({n: 7, title: "Yes or no decisions",
+    lead: `Booking a per-diem therapist for the week is a yes-or-no decision, and that is a variable too.`,
+    blocks: [
+    {title: "A variable that is 0 or 1",
+     goal: "Write a take-it-or-leave-it decision as part of the model.",
+     body: () => `<p>A per-diem therapist will cover <b>4 hours</b> this week for a flat <b>$300</b>, booked through an agency. The $300 is owed whether the cover runs one hour or all four, and the agency will not split a booking.</p>
+       <p>So the decision takes one of two values. Write it as <span class="v">y</span> = 1 for booking the cover and <span class="v">y</span> = 0 for not, and both of its effects follow:</p>
+       <div class="model">
+         <div class="model-row"><span class="m-type">Max</span><span class="m-expr">200<i>V</i> + 90<i>T</i> − 300<i>y</i></span><span class="m-tag obj">Contribution, less the agency fee</span></div>
+         <div class="model-row sub"><span class="m-type">s.t.</span><span class="m-expr">2<i>V</i> + 1.5<i>T</i> ≤ 36</span><span class="m-tag"><span class="dot fab"></span>Treatment rooms</span></div>
+         <div class="model-row sub"><span class="m-type"></span><span class="m-expr">2<i>V</i> + <i>T</i> ≤ 23 + 4<i>y</i></span><span class="m-tag"><span class="dot fin"></span>Therapist, 4 h more if booked</span></div>
+         <div class="model-row sub"><span class="m-type"></span><span class="m-expr">−2<i>V</i> + <i>T</i> ≥ 0</span><span class="m-tag"><span class="dot mix"></span>Care-plan rule</span></div>
+         <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i> ≥ 6</span><span class="m-tag"><span class="dot cap"></span>Network minimum</span></div>
+         <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>V</i>, <i>T</i> ≥ 0 and whole</span><span class="m-tag">Whole visits</span></div>
+         <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>y</i> = 0 or 1</span><span class="m-tag new">Book the cover, or do not</span></div>
+       </div>
+       <p>The same <span class="v">y</span> appears twice: once where it buys hours, once where it charges for them. The repetition ties the fee to the capacity.</p>`,
+     terms: ["binary", "fixed"],
+     mount(b) { b.complete(); },
+     show() { view({cons: therCons(), lines: ALL, region: true}); V.lattice = latticePts(therCons()).map(([x, y]) => ({x, y})); }},
+    {title: "Two models, one for each answer",
+     goal: "See what the binary variable stands for on the graph.",
+     task: "Switch between the two answers and watch the therapist line move.",
+     body: () => `<p>A variable with two values is two models. Fix <span class="v">y</span> and nothing binary is left: each answer is an ordinary whole-number problem of the kind Lesson 6 solved.</p>`,
+     mount(b) {
+       b.mem.y = 0;
+       b.host.innerHTML = `<div class="seg live"><button class="on" data-v="0">No cover (y = 0)</button><button data-v="1">Book the cover (y = 1)</button></div><div class="res"></div>`;
+       $$(".seg button", b.host).forEach(x => x.addEventListener("click", () => {
+         activate(b); b.mem.y = +x.dataset.v;
+         $$(".seg button", b.host).forEach(z => z.classList.toggle("on", z === x));
+         b.def.show(b); draw();
+         const r = coverBest(b.mem.y);
+         sayIn(b, `Therapist hours are capped at <b>${23 + (b.mem.y ? COVER.hours : 0)}</b>. The best whole-number schedule is <b>(${r.V}, ${r.T})</b>, bringing in <b>${money(r.value, 0)}</b> before the fee.`);
+         if (b.mem.y === 1) b.complete("With the cover, the therapist has 27 hours and the best whole-number schedule becomes <b>(6, 15)</b> at <b>$2,550</b>, which is $380 more than the $2,170 without it. The fee still has to come off that.");
+       }));
+     },
+     show(b) {
+       const cons = coverCons(b.mem.y), r = coverBest(b.mem.y);
+       view({cons, lines: ALL, region: true, animate: false});
+       V.lattice = latticePts(cons).map(([x, y]) => ({x, y, cls: x === r.V && y === r.T ? "best" : "", below: true,
+         label: x === r.V && y === r.T ? `(${r.V}, ${r.T})  ${money(r.value, 0)}` : ""}));
+     },
+     async demo(b) { $$(".seg button", b.host)[1].click(); }},
+    {title: "Net of the fee",
+     goal: "Compare the two answers on the same footing.",
+     body: () => `<p>The $2,550 is not comparable to the $2,170 until the fee comes off it. Once it does, the two answers can be read next to each other.</p>
+       <div class="readout"><div class="stat"><span>y = 0: (5, 13), no cover</span><b class="num">$2,170</b></div>
+       <div class="stat"><span>y = 1: (6, 15), less $300 of fee</span><b class="num">$2,250</b></div>
+       <div class="stat ok"><span>Booking the cover is worth</span><b class="num">+$80 a week</b></div></div>
+       <p class="note">Whole-number schedules, so no fraction of a visit and no fraction of a booking. The $80 is the whole of the gain.</p>`,
+     mount(b) {
+       ask(b, "truck", "Scheduler", "The cover adds 4 therapist hours for a flat $300. Taking the whole-number schedules as given, what does booking it add to weekly contribution?",
+         "num", {prefix: "$", answer: 80, hint: "Subtract the fee from the schedule it allows, then compare with the schedule without it: ($2,550 − $300) − $2,170.",
+                 right: "Correct. $2,250 − $2,170 = $80 a week."},
+         () => b.complete("Book the cover. It unlocks <b>$380</b> of extra contribution for <b>$300</b>, so the week is <b>$80</b> better off."));
+     },
+     show() {
+       const cons = coverCons(1);
+       view({cons, lines: ALL, region: true});
+       V.lattice = [{x: 6, y: 15, cls: "best", below: true, label: "(6, 15)  $2,550"},
+                    {x: 5, y: 13, cls: "sel", below: true, label: "(5, 13)  $2,170"}];
+     }},
+    {title: "Where the decision flips",
+     goal: "Find the fee at which the answer changes.",
+     task: "Drag the fee until the two answers are worth the same.",
+     body: () => `<p>$300 is this week's quote. For the next one, the number to know is the fee at which booking cover stops paying.</p>`,
+     mount(b) {
+       const id = b.uid("fee");
+       b.host.insertAdjacentHTML("afterbegin", slider({id, label: "Agency fee for the cover", min: 0, max: 700, step: 10,
+         value: COVER.base, fmt: v => money(v, 0), band: [0, COVER.even], mark: COVER.base,
+         legend: "<span>$0</span><span>green: worth booking</span><span>$700</span>"}));
+       b.mem.fee = COVER.base;
+       b.mem.set = v => {
+         b.mem.fee = v;
+         const no = coverBest(0).value, yes = coverBest(1).value - v, d = yes - no;
+         $(".res", b.host).innerHTML = `<div class="readout tight"><div class="panel-row">
+           <div class="stat ${d > 0 ? "muted" : ""}"><span>No cover</span><b class="num">${money(no, 0)}</b></div>
+           <div class="stat ${d > 0 ? "" : "muted"}"><span>Cover, net of ${money(v, 0)}</span><b class="num">${money(yes, 0)}</b></div></div>
+           <p class="verdict">${Math.abs(d) < 1e-9 ? `<span class="badge">Break-even</span> at ${money(v, 0)} the two answers are worth the same`
+             : d > 0 ? `<span class="badge ok">Book it</span> ${money(d, 0)} better a week` : `<span class="badge bad">Do not book it</span> ${money(-d, 0)} worse a week`}</p></div>`;
+         if (Math.abs(v - COVER.even) < 1e-9) b.complete("The answer flips at <b>$380</b>: that is the extra contribution the 4 hours unlock, so a fee below it is worth paying and a fee above it is too dear.");
+       };
+       b.host.insertAdjacentHTML("beforeend", `<div class="res"></div>`);
+       bindSlider(id, v => money(v, 0), v => { activate(b); b.mem.set(v); });
+       b.mem.set(COVER.base);
+     },
+     why: `<p>The 4 hours are worth $380 here, and the therapist shadow price from Lesson 4 was $95 an hour: 4 × $95 = $380. The two agree exactly.</p>
+       <p>That agreement holds for this instance alone. The shadow price describes the relaxation, where an hour can be used in any fraction. A whole-number model usually cannot take up all of it, so the gain is usually smaller than the shadow price predicts. Check it by solving again.</p>`,
+     whyTitle: "Why $380 matches 4 × $95, and why that is luck",
+     show(b) {
+       const cons = coverCons(1), r = coverBest(1);
+       view({cons, lines: ALL, region: true, animate: false});
+       V.lattice = [{x: r.V, y: r.T, cls: "best", below: true, label: `(${r.V}, ${r.T})  ${money(r.value, 0)}`},
+                    {x: 5, y: 13, cls: "sel", below: true, label: "(5, 13)  $2,170"}];
+       b.mem.set(b.mem.fee);
+     },
+     async demo(b) { await tween($("#" + b.uid("fee")), COVER.even, 1200); }},
+    {title: "What Solver gives you, and what it does not",
+     goal: "Know which of the earlier lessons still applies.",
+     body: () => `<p>In Solver both conditions are ordinary constraints. Select the visit cells and choose <b>int</b>; select the cover cell and choose <b>bin</b>. The solving method stays Simplex LP.</p>
+       <div class="table-scroll"><table class="rtable"><tr><th>In the model</th><th>In the Solver dialog</th></tr>
+         <tr><td><i>V</i>, <i>T</i> whole</td><td><code>$B$6:$C$6 = int</code></td></tr>
+         <tr><td><i>y</i> = 0 or 1</td><td><code>$D$6 = bin</code></td></tr></table></div>
+       <p>One thing does change. Solver does not produce a <b>Sensitivity Report</b> for a model with int or bin constraints: Excel reports that the report is not meaningful for it, and the shadow prices and allowable ranges from Lessons 3 to 5 describe the relaxation only.</p>
+       <div class="rules"><div class="rule">A quantity that must be whole gets an <b>int</b> constraint. A decision that is taken or not gets a <b>bin</b> variable, appearing once where it unlocks capacity and once where it is charged for.</div>
+         <div class="rule">Fix a binary variable and what is left is an ordinary whole-number model. Two values, two models, and the better of the two is the answer.</div>
+         <div class="rule">For an integer model there is no Sensitivity Report. Change the number and solve again: that is the only reliable answer to a what-if.</div></div>`,
+     mount(b) {
+       ask(b, "tag", "Practice owner", "Next week the payer asks what one more therapist hour is worth, and our model now has whole visits and the per-diem cover in it. What do we tell them?", "choice", {options: [
+         {t: "Solve the model again with 24 hours and compare", ok: true, why: "Correct. For an integer model that is the only dependable way to answer it."},
+         {t: "$95, the shadow price from the Sensitivity Report", why: "Solver writes no Sensitivity Report for a model with int or bin constraints, and $95 describes the relaxation."},
+         {t: "Nothing: sensitivity analysis does not apply to integer models", why: "The report is unavailable. The answer is still obtainable, by solving the model again."}]},
+         () => b.complete("With whole numbers in the model, a what-if is answered by solving again. The Sensitivity Report belongs to the relaxation, and the relaxation is now only a bound."));
+     },
+     show() {
+       const cons = coverCons(1);
+       view({cons, lines: ALL, region: true});
+       V.lattice = latticePts(cons).map(([x, y]) => ({x, y, cls: x === 6 && y === 15 ? "best" : "", below: true,
+         label: x === 6 && y === 15 ? "(6, 15)  $2,550" : ""}));
+     }}
+  ]});
+
+  /* every number Lessons 6 and 7 lean on, checked at start-up */
+  CASES.clinic.selfCheck = bad => {
+    const int = solveInteger(baseCons(), PROFIT);
+    if (int.x !== 5 || int.y !== 13 || int.value !== 2170) bad.push("integer optimum");
+    const ok4 = ROUNDINGS.map(p => isFeasible(baseCons(), ...p));
+    if (ok4.join() !== "true,true,false,false") bad.push("roundings");
+    if (latticePts(baseCons()).length !== 72) bad.push("integer point count");
+    const covered = solveInteger(therCons(23 + COVER.hours), PROFIT);
+    if (covered.x !== 6 || covered.y !== 15 || covered.value !== 2550) bad.push("covered optimum");
+    if (covered.value - int.value !== COVER.even) bad.push("break-even fee");
+  };
+
+  return LESSONS;
+};
 
 /* ---- start-up self-check and boot ----------------------------------------
    The report table is typed in as Solver prints it; recompute it here and
    complain in the console if the two ever disagree.                      */
-(function selfCheck() {
+/* ---- start-up self-check --------------------------------------------------
+   The report table is typed in as Solver prints it; recompute it here and
+   complain in the console if the two ever disagree. Each case adds its own
+   checks, which is why this runs after init() has built the course.     */
+function selfCheck() {
   const s = sensitivity(baseCons(), PROFIT), bad = [];
-  const near = (a, b) => (b === "1E+30" ? a === Infinity : Math.abs(a - parseFloat(b.replace("−", "-"))) < 1e-4);
+  const near = (a, b) => (b === "1E+30" ? a === Infinity : Math.abs(a - parseFloat(String(b).replace("\u2212", "-"))) < 1e-4);
   s.variables.forEach((v, i) => { const r = REPORT.vars[i];
     if (!near(v.final, r[2]) || !near(v.inc, r[5]) || !near(v.dec, r[6])) bad.push(r[1]); });
   s.constraints.forEach((c, i) => { const r = REPORT.cons[i];
     if (!near(c.final, r[2]) || !near(c.shadow, r[3]) || !near(c.inc, r[5]) || !near(c.dec, r[6])) bad.push(r[1]); });
-  const int = solveInteger(baseCons(), PROFIT);
-  if (int.x !== 3 || int.y !== 12 || int.value !== 930) bad.push("integer optimum");
-  // Lesson 6: of the four roundings of (5.25, 10.5) only (5, 10) is feasible
-  const ok4 = [[5, 10], [5, 11], [6, 10], [6, 11]].map(p => isFeasible(baseCons(), ...p));
-  if (ok4.join() !== "true,false,false,false") bad.push("roundings");
-  if (latticePts(baseCons()).length !== 48) bad.push("integer point count");
-  // Lesson 7: the rented bench adds 8 finishing hours
-  const rented = solveInteger(finCons(21 + RENT.hours), PROFIT);
-  if (rented.x !== 5 || rented.y !== 16 || rented.value !== 1290) bad.push("rented optimum");
-  if (rented.value - int.value !== RENT.even) bad.push("break-even rent");
-  if (bad.length) console.error("Linear Programming Lab self-check failed:", bad);
-})();
+  CASE.selfCheck && CASE.selfCheck(bad);
+  if (bad.length) console.error(`Linear Programming Lab self-check failed (${CASE.id}):`, bad);
+}
 
 $$("#sheet-dlg [data-k]").forEach(el => el.addEventListener("mouseenter", () => {
   const keys = el.dataset.k.split(" ");
@@ -2860,6 +3953,7 @@ $$("#sheet-dlg [data-k]").forEach(el => el.addEventListener("mouseenter", () => 
 }));
 $("#sheet-dlg .model").addEventListener("mouseleave", () => $$("#sheet-dlg td.hl").forEach(td => td.classList.remove("hl")));
 init();
+selfCheck();
 
 </script>
 </body>

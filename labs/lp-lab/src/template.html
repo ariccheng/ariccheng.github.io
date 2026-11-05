@@ -16,6 +16,7 @@
     <path d="M4 28V12l10-4 8 10z" fill="#8C1D40" opacity=".3" stroke="#8C1D40" stroke-width="2"/><circle cx="14" cy="8" r="3.5" fill="#FFC627" stroke="#5C4300"/></svg><span class="wm-full">Linear Programming Lab</span><span class="wm-short">LP Lab</span></a>
   <button class="present-btn" title="Classroom mode: full screen, 16:9, large type. Arrow keys move between steps; Esc exits.">
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4" width="19" height="12" rx="1.5"/><path d="M12 16v4M8 20h8"/><path d="M10 8.2v3.6l3.2-1.8z" fill="currentColor"/></svg>Present</button>
+  <div class="nav-switch"></div>
   <div class="nav-links"></div>
 </nav>
 
@@ -26,103 +27,16 @@
     <svg class="hero-svg" tabindex="0" role="img" aria-label="The feasible region with a block on top whose height is the weekly profit; the highest corner is the best plan. Drag, or use the arrow keys, to turn the view; Home resets it."></svg>
     <div class="hero-copy"><div class="tilt">
       <h1>Linear Programming Lab</h1>
-      <p>An interactive guide to linear programming, built around one production problem.</p>
+      <p>An interactive guide to linear programming, built around one worked example.</p>
     </div></div>
-    <div class="captions">
-      <div class="cap"><b>The feasible region</b><p>The shaded base holds every production schedule the shop can carry out in one week. Height above the base is the gross profit that schedule earns.</p></div>
-      <div class="cap"><b>The best plan</b><p>Profit rises toward a single corner of the base: 5.25 Trail and 10.5 Summit boards, worth $945 for the week.</p></div>
-      <div class="cap"><b>Seen from above</b><p>Schedules that earn the same profit fall on parallel lines. Every lesson below works in this flat view.</p></div>
-    </div>
+    <div class="captions"></div>
     <div class="cue">Scroll<i></i></div>
     <div class="spin-cue">Drag to rotate</div>
   </div>
 </header>
 
-  <section class="intro"><div class="wrap">
-    <div class="intro-body reveal">
-      <h2>Ridgeline Boards</h2>
-      <p class="lead">🏔️ Ridgeline Boards is a small workshop that builds two models of snowboard, the <b>Trail</b> board 🏂 and the <b>Summit</b> board 🎿. Every Monday the shop manager sets the week's production: how many of each model to build. Each board passes through two departments, fabrication and finishing, and each department has a fixed number of hours available that week. The shop's resort dealers also require at least two Summit boards for every Trail board. The question is which schedule earns the most gross profit.</p>
-
-      <div class="table-scroll">
-        <table class="case num">
-          <thead>
-            <tr>
-              <th>Resource</th>
-              <th>Trail (<i>T</i>)</th>
-              <th>Summit (<i>S</i>)</th>
-              <th>Available per week</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Gross profit per board</td>
-              <td><b>$50</b></td>
-              <td><b>$65</b></td>
-              <td class="dim">&mdash; maximize</td>
-            </tr>
-            <tr>
-              <td><span class="dot fab"></span>Fabrication hours</td>
-              <td>3.5</td>
-              <td>4.0</td>
-              <td><b>84</b></td>
-            </tr>
-            <tr>
-              <td><span class="dot fin"></span>Finishing hours</td>
-              <td>1.0</td>
-              <td>1.5</td>
-              <td><b>21</b></td>
-            </tr>
-            <tr>
-              <td><span class="dot mix"></span>Dealer mix</td>
-              <td colspan="2" style="text-align:center">At least two Summit boards per Trail board</td>
-              <td><b><i>S</i> &ge; 2<i>T</i></b></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="note">The three colours mark the three constraints, and the lines on every graph below carry the same colours.</p>
-
-      <p class="lead-sm">The same problem in standard linear programming form:</p>
-      <div class="model">
-        <div class="model-row">
-          <span class="m-type">Max</span>
-          <span class="m-expr">50<i>T</i> + 65<i>S</i></span>
-          <span class="m-tag obj">Gross profit for the week</span>
-        </div>
-        <div class="model-row sub">
-          <span class="m-type">s.t.</span>
-          <span class="m-expr">3.5<i>T</i> + 4<i>S</i> &le; 84</span>
-          <span class="m-tag"><span class="dot fab"></span>Fabrication, 84 h</span>
-        </div>
-        <div class="model-row sub">
-          <span class="m-type"></span>
-          <span class="m-expr"><i>T</i> + 1.5<i>S</i> &le; 21</span>
-          <span class="m-tag"><span class="dot fin"></span>Finishing, 21 h</span>
-        </div>
-        <div class="model-row sub">
-          <span class="m-type"></span>
-          <span class="m-expr">&minus;2<i>T</i> + <i>S</i> &ge; 0</span>
-          <span class="m-tag"><span class="dot mix"></span>Dealer mix</span>
-        </div>
-        <div class="model-row sub">
-          <span class="m-type"></span>
-          <span class="m-expr"><i>T</i>, <i>S</i> &ge; 0</span>
-          <span class="m-tag">No negative production</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="qband reveal">
-      <h2>Core questions</h2>
-      <p class="lead">The lessons answer three questions in turn. Anything you can drag, click or choose is marked in violet.</p>
-      <div class="qgrid">
-        <a class="qcard" href="#lesson-1"><span class="k">1</span><b>What can we decide, and what is the best plan?</b><span class="lessons">Lessons 1&ndash;2</span></a>
-        <a class="qcard" href="#lesson-3"><span class="k">2</span><b>What if the numbers change?</b><span class="lessons">Lessons 3&ndash;5</span></a>
-        <a class="qcard" href="#lesson-6"><span class="k">3</span><b>What if the answers must be whole numbers?</b><span class="lessons">Lessons 6&ndash;7</span></a>
-      </div>
-      <a class="btn primary start" href="#lesson-1">Start with Lesson 1</a>
-    </div>
-  </div></section>
+  <section class="case-pick" id="case-pick"></section>
+  <section class="intro" id="intro" hidden></section>
 </div>
   <div id="lessons"></div>
 </main>
@@ -130,7 +44,7 @@
   <div class="ct"></div><div class="cdots"></div>
   <div class="cbtns"><button class="btn cprev" aria-label="Previous step">←</button><button class="btn cnext" aria-label="Next step">→</button><button class="btn cexit">Exit</button></div>
 </div>
-<footer><div class="wrap">Linear Programming Lab, by Aric Cheng, W. P. Carey School of Business, Arizona State University. Ridgeline Boards is a teaching example.
+<footer><div class="wrap">Linear Programming Lab, by Aric Cheng, W. P. Carey School of Business, Arizona State University. <span class="foot-case"></span>
   Your progress stays in this browser. <button class="reset">Reset my progress</button></div></footer>
 <div id="live" class="sr" aria-live="polite"></div>
 

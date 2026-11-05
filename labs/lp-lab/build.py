@@ -8,7 +8,8 @@ from pathlib import Path
 
 SRC = Path(__file__).parent / "src"
 FONTS = Path(__file__).parent.parent / "_shared" / "fonts"   # shared by every lab
-JS = ["solver.js", "graph.js", "app.js", "hero.js", "engine.js", "lessons.js", "boot.js"]
+JS = ["solver.js", "graph.js", "app.js", "hero.js", "engine.js",
+      "lesson-kit.js", "case-boards.js", "case-clinic.js", "boot.js"]
 FOOT = """/* Linear Programming Lab · Aric Cheng, W. P. Carey School of Business, Arizona State University.
    Ridgeline Boards is a teaching example. */\n"""
 

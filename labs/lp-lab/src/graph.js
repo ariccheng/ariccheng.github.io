@@ -3,14 +3,17 @@
    that a line or corner that is already on screen is updated in place and
    only new elements play their entrance animation.                          */
 const NS = "http://www.w3.org/2000/svg";
-const PLOT = {W: 760, H: 560, L: 66, R: 26, T: 22, B: 58, XM: 14, YM: 24};
+/* W..B are the drawing box and never change; XM, YM and the tick steps are
+   filled in from the active case by app.js before the first Graph is built. */
+const PLOT = {W: 760, H: 560, L: 66, R: 26, T: 22, B: 58,
+              XM: 14, YM: 24, xGrid: 1, xTick: 2, yGrid: 2, yTick: 4};
 const X = v => PLOT.L + (PLOT.W - PLOT.L - PLOT.R) * v / PLOT.XM;
 const Y = v => PLOT.H - PLOT.B - (PLOT.H - PLOT.B - PLOT.T) * v / PLOT.YM;
 const fromPx = (px, py) => [(px - PLOT.L) / (PLOT.W - PLOT.L - PLOT.R) * PLOT.XM,
                             (PLOT.H - PLOT.B - py) / (PLOT.H - PLOT.B - PLOT.T) * PLOT.YM];
 
 /* clip the plot box with half-planes a*x + b*y <= c (Sutherland–Hodgman) */
-const BOX = [[0, 0], [PLOT.XM, 0], [PLOT.XM, PLOT.YM], [0, PLOT.YM]];
+const box = () => [[0, 0], [PLOT.XM, 0], [PLOT.XM, PLOT.YM], [0, PLOT.YM]];
 function clipPoly(poly, rows) {
   for (const r of rows) {
     const f = p => r.a * p[0] + r.b * p[1] - r.c, out = [];
@@ -83,15 +86,15 @@ class Graph {
   }
   drawAxes() {
     let g = "", a = "";
-    for (let v = 0; v <= PLOT.XM; v += 1) g += `<line x1="${X(v)}" y1="${Y(0)}" x2="${X(v)}" y2="${Y(PLOT.YM)}"/>`;
-    for (let v = 0; v <= PLOT.YM; v += 2) g += `<line x1="${X(0)}" y1="${Y(v)}" x2="${X(PLOT.XM)}" y2="${Y(v)}"/>`;
+    for (let v = 0; v <= PLOT.XM; v += PLOT.xGrid) g += `<line x1="${X(v)}" y1="${Y(0)}" x2="${X(v)}" y2="${Y(PLOT.YM)}"/>`;
+    for (let v = 0; v <= PLOT.YM; v += PLOT.yGrid) g += `<line x1="${X(0)}" y1="${Y(v)}" x2="${X(PLOT.XM)}" y2="${Y(v)}"/>`;
     this.svg.querySelector(".g-grid").innerHTML = g;
     a += `<line class="g-axis" x1="${X(0)}" y1="${Y(0)}" x2="${X(PLOT.XM)}" y2="${Y(0)}"/>
           <line class="g-axis" x1="${X(0)}" y1="${Y(0)}" x2="${X(0)}" y2="${Y(PLOT.YM)}"/>`;
-    for (let v = 0; v <= PLOT.XM; v += 2) a += `<text class="g-tick" x="${X(v)}" y="${Y(0) + 22}" text-anchor="middle">${v}</text>`;
-    for (let v = 0; v <= PLOT.YM; v += 4) a += `<text class="g-tick" x="${X(0) - 10}" y="${Y(v) + 5}" text-anchor="end">${v}</text>`;
-    a += `<text class="g-title" x="${X(PLOT.XM)}" y="${PLOT.H - 10}" text-anchor="end">Trail boards, T</text>
-          <text class="g-title" transform="translate(18 ${Y(PLOT.YM)}) rotate(-90)" text-anchor="end">Summit boards, S</text>`;
+    for (let v = 0; v <= PLOT.XM; v += PLOT.xTick) a += `<text class="g-tick" x="${X(v)}" y="${Y(0) + 22}" text-anchor="middle">${v}</text>`;
+    for (let v = 0; v <= PLOT.YM; v += PLOT.yTick) a += `<text class="g-tick" x="${X(0) - 10}" y="${Y(v) + 5}" text-anchor="end">${v}</text>`;
+    a += `<text class="g-title" x="${X(PLOT.XM)}" y="${PLOT.H - 10}" text-anchor="end">${CASE.x.axis}</text>
+          <text class="g-title" transform="translate(18 ${Y(PLOT.YM)}) rotate(-90)" text-anchor="end">${CASE.y.axis}</text>`;
     this.L("axes").innerHTML = a;
   }
   /* keyed element helper: returns [el, isNew] */
@@ -112,13 +115,13 @@ class Graph {
       const k = v.cons[h.i];
       keepHalf.add(h.cls);
       const [el] = this.keyed("half", h.cls, "polygon", "g-half " + h.cls);
-      el.setAttribute("points", polyStr(clipPoly(BOX, asLE(k))));
+      el.setAttribute("points", polyStr(clipPoly(box(), asLE(k))));
     }
     this.prune("half", keepHalf);
     /* feasible region */
     const keepReg = new Set();
     if (v.region) {
-      const poly = clipPoly(BOX, (v.regionCons || v.cons).flatMap(asLE));
+      const poly = clipPoly(box(), (v.regionCons || v.cons).flatMap(asLE));
       if (poly.length > 2) {
         keepReg.add("r");
         const [el, fresh] = this.keyed("region", "r", "polygon");
