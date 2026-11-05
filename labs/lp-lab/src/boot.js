@@ -9,7 +9,15 @@
   s.constraints.forEach((c, i) => { const r = REPORT.cons[i];
     if (!near(c.final, r[2]) || !near(c.shadow, r[3]) || !near(c.inc, r[5]) || !near(c.dec, r[6])) bad.push(r[1]); });
   const int = solveInteger(baseCons(), PROFIT);
-  if (int.x !== 3 || int.y !== 12) bad.push("integer optimum");
+  if (int.x !== 3 || int.y !== 12 || int.value !== 930) bad.push("integer optimum");
+  // Lesson 6: of the four roundings of (5.25, 10.5) only (5, 10) is feasible
+  const ok4 = [[5, 10], [5, 11], [6, 10], [6, 11]].map(p => isFeasible(baseCons(), ...p));
+  if (ok4.join() !== "true,false,false,false") bad.push("roundings");
+  if (latticePts(baseCons()).length !== 48) bad.push("integer point count");
+  // Lesson 7: the rented bench adds 8 finishing hours
+  const rented = solveInteger(finCons(21 + RENT.hours), PROFIT);
+  if (rented.x !== 5 || rented.y !== 16 || rented.value !== 1290) bad.push("rented optimum");
+  if (rented.value - int.value !== RENT.even) bad.push("break-even rent");
   if (bad.length) console.error("Linear Programming Lab self-check failed:", bad);
 })();
 

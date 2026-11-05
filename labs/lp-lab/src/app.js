@@ -32,7 +32,8 @@ const ICON = {
   truck: '<path d="M2.5 6.5h11v9h-11z"/><path d="M13.5 9.5h4l3 3.2v2.8h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/>',
   board: '<rect x="9" y="2.5" width="6" height="19" rx="3" transform="rotate(35 12 12)"/><path d="M9.6 9.4l3.6 2.5M10.8 13.7l3.6 2.5"/>',
   tag: '<path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.5"/>',
-  gauge: '<path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/><circle cx="12" cy="17" r="1.3"/>'
+  gauge: '<path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/><circle cx="12" cy="17" r="1.3"/>',
+  grid: '<path d="M4 4h16v16H4z"/><path d="M4 9.3h16M4 14.7h16M9.3 4v16M14.7 4v16"/>'
 };
 const icon = (k, cls = "") => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
 const REQUESTS = [
@@ -63,7 +64,7 @@ const App = {
 /* view state for the graph; lessons change it and call draw() */
 function freshView() {
   return {cons: baseCons(), obj: Object.assign({}, PROFIT), lines: [], halves: [], region: false, corners: false,
-          best: false, iso: null, points: [], extra: [], cornerLabel: null, animate: true, drag: null, probe: null};
+          best: false, iso: null, points: [], lattice: [], extra: [], cornerLabel: null, animate: true, drag: null, probe: null};
 }
 let V = freshView();
 
@@ -180,6 +181,16 @@ const TERMS = {
            ex: "Fabrication: 84 − 60.375 = <b>23.625</b> hours unused.", use: "A constraint with slack has a shadow price of 0: more of it is worth nothing."},
   resolve:{t: "Solve again", d: "When a change goes outside its allowable range, the optimal plan itself changes, so the report can no longer predict the result. Change the number in the model and run Solver again.",
            ex: "Trail profit falls to $40 (−10, more than 6.67): the new plan is <b>(0, 14)</b> with profit <b>$910</b>.", use: "Multiply only inside the allowable range."},
+  integer:{t: "Integer program", d: "A linear program with the extra condition that some variables must be whole numbers. The objective and the constraints stay linear; only the variables are restricted.",
+           ex: "Ridgeline cannot ship 5.25 boards, so T and S have to be whole numbers.", use: "Add an int constraint in Solver when a fractional answer is not something the shop can make or ship."},
+  relax:  {t: "LP relaxation", d: "The same model with the whole-number condition dropped. It is the ordinary linear program, and it is the one the graph and the Sensitivity Report describe.",
+           ex: "The relaxation gives (5.25, 10.5) and $945. The integer model gives (3, 12) and $930.", use: "Solve the relaxation first: it is quick, and it tells you how much the whole-number condition can cost at most."},
+  bound:  {t: "Bound", d: "A number the optimal value cannot cross. For a maximization the relaxation's value is an upper bound on the integer optimum, because every whole-number plan is also a plan in the relaxation.",
+           ex: "$945 is an upper bound. The best whole-number plan earns $930, so at most $15 is lost to the whole-number condition.", use: "Compare a plan you already have with the bound: a small gap means more searching is not worth it."},
+  binary: {t: "Binary variable", d: "A variable allowed to be only 0 or 1. It stands for a decision that is taken or not taken, rather than a quantity that is measured.",
+           ex: "y = 1 if Ridgeline rents the second finishing station this week, y = 0 if it does not.", use: "Multiply the capacity the decision unlocks by y, and subtract its fixed cost times y in the objective."},
+  fixed:  {t: "Fixed cost", d: "A cost paid in full as soon as a decision is taken, whatever use it gets afterwards. It attaches to a binary variable in the objective, not to a production quantity.",
+           ex: "The rented station costs $300 for the week whether it runs one hour or eight.", use: "Weigh it against the extra profit the decision unlocks in total, not against the shadow price of one hour."},
   iso:    {t: "Profit line", d: "All plans that earn the same profit lie on one straight line. Its tilt is set by the profit per board of each product.",
            ex: "50T + 65S = 945 passes through the optimal corner (5.25, 10.5).", use: "Changing a profit per board tilts this line; the best corner is the last one it touches."}
 };

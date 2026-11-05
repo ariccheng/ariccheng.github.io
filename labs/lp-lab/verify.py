@@ -73,8 +73,18 @@ def rhs_range(k, lo, hi, step=0.001):
     return round(down, 3), (round(up, 3) if up + step < hi else None)
 
 
-def feasible(t, s):
-    return all(a[0] * t + a[1] * s <= b + EPS for a, b in BASE.values())
+def feasible(t, s, fin=None):
+    cons = [(a, fin if k == "finishing" and fin is not None else b) for k, (a, b) in BASE.items()]
+    return all(a[0] * t + a[1] * s <= b + EPS for a, b in cons)
+
+
+def lattice(fin=None):
+    """Every whole-number plan inside the feasible region."""
+    return [(x, y) for x in range(31) for y in range(41) if feasible(x, y, fin)]
+
+
+def int_best_at(fin=None):
+    return max((50 * x + 65 * y, x, y) for x, y in lattice(fin))
 
 
 (t, s, v), corners = solve()
@@ -111,11 +121,34 @@ out = {
         "mix_plus2": solve(rhs={"mix": -2})[0],  # -2T + S >= 2, stored as 2T - S <= -2
         "trail_40_enters_at": coef_range(0, 0, 400),
     },
+    # Lesson 6: whole boards only
     "integer": {
         "best": {"T": integer_best[1], "S": integer_best[2], "profit": integer_best[0]},
-        "round_nearest": {"T": 5, "S": 11, "feasible": feasible(5, 11), "finishing": 5 + 1.5 * 11},
-        "round_down": {"T": 5, "S": 10, "feasible": feasible(5, 10), "profit": 50 * 5 + 65 * 10},
-        "trap_2_13": {"feasible": feasible(2, 13), "profit": 50 * 2 + 65 * 13},
+        "point_count": len(lattice()),
+        "max_T": max(p[0] for p in lattice()),
+        "max_S": max(p[1] for p in lattice()),
+        "roundings": {
+            f"{x},{y}": {"feasible": feasible(x, y), "profit": 50 * x + 65 * y,
+                         "fabrication": round(3.5 * x + 4 * y, 3), "finishing": round(x + 1.5 * y, 3),
+                         "mix_ok": y >= 2 * x}
+            for x, y in ((5, 10), (5, 11), (6, 10), (6, 11))
+        },
+        "rounding_cost": integer_best[0] - (50 * 5 + 65 * 10),
+        "bound_gap": round(v - integer_best[0], 4),
+        "binding_at_best": {k: round(a[0] * integer_best[1] + a[1] * integer_best[2], 4)
+                            for k, (a, b) in BASE.items()},
+    },
+    # Lesson 7: rent a second finishing bench (+8 h for a fixed weekly rent)
+    "binary": {
+        "hours": 8,
+        "rent": 300,
+        "no_rent": {"T": integer_best[1], "S": integer_best[2], "profit": integer_best[0]},
+        "rented": {"T": int_best_at(29)[1], "S": int_best_at(29)[2], "profit": int_best_at(29)[0]},
+        "lp_rented": solve(rhs={"finishing": 29})[0],
+        "integer_gain": int_best_at(29)[0] - integer_best[0],
+        "lp_gain": round(solve(rhs={"finishing": 29})[0][2] - v, 4),
+        "net_at_300": int_best_at(29)[0] - 300 - integer_best[0],
+        "break_even_rent": int_best_at(29)[0] - integer_best[0],
     },
 }
 print(json.dumps(out, indent=2))

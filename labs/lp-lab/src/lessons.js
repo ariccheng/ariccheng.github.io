@@ -336,7 +336,7 @@ LESSONS.push({n: 3, title: "The report: products", aside: "report-first",
      $$(".seg button", b.host).forEach(x => x.addEventListener("click", () => {
        activate(b); b.mem.cut = x.dataset.v === "1";
        $$(".seg button", b.host).forEach(y => y.classList.toggle("on", y === x));
-       b.def.show(b);
+       b.def.show(b); draw();
        if (b.mem.cut && !b.host.querySelector(".scen")) ask(b, "store", "Sales",
          "A wholesale customer asks for a discount that cuts the Trail profit to $40, and Solver then builds no Trail boards at all. By how much must the Trail profit rise before building them is worthwhile again?",
          "num", {prefix: "$", answer: 3.33, tol: .02, hint: "Check Trail's Reduced Cost in the table: −3.333333.", right: "Correct. The Trail profit must rise by $3.33, to $43.33, before the plan builds Trail boards again."},
@@ -551,4 +551,286 @@ LESSONS.push({n: 5, title: "Use the report", aside: "report-first",
    body: () => `<p class="note">For each case, decide whether the change in profit can be computed from the report or the model has to be solved again. The report is on the right.</p>`,
    mount(b) { runQuiz(b); },
    show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }}
+]});
+
+/* ═════════ shared parts for Lessons 6 and 7: whole-number models ═════════ */
+const ROUNDINGS = [[5, 10], [5, 11], [6, 10], [6, 11]];
+const intProfit = (T, S) => 50 * T + 65 * S;
+/* every whole-number plan inside a feasible region */
+function latticePts(cons) {
+  const out = [];
+  for (let T = 0; T <= PLOT.XM; T++) for (let S = 0; S <= PLOT.YM; S++) if (isFeasible(cons, T, S)) out.push([T, S]);
+  return out;
+}
+/* Lessons 6 and 7 crowd the spots the line labels normally sit in, so each view
+   places the finishing and fabrication anchors itself. */
+const finCons = (c = 21, finAt = 8.6, fabAt = 10.6) => {
+  const k = baseCons();
+  k[1].c = c;
+  k[0].labelAt = lineLabelAt(fabAt);
+  k[1].labelAt = lineLabelAt(finAt);
+  return k;
+};
+/* with the bench the two lines run close together, so the labels go to opposite ends */
+const rentCons = y => y ? finCons(29, 11.5, 4.5) : finCons(21);
+/* the reason a whole-number plan fails, named the way the lessons name it */
+const BREAKS = {fab: "the fabrication limit", fin: "the finishing limit", mix: "the dealer mix rule"};
+const breaks = (cons, T, S) => { const k = cons.find(k => !satisfies(k, T, S)); return k ? BREAKS[k.cls] : null; };
+
+/* ═════════ 6 · WHOLE BOARDS ONLY ═════════ */
+LESSONS.push({n: 6, title: "Whole boards only",
+  lead: `The plan says 5.25 Trail boards. Require whole boards and the best plan moves off the corner the graph pointed at.`,
+  blocks: [
+  {title: "A plan the shop cannot build",
+   goal: "See where the corner answer stops being usable.",
+   body: () => `<p>Lessons 1 and 2 ended at the corner (5.25, 10.5), worth $945 a week. Lesson 2 read that as an average rate: 21 Trail and 42 Summit boards over four weeks.</p>
+     <p>If the week has to stand on its own, that reading is not available. A board is a physical object, so <span class="v">T</span> and <span class="v">S</span> have to be whole numbers. The model is the same except for one line.</p>
+     <div class="model">
+       <div class="model-row"><span class="m-type">Max</span><span class="m-expr">50<i>T</i> + 65<i>S</i></span><span class="m-tag obj">Gross profit for the week</span></div>
+       <div class="model-row sub"><span class="m-type">s.t.</span><span class="m-expr">3.5<i>T</i> + 4<i>S</i> ≤ 84</span><span class="m-tag"><span class="dot fab"></span>Fabrication, 84 h</span></div>
+       <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i> + 1.5<i>S</i> ≤ 21</span><span class="m-tag"><span class="dot fin"></span>Finishing, 21 h</span></div>
+       <div class="model-row sub"><span class="m-type"></span><span class="m-expr">−2<i>T</i> + <i>S</i> ≥ 0</span><span class="m-tag"><span class="dot mix"></span>Dealer mix</span></div>
+       <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i>, <i>S</i> ≥ 0 and whole</span><span class="m-tag new">The new condition</span></div>
+     </div>
+     <p class="note">Dropping that last condition gives back the ordinary linear program. That version has a name, because the rest of this lesson keeps returning to it.</p>`,
+   terms: ["integer", "relax"],
+   mount(b) { b.complete(); },
+   show() { regionView({cons: finCons(), best: true, cornerLabel: bestLabel}); }},
+
+  {title: "Rounding the answer",
+   goal: "Test the obvious fix.",
+   task: "Try each of the four ways to round (5.25, 10.5) to whole boards.",
+   body: () => `<p>The first instinct is to round. There are four ways to do it, and the graph says which of them the shop could actually run.</p>`,
+   mount(b) {
+     b.mem.seen = new Set(); b.mem.cur = null;
+     b.host.innerHTML = `<div class="ptbtns">${ROUNDINGS.map(([T, S]) =>
+       `<button class="btn pick small" data-p="${T},${S}">(${T}, ${S})</button>`).join("")}</div><div class="res"></div>`;
+     b.mem.test = (T, S) => {
+       activate(b);
+       const cons = finCons(), ok = isFeasible(cons, T, S);
+       b.mem.cur = [T, S, ok]; b.mem.seen.add(T + "," + S);
+       b.def.show(b); draw();
+       $(".res", b.host).innerHTML = `<p style="margin:.6rem 0 0"><b class="num">(${T}, ${S})</b>
+         <span class="badge ${ok ? "ok" : "bad"}">${ok ? "Feasible" : "Infeasible"}</span>
+         <span class="note num">${ok ? "worth " + money(intProfit(T, S), 0) : "breaks " + breaks(cons, T, S)}</span></p>${checkTable(cons, T, S)}`;
+       if (b.mem.seen.size === 4) b.complete("Only (5, 10) is feasible, and it earns <b>$900</b>. Rounding up breaks the finishing limit or the dealer mix rule, and $45 of the relaxation's $945 is gone.");
+     };
+     $$(".pick", b.host).forEach(x => x.addEventListener("click", () => b.mem.test(...x.dataset.p.split(",").map(Number))));
+   },
+   show(b) {
+     regionView({cons: finCons(), best: true, cornerLabel: bestLabel});
+     if (b.mem.cur) {
+       const [T, S, ok] = b.mem.cur;
+       V.lattice = [{x: T, y: S, cls: ok ? "sel" : "bad", below: true,
+                     label: `(${T}, ${S})  ${ok ? money(intProfit(T, S), 0) : "infeasible"}`}];
+     }
+   },
+   async demo(b) { for (const [T, S] of ROUNDINGS) { b.mem.test(T, S); await sleep(900); } }},
+
+  {title: "Every whole-number plan",
+   goal: "Look at the plans the shop can actually run.",
+   task: "Click the whole-number plan you think earns the most.",
+   body: () => `<p>The feasible region has not changed. What has changed is that only the points with whole coordinates count, and inside this region there are <b>48</b> of them.</p>
+     <p>They are not evenly spread: the dealer mix rule keeps the region narrow, so <span class="v">T</span> never goes above 5 while <span class="v">S</span> reaches 14.</p>`,
+   mount(b) {
+     b.host.innerHTML = `<div class="res"></div>`;
+     b.mem.pick = null;
+     b.mem.test = (T, S) => {
+       activate(b);
+       const cons = finCons();
+       if (!isFeasible(cons, T, S)) { sayIn(b, `(${T}, ${S}) is outside the region: it breaks ${breaks(cons, T, S)}.`); return; }
+       b.mem.pick = [T, S];
+       const best = T === 3 && S === 12;
+       if (best) b.complete("(3, 12) earns <b>$930</b>, the most any whole-number plan earns here. It is not the rounded plan, and it is not at a corner of the region.");
+       b.def.show(b); draw();
+       sayIn(b, `(${T}, ${S}) earns <b>${money(intProfit(T, S), 0)}</b>.` + (best ? "" : " Something on this grid does better."));
+     };
+   },
+   show(b) {
+     view({cons: finCons(), lines: ALL, region: true});
+     const done = App.prog[b.key];
+     V.lattice = latticePts(finCons()).map(([x, y]) => {
+       const picked = b.mem.pick && b.mem.pick[0] === x && b.mem.pick[1] === y;
+       const best = done && x === 3 && y === 12;
+       return {x, y, cls: best ? "best" : picked ? "sel" : "",
+               label: best || picked ? `(${x}, ${y})  ${money(intProfit(x, y), 0)}` : ""};
+     });
+     b.click((x, y) => b.mem.test(Math.round(x), Math.round(y)), "Click a whole-number point");
+   },
+   async demo(b) { b.mem.test(5, 10); await sleep(900); b.mem.test(4, 11); await sleep(900); b.mem.test(3, 12); }},
+
+  {title: "What rounding costs",
+   goal: "Compare the three answers side by side.",
+   body: () => `<div class="table-scroll"><table class="rtable"><tr><th>Plan</th><th>Where it comes from</th><th>Trail</th><th>Summit</th><th>Profit</th></tr>
+     <tr><td>Relaxation</td><td>The corner the graph points at</td><td>5.25</td><td>10.5</td><td><b>$945</b></td></tr>
+     <tr><td>Rounded down</td><td>(5.25, 10.5) rounded to whole boards</td><td>5</td><td>10</td><td>$900</td></tr>
+     <tr><td>Best whole-number plan</td><td>Searching the 48 grid points</td><td><b>3</b></td><td><b>12</b></td><td><b>$930</b></td></tr></table></div>
+     <p>Rounding gives up <b>$30</b> a week against the best whole-number plan. The more useful point is that it gives up the plan itself: the answer is two Trail boards fewer and two Summit boards more, not a nudge away from (5, 10).</p>`,
+   why: `<p>At the relaxation's corner, finishing and the dealer mix are both binding, which is what pins it to (5.25, 10.5).</p>
+     <p>At (3, 12) finishing is still binding, 21 of 21 hours, but the mix rule has 6 units of slack. The whole-number condition pushes the plan along the finishing line, away from the crossing. Nothing on the graph marks where it lands, which is why it cannot be read off the corners.</p>`,
+   whyTitle: "Why the best plan moves so far",
+   mount(b) { b.complete(); },
+   show() {
+     view({cons: finCons(), lines: ALL, region: true, corners: true, best: true, cornerLabel: bestLabel});
+     V.lattice = [{x: 3, y: 12, cls: "best", below: true, label: "(3, 12)  $930"},
+                  {x: 5, y: 10, cls: "bad", below: true, label: "(5, 10)  $900"}];
+   }},
+
+  {title: "The relaxation as a bound",
+   goal: "Get something useful out of the easy model.",
+   body: () => defBox("For a maximization, the relaxation's optimal value is an upper bound on the whole-number model: every whole-number plan is also a plan in the relaxation, so none of them can earn more.") +
+     exBox(`The relaxation earns <b>$945</b> and the best whole-number plan earns <b>$930</b>. The gap is <b>$15</b>, and that is the whole cost of the whole-number condition.`),
+   terms: ["bound"],
+   mount(b) {
+     ask(b, "gauge", "Shop manager", "Solver reports $945 for the relaxation, and we have a whole-number plan worth $930. Before searching any further, how much could a better whole-number plan add at most?",
+       "num", {prefix: "$", answer: 15, hint: "No whole-number plan can beat the relaxation. Subtract the plan you have from the bound.",
+               right: "Correct. $945 − $930 = $15, so at most $15 is still on the table."},
+       () => b.complete("The bound caps what is left: at most <b>$15</b>. A gap that small is usually the point to stop searching and run the plan."));
+   },
+   show() {
+     view({cons: finCons(), lines: ALL, region: true, corners: true, best: true, cornerLabel: bestLabel,
+           iso: {cx: 50, cy: 65, value: 945, label: "Relaxation  $945"}});
+     V.lattice = [{x: 3, y: 12, cls: "best", below: true, label: "(3, 12)  $930"}];
+   }},
+
+  {title: "Core principles",
+   goal: "Three statements to carry into the next lesson.",
+   body: () => `<div class="rules"><div class="rule">The whole-number condition changes the variables, not the constraints. The region and the lines are the same ones from Lesson 1.</div>
+     <div class="rule">The best whole-number plan need not sit at a corner, and need not sit near the relaxation's answer. Rounding is a guess, not a method.</div>
+     <div class="rule">For a maximization the relaxation's value is an <b>upper bound</b> on the whole-number optimum, so it measures what the condition costs.</div></div>`,
+   mount(b) { b.complete(); },
+   show() {
+     view({cons: finCons(), lines: ALL, region: true, corners: true, best: true, cornerLabel: bestLabel});
+     V.lattice = latticePts(finCons()).map(([x, y]) => ({x, y, cls: x === 3 && y === 12 ? "best" : "", below: true,
+       label: x === 3 && y === 12 ? "(3, 12)  $930" : ""}));
+   }}
+]});
+
+/* ═════════ 7 · YES OR NO DECISIONS ═════════ */
+const RENT = {hours: 8, base: 300, even: 360};   // the station adds 8 h; worth renting below $360
+const rentBest = y => { const p = latticePts(finCons(21 + (y ? RENT.hours : 0)))
+  .map(([T, S]) => [intProfit(T, S), T, S]).sort((a, c) => c[0] - a[0])[0]; return {profit: p[0], T: p[1], S: p[2]}; };
+LESSONS.push({n: 7, title: "Yes or no decisions",
+  lead: `Renting a second finishing station is not a quantity. It is taken or it is not, and that is a variable too.`,
+  blocks: [
+  {title: "A variable that is 0 or 1",
+   goal: "Write a take-it-or-leave-it decision as part of the model.",
+   body: () => `<p>A finishing shop down the valley will rent Ridgeline a second bench for the week. It adds <b>8 finishing hours</b> and costs <b>$300</b>, and the $300 is owed whether the bench runs one hour or all eight.</p>
+     <p>The shop cannot rent part of a bench, so the decision takes one of two values. Write it as <span class="v">y</span> = 1 for renting and <span class="v">y</span> = 0 for not renting, and both of its effects follow:</p>
+     <div class="model">
+       <div class="model-row"><span class="m-type">Max</span><span class="m-expr">50<i>T</i> + 65<i>S</i> − 300<i>y</i></span><span class="m-tag obj">Profit, less the rent</span></div>
+       <div class="model-row sub"><span class="m-type">s.t.</span><span class="m-expr">3.5<i>T</i> + 4<i>S</i> ≤ 84</span><span class="m-tag"><span class="dot fab"></span>Fabrication, 84 h</span></div>
+       <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i> + 1.5<i>S</i> ≤ 21 + 8<i>y</i></span><span class="m-tag"><span class="dot fin"></span>Finishing, 8 h more if rented</span></div>
+       <div class="model-row sub"><span class="m-type"></span><span class="m-expr">−2<i>T</i> + <i>S</i> ≥ 0</span><span class="m-tag"><span class="dot mix"></span>Dealer mix</span></div>
+       <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>T</i>, <i>S</i> ≥ 0 and whole</span><span class="m-tag">Whole boards</span></div>
+       <div class="model-row sub"><span class="m-type"></span><span class="m-expr"><i>y</i> = 0 or 1</span><span class="m-tag new">Rent the bench, or do not</span></div>
+     </div>
+     <p>The same <span class="v">y</span> appears twice: once where it buys hours, once where it charges for them. That is what ties the cost to the capacity.</p>`,
+   terms: ["binary", "fixed"],
+   mount(b) { b.complete(); },
+   show() { view({cons: finCons(), lines: ALL, region: true}); V.lattice = latticePts(finCons()).map(([x, y]) => ({x, y})); }},
+
+  {title: "Two models, one for each answer",
+   goal: "See what the binary variable stands for on the graph.",
+   task: "Switch between the two answers and watch the finishing line move.",
+   body: () => `<p>A variable with two values is two models. Fix <span class="v">y</span> and nothing binary is left: each answer is an ordinary whole-number problem of the kind Lesson 6 solved.</p>`,
+   mount(b) {
+     b.mem.y = 0;
+     b.host.innerHTML = `<div class="seg live"><button class="on" data-v="0">Do not rent (y = 0)</button><button data-v="1">Rent (y = 1)</button></div><div class="res"></div>`;
+     $$(".seg button", b.host).forEach(x => x.addEventListener("click", () => {
+       activate(b); b.mem.y = +x.dataset.v;
+       $$(".seg button", b.host).forEach(z => z.classList.toggle("on", z === x));
+       b.def.show(b); draw();
+       const r = rentBest(b.mem.y);
+       sayIn(b, `Finishing is capped at <b>${21 + (b.mem.y ? RENT.hours : 0)} hours</b>. The best whole-number plan is <b>(${r.T}, ${r.S})</b>, earning <b>${money(r.profit, 0)}</b> before the rent.`);
+       if (b.mem.y === 1) b.complete("With the bench, finishing allows 29 hours and the best whole-number plan becomes <b>(5, 16)</b> at <b>$1,290</b> — $360 more than the $930 without it. The rent still has to come off that.");
+     }));
+   },
+   show(b) {
+     const cons = rentCons(b.mem.y), r = rentBest(b.mem.y);
+     view({cons, lines: ALL, region: true, animate: false});
+     V.lattice = latticePts(cons).map(([x, y]) => ({x, y, cls: x === r.T && y === r.S ? "best" : "", below: true,
+       label: x === r.T && y === r.S ? `(${r.T}, ${r.S})  ${money(r.profit, 0)}` : ""}));
+   },
+   async demo(b) { $$(".seg button", b.host)[1].click(); }},
+
+  {title: "Net of the rent",
+   goal: "Compare the two answers on the same footing.",
+   body: () => `<p>The $1,290 is not comparable to the $930 until the rent comes off it. Once it does, the two answers can be read next to each other.</p>
+     <div class="readout"><div class="stat"><span>y = 0: (3, 12), no rent</span><b class="num">$930</b></div>
+     <div class="stat"><span>y = 1: (5, 16), less $300 of rent</span><b class="num">$990</b></div>
+     <div class="stat ok"><span>Renting is worth</span><b class="num">+$60 a week</b></div></div>
+     <p class="note">Whole-number plans, so no fraction of a board and no fraction of a bench. The $60 is the whole of the gain.</p>`,
+   mount(b) {
+     ask(b, "truck", "Finishing supervisor", "The bench adds 8 finishing hours for $300 a week. Taking the whole-number plans as given, what does renting it add to weekly profit?",
+       "num", {prefix: "$", answer: 60, hint: "Subtract the rent from the plan it allows, then compare with the plan without it: ($1,290 − $300) − $930.",
+               right: "Correct. $990 − $930 = $60 a week."},
+       () => b.complete("Rent the bench. It unlocks <b>$360</b> of extra profit for <b>$300</b>, so the week is <b>$60</b> better off."));
+   },
+   show() {
+     const cons = rentCons(1);
+     view({cons, lines: ALL, region: true});
+     V.lattice = [{x: 5, y: 16, cls: "best", below: true, label: "(5, 16)  $1,290"},
+                  {x: 3, y: 12, cls: "sel", below: true, label: "(3, 12)  $930"}];
+   }},
+
+  {title: "Where the decision flips",
+   goal: "Find the rent at which the answer changes.",
+   task: "Drag the rent until the two answers are worth the same.",
+   body: () => `<p>$300 is this week's quote. What matters for the next one is the rent at which renting stops paying.</p>`,
+   mount(b) {
+     const id = b.uid("rent");
+     b.host.insertAdjacentHTML("afterbegin", slider({id, label: "Weekly rent for the bench", min: 0, max: 600, step: 10,
+       value: RENT.base, fmt: v => money(v, 0), band: [0, RENT.even], mark: RENT.base,
+       legend: "<span>$0</span><span>green: worth renting</span><span>$600</span>"}));
+     b.mem.rent = RENT.base;
+     b.mem.set = v => {
+       b.mem.rent = v;
+       const no = rentBest(0).profit, yes = rentBest(1).profit - v, d = yes - no;
+       $(".res", b.host).innerHTML = `<div class="readout tight"><div class="panel-row">
+         <div class="stat ${d > 0 ? "muted" : ""}"><span>Do not rent</span><b class="num">${money(no, 0)}</b></div>
+         <div class="stat ${d > 0 ? "" : "muted"}"><span>Rent, net of ${money(v, 0)}</span><b class="num">${money(yes, 0)}</b></div></div>
+         <p class="verdict">${Math.abs(d) < 1e-9 ? `<span class="badge">Break-even</span> at ${money(v, 0)} the two answers are worth the same`
+           : d > 0 ? `<span class="badge ok">Rent it</span> ${money(d, 0)} better a week` : `<span class="badge bad">Do not rent</span> ${money(-d, 0)} worse a week`}</p></div>`;
+       if (Math.abs(v - RENT.even) < 1e-9) b.complete("The answer flips at <b>$360</b>: that is the extra profit the 8 hours unlock, so any rent below it is worth paying and any rent above it is not.");
+     };
+     b.host.insertAdjacentHTML("beforeend", `<div class="res"></div>`);
+     bindSlider(id, v => money(v, 0), v => { activate(b); b.mem.set(v); });
+     b.mem.set(RENT.base);
+   },
+   why: `<p>The 8 hours are worth $360 here, and the finishing shadow price from Lesson 4 was $45 an hour: 8 × $45 = $360. The two agree exactly.</p>
+     <p>That agreement is a property of this instance, not a rule. The shadow price describes the relaxation, where capacity can be used in any fraction. A whole-number model usually cannot take up all of it, so the gain is usually smaller than the shadow price predicts. Check it by solving, not by multiplying.</p>`,
+   whyTitle: "Why $360 matches 8 × $45, and why that is luck",
+   show(b) {
+     const cons = rentCons(1), r = rentBest(1);
+     view({cons, lines: ALL, region: true, animate: false});
+     V.lattice = [{x: r.T, y: r.S, cls: "best", below: true, label: `(${r.T}, ${r.S})  ${money(r.profit, 0)}`},
+                  {x: 3, y: 12, cls: "sel", below: true, label: "(3, 12)  $930"}];
+     b.mem.set(b.mem.rent);
+   },
+   async demo(b) { await tween($("#" + b.uid("rent")), RENT.even, 1200); }},
+
+  {title: "What Solver gives you, and what it does not",
+   goal: "Know which of the earlier lessons still applies.",
+   body: () => `<p>In Solver both conditions are ordinary constraints. Select the board cells and choose <b>int</b>; select the rent cell and choose <b>bin</b>. The solving method stays Simplex LP.</p>
+     <div class="table-scroll"><table class="rtable"><tr><th>In the model</th><th>In the Solver dialog</th></tr>
+       <tr><td><i>T</i>, <i>S</i> whole</td><td><code>$B$6:$C$6 = int</code></td></tr>
+       <tr><td><i>y</i> = 0 or 1</td><td><code>$D$6 = bin</code></td></tr></table></div>
+     <p>One thing does change. Solver does not produce a <b>Sensitivity Report</b> for a model with int or bin constraints: Excel reports that the report is not meaningful for it, and the shadow prices and allowable ranges from Lessons 3 to 5 describe the relaxation only.</p>
+     <div class="rules"><div class="rule">A quantity that must be whole gets an <b>int</b> constraint. A decision that is taken or not gets a <b>bin</b> variable, appearing once where it unlocks capacity and once where it is charged for.</div>
+       <div class="rule">Fix a binary variable and what is left is an ordinary whole-number model. Two values, two models, and the better of the two is the answer.</div>
+       <div class="rule">For an integer model there is no Sensitivity Report. Change the number and solve again: that is the only reliable answer to a what-if.</div></div>`,
+   mount(b) {
+     ask(b, "tag", "Shop manager", "Next week the dealer asks what one more finishing hour is worth, and our model now has whole boards and the rented bench in it. What do we tell them?", "choice", {options: [
+       {t: "Solve the model again with 22 hours and compare", ok: true, why: "Correct. For an integer model that is the only dependable way to answer it."},
+       {t: "$45, the shadow price from the Sensitivity Report", why: "Solver writes no Sensitivity Report for a model with int or bin constraints, and $45 describes the relaxation."},
+       {t: "Nothing: sensitivity analysis does not apply to integer models", why: "The question is still answerable. What is unavailable is the report, not the answer."}]},
+       () => b.complete("With whole numbers in the model, a what-if is answered by solving again. The Sensitivity Report belongs to the relaxation, and the relaxation is now only a bound."));
+   },
+   show() {
+     const cons = rentCons(1);
+     view({cons, lines: ALL, region: true});
+     V.lattice = latticePts(cons).map(([x, y]) => ({x, y, cls: x === 5 && y === 16 ? "best" : "", below: true,
+       label: x === 5 && y === 16 ? "(5, 16)  $1,290" : ""}));
+   }}
 ]});

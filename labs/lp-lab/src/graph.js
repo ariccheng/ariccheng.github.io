@@ -38,7 +38,7 @@ function segment(a, b, c) {
 const polyStr = poly => poly.map(p => X(p[0]).toFixed(1) + "," + Y(p[1]).toFixed(1)).join(" ");
 const fmt = (v, d = 2) => {
   const r = Math.round(v * 10 ** d) / 10 ** d;
-  return (Object.is(r, -0) ? 0 : r).toLocaleString("en-US", {maximumFractionDigits: d});
+  return (Object.is(r, -0) ? 0 : r).toLocaleString("en-US", {maximumFractionDigits: d}).replace("-", "\u2212");
 };
 const money = (v, d = 2) => (v < -1e-9 ? "−$" : "$") + Math.abs(v).toLocaleString("en-US",
   {minimumFractionDigits: Number.isInteger(Math.round(v * 100) / 100) ? 0 : d, maximumFractionDigits: d});
@@ -46,10 +46,11 @@ const money = (v, d = 2) => (v < -1e-9 ? "−$" : "$") + Math.abs(v).toLocaleStr
 class Graph {
   constructor(svg) {
     this.svg = svg;
+    this.gid = "regionFill" + (Graph.seq = (Graph.seq || 0) + 1);
     svg.setAttribute("viewBox", `0 0 ${PLOT.W} ${PLOT.H}`);
-    svg.innerHTML = `<defs><linearGradient id="regionFill" x1="0" y1="1" x2="1" y2="0">
+    svg.innerHTML = `<defs><linearGradient id="${this.gid}" x1="0" y1="1" x2="1" y2="0">
       <stop offset="0" stop-color="#8C1D40" stop-opacity=".07"/><stop offset="1" stop-color="#8C1D40" stop-opacity=".2"/></linearGradient></defs><g class="g-grid"></g><g class="layer-half dimmable"></g><g class="layer-region dimmable"></g>
-      <g class="layer-axes"></g><g class="layer-lines dimmable"></g><g class="layer-extra"></g><g class="layer-iso"></g>
+      <g class="layer-axes"></g><g class="layer-lines dimmable"></g><g class="layer-lattice"></g><g class="layer-extra"></g><g class="layer-iso"></g>
       <g class="layer-corners dimmable"></g><g class="layer-pts"></g><rect class="g-hit" x="${PLOT.L}" y="${PLOT.T}"
       width="${PLOT.W - PLOT.L - PLOT.R}" height="${PLOT.H - PLOT.T - PLOT.B}"></rect><g class="layer-drag"></g>`;
     this.L = n => svg.querySelector(".layer-" + n);
@@ -122,6 +123,7 @@ class Graph {
         keepReg.add("r");
         const [el, fresh] = this.keyed("region", "r", "polygon");
         el.setAttribute("class", "g-region" + (fresh && v.animate !== false ? " enter" : ""));
+        el.setAttribute("fill", `url(#${this.gid})`);
         el.setAttribute("points", polyStr(poly));
       }
     }
@@ -169,6 +171,20 @@ class Graph {
       }
     }
     this.prune("iso", keepIso);
+    /* whole-number points (Lessons 6 and 7); lessons.js decides which ones exist */
+    const keepN = new Set();
+    for (const p of v.lattice || []) {
+      const key = "n" + p.x + "_" + p.y;
+      keepN.add(key);
+      const [el, fresh] = this.keyed("lattice", key, "g");
+      el.setAttribute("class", "g-dot" + (p.cls ? " " + p.cls : "") + (fresh && v.animate !== false ? " enter" : ""));
+      const big = p.cls === "best" || p.cls === "sel";
+      const right = X(p.x) < PLOT.W - 150;
+      el.innerHTML = `<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="${big ? 9 : 5}"/>` + (p.label ?
+        `<text x="${X(p.x) + (p.below ? 0 : right ? 14 : -14)}" y="${Y(p.y) + (p.below ? 26 : 5)}"
+           text-anchor="${p.below ? "middle" : right ? "start" : "end"}">${p.label}</text>` : "");
+    }
+    this.prune("lattice", keepN);
     /* extras: slack gap, ghost points */
     this.L("extra").innerHTML = (v.extra || []).join("");
     /* corners */
@@ -226,7 +242,7 @@ class Graph {
     this.svg.querySelector(".g-hit").style.cursor = this.onClick ? "crosshair" : "default";
     this.svg.querySelector(".g-hit").style.pointerEvents = this.onClick ? "auto" : "none";
   }
-  reset() { for (const n of ["half", "region", "lines", "iso", "corners", "pts", "extra", "drag"]) this.L(n).innerHTML = ""; }
+  reset() { for (const n of ["half", "region", "lines", "iso", "corners", "pts", "extra", "drag", "lattice"]) this.L(n).innerHTML = ""; }
 }
 
 /* small "profit vs right-hand side" chart for Lesson 4 */

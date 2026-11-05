@@ -123,21 +123,68 @@
       "S": 12,
       "profit": 930
     },
-    "round_nearest": {
-      "T": 5,
-      "S": 11,
-      "feasible": false,
-      "finishing": 21.5
+    "point_count": 48,
+    "max_T": 5,
+    "max_S": 14,
+    "roundings": {
+      "5,10": {
+        "feasible": true,
+        "profit": 900,
+        "fabrication": 57.5,
+        "finishing": 20.0,
+        "mix_ok": true
+      },
+      "5,11": {
+        "feasible": false,
+        "profit": 965,
+        "fabrication": 61.5,
+        "finishing": 21.5,
+        "mix_ok": true
+      },
+      "6,10": {
+        "feasible": false,
+        "profit": 950,
+        "fabrication": 61.0,
+        "finishing": 21.0,
+        "mix_ok": false
+      },
+      "6,11": {
+        "feasible": false,
+        "profit": 1015,
+        "fabrication": 65.0,
+        "finishing": 22.5,
+        "mix_ok": false
+      }
     },
-    "round_down": {
-      "T": 5,
-      "S": 10,
-      "feasible": true,
-      "profit": 900
-    },
-    "trap_2_13": {
-      "feasible": false,
-      "profit": 945
+    "rounding_cost": 30,
+    "bound_gap": 15.0,
+    "binding_at_best": {
+      "fabrication": 58.5,
+      "finishing": 21.0,
+      "mix": -6
     }
+  },
+  "binary": {
+    "hours": 8,
+    "rent": 300,
+    "no_rent": {
+      "T": 3,
+      "S": 12,
+      "profit": 930
+    },
+    "rented": {
+      "T": 5,
+      "S": 16,
+      "profit": 1290
+    },
+    "lp_rented": [
+      7.25,
+      14.5,
+      1305.0
+    ],
+    "integer_gain": 360,
+    "lp_gain": 360.0,
+    "net_at_300": 60,
+    "break_even_rent": 360
   }
 }

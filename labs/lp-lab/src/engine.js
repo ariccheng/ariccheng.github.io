@@ -8,13 +8,11 @@
    {title, body, task, why, mount(b), show(b), demo(b)}: mount() builds the
    block's controls once; show() sets the graph each time it becomes active. */
 const QUESTIONS = [
-  {k: 1, t: "What can we decide?", lessons: []},
-  {k: 2, t: "What is the best we can do?", lessons: [1, 2]},
-  {k: 3, t: "What if the numbers change?", lessons: [3, 4, 5]},
-  {k: 4, t: "What if answers must be whole numbers or yes/no?", lessons: []}
+  {k: 1, t: "What can we decide, and what is the best plan?", lessons: [1, 2]},
+  {k: 2, t: "What if the numbers change?", lessons: [3, 4, 5]},
+  {k: 3, t: "What if the answers must be whole numbers?", lessons: [6, 7]}
 ];
 const LESSONS = [];                       // filled by lessons.js
-const SOON = ["Build a model from a description", "When there is no single best plan", "Whole boards only", "Yes-or-no decisions", "Review", "Playground"];
 const SECTIONS = [];
 let CUR = null;
 
@@ -26,7 +24,8 @@ function draw() {
     cons: V.cons, lines: V.lines, halves: V.halves, region: V.region,
     corners: V.corners && sol.corners ? sol.corners : [],
     best: V.best && sol.status !== "infeasible" ? [sol.x, sol.y] : null,
-    iso: V.iso, points: V.points, extra: V.extra, cornerLabel: V.cornerLabel, animate: V.animate, drag: V.drag, probe: V.probe
+    iso: V.iso, points: V.points, lattice: V.lattice, extra: V.extra, cornerLabel: V.cornerLabel, animate: V.animate, drag: V.drag, probe: V.probe,
+    regionCons: V.regionCons
   });
   return sol;
 }
@@ -223,9 +222,6 @@ function init() {
   Hero.init();
   LESSONS.forEach(buildLesson);
   lessonFoot();
-  $("#home").insertAdjacentHTML("beforeend", `<section class="soon"><div class="wrap"><h2>More lessons are on the way</h2>
-    <p>Next: building a model from a description, special cases, and whole-number and yes-or-no decisions.</p>
-    <ul>${SOON.map(t => `<li>${t}</li>`).join("")}</ul></div></section>`);
   buildNav();
   // the block crossing the active reading area becomes active
   const isNarrow = window.innerWidth <= 980;

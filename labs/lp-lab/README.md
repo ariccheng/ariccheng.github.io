@@ -7,7 +7,7 @@ An interactive, step-by-step guide to linear programming, built around one examp
 | Path | What it is |
 |---|---|
 | `index.html` | The built page. This is the only file to publish. |
-| `src/` | Sources: `style.css`, `solver.js` (2-variable LP + sensitivity), `graph.js` (SVG graph), `app.js` (model, report, components), `hero.js` (scroll-driven 3D opening), `engine.js` (lesson sections, blocks, progress), `lessons.js` (lesson content), `boot.js` (self-check, start-up), `template.html`. Fonts come from `../_shared/fonts/`. |
+| `src/` | Sources: `style.css`, `solver.js` (2-variable LP + sensitivity), `graph.js` (SVG graph, including the whole-number point grid), `app.js` (model, report, components), `hero.js` (scroll-driven 3D opening), `engine.js` (lesson sections, blocks, progress), `lessons.js` (lesson content), `boot.js` (self-check, start-up), `template.html`. Fonts come from `../_shared/fonts/`. |
 | `build.py` | Inlines `src/` into `index.html`. Run after any edit: `python3 build.py`. |
 | `verify.py` | Recomputes every number in the lessons with plain Python; output in `verify-output.json`. |
 
@@ -20,9 +20,24 @@ An interactive, step-by-step guide to linear programming, built around one examp
 
 This folder lives in the `ariccheng.github.io` repository under `labs/lp-lab/`, so the page is served at https://ariccheng.github.io/labs/lp-lab/. After editing `src/`, run `python3 build.py`, then commit and push the site repository.
 
-## Status (2026-10-26)
+## Lessons
 
-Built: Lessons 2, 3, 5, 6 and 7 (3D scroll opening, one lesson per view, draggable constraint lines and probe point, key-term pop-ups, classroom mode). Lessons 1, 4, 8, 9, 10 and the Playground show as "In preparation".
+All seven are built; nothing on the page is a placeholder.
+
+| # | Lesson | Question it answers |
+|---|---|---|
+| 1 | Draw what is possible | What can we decide, and what is the best plan? |
+| 2 | Find the best plan | " |
+| 3 | The report: products | What if the numbers change? |
+| 4 | The report: resources | " |
+| 5 | Use the report | " |
+| 6 | Whole boards only | What if the answers must be whole numbers? |
+| 7 | Yes or no decisions | " |
+
+Lessons 6 and 7 are the integer part: the four roundings of (5.25, 10.5), the 48
+whole-number plans, the optimum at (3, 12) worth $930, the relaxation as a $945
+upper bound, and a binary rent-or-not decision on a second finishing bench
+(+8 hours, break-even rent $360).
 
 ## Fonts
 
