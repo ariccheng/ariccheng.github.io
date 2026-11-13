@@ -25,6 +25,7 @@
   --shadow-1:0 1px 2px rgba(14,20,36,.04),0 2px 8px rgba(14,20,36,.04);
   --shadow-2:0 1px 2px rgba(14,20,36,.05),0 12px 32px -8px rgba(40,30,90,.16);
   --nav:62px;
+  color-scheme:light;
 }
 
 /* ---- dark theme -----------------------------------------------------------
@@ -457,7 +458,7 @@ a.qcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-2);border-color
 .sheet .hl{box-shadow:inset 0 0 0 3px var(--live)}
 .model.map span[data-k]{cursor:pointer;border-radius:6px;padding:0 .15rem;box-shadow:0 0 0 1px rgba(108,75,255,.35)}
 .model.map span[data-k]:hover{background:var(--live-soft)}
-dialog.drawer{border:0;border-radius:22px;padding:1.5rem 1.7rem;max-width:min(740px,94vw);box-shadow:0 30px 80px -10px rgba(14,20,36,.35)}
+dialog.drawer{border:0;border-radius:22px;padding:1.5rem 1.7rem;max-width:min(740px,94vw);background:var(--surface);color:var(--ink);box-shadow:0 30px 80px -10px rgba(14,20,36,.35)}
 dialog.drawer::backdrop{background:rgba(14,20,36,.28);backdrop-filter:blur(3px)}
 dialog.drawer h2{margin:0 0 .3rem;font-size:1.4rem}
 

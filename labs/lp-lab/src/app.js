@@ -36,6 +36,25 @@ const CASES = {
              ["$B$18", "Finishing hours", "21", "45", "21", "8.217391", "21"],
              ["$B$19", "Mix rule (−2T + S ≥ 0)", "0", "−2.5", "0", "14", "42"]]
     },
+    terms: {
+      report: {ex: "Two tables: <b>Variable Cells</b> has one row per board, <b>Constraints</b> one row per resource."},
+      final:  {ex: "Trail <b>5.25</b>, Summit <b>10.5</b>. Fabrication uses <b>60.375</b> of 84 hours; finishing uses <b>21</b> of 21."},
+      reduced:{ex: "Ridgeline makes both boards, so both reduced costs are <b>0</b>."},
+      coef:   {ex: "<b>$50</b> per Trail board, <b>$65</b> per Summit board."},
+      allow:  {ex: "Summit profit: +<b>10</b> / −<b>90</b>. Finishing hours: +<b>8.22</b> / −<b>21</b>. 1E+30 means no limit."},
+      range:  {ex: "Summit profit: up to <b>$75</b>. Finishing hours: <b>0 to 29.22</b>."},
+      shadow: {ex: "Finishing <b>$45</b> per hour. Fabrication <b>$0</b>. Mix rule <b>−2.5</b>."},
+      rhs:    {ex: "<b>84</b> fabrication hours, <b>21</b> finishing hours, <b>0</b> for the mix rule."},
+      binding:{ex: "Finishing (21 of 21 hours) and the mix rule."},
+      slack:  {ex: "Fabrication: 84 − 60.375 = <b>23.625</b> hours unused."},
+      resolve:{ex: "Trail profit falls to $40 (−10, more than 6.67): the new plan is <b>(0, 14)</b> with profit <b>$910</b>."},
+      integer:{ex: "Ridgeline cannot ship 5.25 boards, so T and S have to be whole numbers."},
+      relax:  {ex: "The relaxation gives (5.25, 10.5) and $945. The integer model gives (3, 12) and $930."},
+      bound:  {ex: "$945 is an upper bound. The best whole-number plan earns $930, so the whole-number condition costs $15."},
+      binary: {ex: "y = 1 if Ridgeline rents the second finishing station this week, y = 0 if it does not."},
+      fixed:  {ex: "The station costs $300 for the week whether it runs one hour or eight."},
+      iso:    {t: "Profit line", ex: "50T + 65S = 945 passes through the optimal corner (5.25, 10.5)."}
+    },
     hero: {ux: 40, uy: 20, uz: 0.24, ox: 3, oy: 8, zTop: 1100, zLabel: "Weekly profit",
            region: [[0, 0], [5.25, 10.5], [0, 14]], levels: [150, 300, 450, 600, 750, 900],
            isos: [300, 600, 945], best: [5.25, 10.5, 945], other: [0, 14]},
@@ -70,6 +89,25 @@ const CASES = {
              ["$B$18", "Therapist hours", "23", "95", "23", "5.8", "11"],
              ["$B$19", "Care-plan rule (\u22122V + T \u2265 0)", "0", "\u22125", "0", "23", "11"],
              ["$B$20", "Network minimum (T \u2265 6)", "11.5", "0", "6", "5.5", "1E+30"]]
+    },
+    terms: {
+      report: {ex: "Two tables: <b>Variable Cells</b> has one row per visit type, <b>Constraints</b> one row per resource or contract term."},
+      final:  {ex: "Evaluations <b>5.75</b>, treatment sessions <b>11.5</b>. Rooms use <b>28.75</b> of 36 hours; the therapist uses <b>23</b> of 23."},
+      reduced:{ex: "Riverside books both visit types, so both reduced costs are <b>0</b>."},
+      coef:   {ex: "<b>$200</b> per evaluation, <b>$90</b> per treatment session."},
+      allow:  {ex: "Treatment-session contribution: +<b>10</b> / −<b>190</b>. Therapist hours: +<b>5.8</b> / −<b>11</b>. 1E+30 means no limit."},
+      range:  {ex: "Treatment-session contribution: up to <b>$100</b>. Therapist hours: <b>12 to 28.8</b>."},
+      shadow: {ex: "Therapist <b>$95</b> per hour. Rooms <b>$0</b>. Care-plan rule <b>−5</b>. Network minimum <b>$0</b>."},
+      rhs:    {ex: "<b>36</b> room hours, <b>23</b> therapist hours, <b>0</b> for the care-plan rule, <b>6</b> sessions for the network minimum."},
+      binding:{ex: "Therapist hours (23 of 23) and the care-plan rule."},
+      slack:  {ex: "Rooms: 36 − 28.75 = <b>7.25</b> hours unused. The network minimum has <b>5.5</b> sessions of surplus."},
+      resolve:{ex: "Evaluation contribution falls to $170 (−30, more than 20): the new schedule is <b>(0, 23)</b> with contribution <b>$2,070</b>."},
+      integer:{ex: "Riverside cannot book 5.75 evaluations, so V and T have to be whole numbers."},
+      relax:  {ex: "The relaxation gives (5.75, 11.5) and $2,185. The integer model gives (5, 13) and $2,170."},
+      bound:  {ex: "$2,185 is an upper bound. The best whole-number schedule brings in $2,170, so the whole-number condition costs $15."},
+      binary: {ex: "y = 1 if Riverside books the per-diem cover this week, y = 0 if it does not."},
+      fixed:  {ex: "The agency charges $300 for the cover whether it runs one hour or all four."},
+      iso:    {t: "Contribution line", ex: "200V + 90T = 2,185 passes through the optimal corner (5.75, 11.5)."}
     },
     hero: {ux: 70, uy: 20, uz: 0.105, ox: 1.7, oy: 8, zTop: 2600, zLabel: "Weekly contribution",
            region: [[0, 6], [3, 6], [5.75, 11.5], [0, 23]], levels: [600, 1000, 1400, 1800, 2200],
@@ -245,48 +283,50 @@ function usageBars(cons, sol) {
   }).join("")}</div>`;
 }
 /* ---- glossary: every term a student can tap for its meaning --------------
-   d = definition, ex = the Ridgeline numbers, use = what to do with it.   */
+   d = definition and use = what to do with it are shared; each case supplies
+   ex, its own numbers, in CASES.<id>.terms, and may override any other field. */
 const TERMS = {
   report: {t: "Sensitivity Report", d: "A report Solver writes after it finds the optimal plan. It says how far each number in the model can move before the answer changes, and what one more unit of each resource is worth.",
-           ex: "Two tables: <b>Variable Cells</b> has one row per board, <b>Constraints</b> one row per resource.", use: "Answer what-if questions without solving the model again."},
-  final:  {t: "Final Value", d: "In Variable Cells: the optimal amount of each product. In Constraints: the left-hand side at the optimal plan, which is how much of the resource the plan uses.",
-           ex: "Trail <b>5.25</b>, Summit <b>10.5</b>. Fabrication uses <b>60.375</b> of 84 hours; finishing uses <b>21</b> of 21.", use: "Read the plan, and compare each Final Value with its right-hand side to find binding constraints."},
-  reduced:{t: "Reduced Cost", d: "For a product left out of the plan: how much its profit per unit would have to improve before it enters the plan. It is 0 for any product the plan makes.",
-           ex: "Ridgeline makes both boards, so both reduced costs are <b>0</b>.", use: "A product with a non-zero reduced cost is not made at the current prices."},
-  coef:   {t: "Objective Coefficient", d: "The number that multiplies a decision variable in the objective function. Here, the profit per board.",
-           ex: "<b>$50</b> per Trail board, <b>$65</b> per Summit board.", use: "Requests 1 and 2 change these numbers."},
+           use: "Answer what-if questions without solving the model again."},
+  final:  {t: "Final Value", d: "In Variable Cells: the optimal amount of each activity. In Constraints: the left-hand side at the optimal plan, which is how much of the resource the plan uses.",
+           use: "Read the plan, and compare each Final Value with its right-hand side to find binding constraints."},
+  reduced:{t: "Reduced Cost", d: "For an activity left out of the plan: how much its value per unit would have to improve before it enters the plan. It is 0 for every activity the plan uses.",
+           use: "A non-zero reduced cost marks an activity the plan leaves at zero."},
+  coef:   {t: "Objective Coefficient", d: "The number that multiplies a decision variable in the objective function: what one unit of that activity earns.",
+           use: "A price or rate change changes these numbers."},
   allow:  {t: "Allowable Increase and Decrease", d: "For an objective coefficient: how far it can rise or fall before the optimal plan changes. For a right-hand side: how far it can rise or fall while its shadow price still holds.",
-           ex: "Summit profit: +<b>10</b> / −<b>90</b>. Finishing hours: +<b>8.22</b> / −<b>21</b>. 1E+30 means no limit.", use: "Check a change against these limits before you multiply."},
+           use: "Check a change against these limits before you multiply."},
   range:  {t: "Allowable range", d: "The interval from (current value − allowable decrease) to (current value + allowable increase). Inside it, the report's answers hold.",
-           ex: "Summit profit: up to <b>$75</b>. Finishing hours: <b>0 to 29.22</b>.", use: "Inside the range, multiply. Outside it, solve again."},
+           use: "Inside the range, multiply. Outside it, solve again."},
   shadow: {t: "Shadow Price", d: "How much the optimal objective value changes when a constraint's right-hand side increases by 1 unit, as long as the change stays inside the allowable range.",
-           ex: "Finishing <b>$45</b> per hour. Fabrication <b>$0</b>. Mix rule <b>−2.5</b>.", use: "Compare it with the cost of one more unit: buy if the shadow price is higher."},
+           use: "Compare it with the cost of one more unit. Buy the unit when the shadow price is higher."},
   rhs:    {t: "Right-hand side (R.H. Side)", d: "The number on the right of a constraint, usually the amount of a resource that is available.",
-           ex: "<b>84</b> fabrication hours, <b>21</b> finishing hours, <b>0</b> for the mix rule.", use: "Requests 3 and 4 change these numbers."},
-  binding:{t: "Binding constraint", d: "A constraint whose left-hand side equals its right-hand side at the optimal plan. The resource is used up, and the constraint holds the profit down.",
-           ex: "Finishing (21 of 21 hours) and the mix rule.", use: "Only a binding constraint can have a non-zero shadow price."},
+           use: "Extra capacity, overtime or a new contract term changes these numbers."},
+  binding:{t: "Binding constraint", d: "A constraint whose left-hand side equals its right-hand side at the optimal plan. The resource is used up, and the constraint holds the objective down.",
+           use: "Only a binding constraint can have a non-zero shadow price."},
   slack:  {t: "Slack", d: "The unused amount of a ≤ constraint at the optimal plan: right-hand side minus left-hand side. A constraint with slack is not binding.",
-           ex: "Fabrication: 84 − 60.375 = <b>23.625</b> hours unused.", use: "A constraint with slack has a shadow price of 0: more of it is worth nothing."},
-  resolve:{t: "Solve again", d: "When a change goes outside its allowable range, the optimal plan itself changes, so the report stops predicting the result. Change the number in the model and run Solver again.",
-           ex: "Trail profit falls to $40 (−10, more than 6.67): the new plan is <b>(0, 14)</b> with profit <b>$910</b>.", use: "Multiply only inside the allowable range."},
+           use: "A constraint with slack has a shadow price of 0, so more of that resource adds nothing."},
+  resolve:{t: "Solve again", d: "When a change goes outside its allowable range, the optimal plan itself changes and the report's predictions stop holding. Change the number in the model and run Solver again.",
+           use: "Multiply inside the allowable range. Solve again outside it."},
   integer:{t: "Integer program", d: "A linear program with the extra condition that some variables must be whole numbers. The objective and the constraints stay linear; only the variables are restricted.",
-           ex: "Ridgeline cannot ship 5.25 boards, so T and S have to be whole numbers.", use: "Add an int constraint in Solver when a fractional answer is not something the shop can make or ship."},
+           use: "Add an int constraint in Solver when a fractional answer cannot be carried out."},
   relax:  {t: "LP relaxation", d: "The same model with the whole-number condition dropped. The graph and the Sensitivity Report both describe this version.",
-           ex: "The relaxation gives (5.25, 10.5) and $945. The integer model gives (3, 12) and $930.", use: "Solve the relaxation first: it is quick, and it tells you how much the whole-number condition can cost at most."},
+           use: "Solve the relaxation first. It is quick, and it gives the most the whole-number condition can cost."},
   bound:  {t: "Bound", d: "A number the optimal value cannot cross. For a maximization the relaxation's value is an upper bound on the integer optimum, because every whole-number plan is also a plan in the relaxation.",
-           ex: "$945 is an upper bound. The best whole-number plan earns $930, so at most $15 is lost to the whole-number condition.", use: "Compare a plan you already have with the bound: a small gap means more searching is not worth it."},
-  binary: {t: "Binary variable", d: "A variable allowed to be only 0 or 1. It stands for a decision the clinic takes or refuses, where the other variables measure a quantity.",
-           ex: "y = 1 if Ridgeline rents the second finishing station this week, y = 0 if it does not.", use: "Multiply the capacity the decision unlocks by y, and subtract its fixed cost times y in the objective."},
-  fixed:  {t: "Fixed cost", d: "A cost paid in full as soon as a decision is taken, whatever use it gets afterwards. In the objective it multiplies a binary variable, while a unit cost multiplies a quantity.",
-           ex: "The rented station costs $300 for the week whether it runs one hour or eight.", use: "Weigh it against the total extra profit the decision unlocks. The shadow price of a single hour is the wrong comparison."},
-  iso:    {t: "Profit line", d: "All plans that earn the same profit lie on one straight line. Its tilt is set by the profit per board of each product.",
-           ex: "50T + 65S = 945 passes through the optimal corner (5.25, 10.5).", use: "Changing a profit per board tilts this line; the best corner is the last one it touches."}
+           use: "Compare the plan you have with the bound. When the gap is small, stop searching."},
+  binary: {t: "Binary variable", d: "A variable allowed to be only 0 or 1. It records a yes-or-no decision; the other variables measure quantities.",
+           use: "Multiply the capacity the decision unlocks by y, and subtract its fixed cost times y in the objective."},
+  fixed:  {t: "Fixed cost", d: "A cost paid in full once a decision is taken, however much use it gets afterwards. In the objective it multiplies a binary variable. A unit cost multiplies a quantity.",
+           use: "Solve with and without the decision, and compare the difference with the fixed cost. A shadow price covers one unit only."},
+  iso:    {t: "Objective line", d: "All plans with the same objective value lie on one straight line. Its tilt is set by what one unit of each activity earns.",
+           use: "Changing what one unit earns tilts this line. The best corner is the last one it touches."}
 };
-const term = (k, label) => `<button class="term" data-term="${k}">${label || TERMS[k].t}</button>`;
+const term = (k, label) => `<button class="term" data-term="${k}">${label || termOf(k).t}</button>`;
+const termOf = k => Object.assign({}, TERMS[k], (CASE.terms || {})[k]);
 function openTerm(k) {
-  const x = TERMS[k], dlg = $("#term-dlg");
+  const x = termOf(k), dlg = $("#term-dlg");
   dlg.innerHTML = `<form method="dialog"><div class="tk">Key term</div><h2>${x.t}</h2><p class="td">${x.d}</p>
-    <div class="tex"><span>At Ridgeline</span><p>${x.ex}</p></div><p class="tuse"><b>Use it:</b> ${x.use}</p>
+    ${x.ex ? `<div class="tex"><span>At ${CASE.name.split(" ")[0]}</span><p>${x.ex}</p></div>` : ""}<p class="tuse"><b>Use it:</b> ${x.use}</p>
     <div class="block-actions"><button class="btn primary">Got it</button></div></form>`;
   dlg.showModal();
 }

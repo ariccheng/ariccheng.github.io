@@ -143,7 +143,7 @@ CASES.clinic.lessons = function () {
       "To find which side satisfies a constraint, substitute any point into it. The origin (0, 0) is the quickest: seeing nobody uses no rooms, which is under the limit."),
     sideBlock(1, "Therapist hours", "Click any point on the feasible side of the coral line (2V + T ≤ 23).",
       "Points below the coral line use no more than 23 therapist hours.", [2, 8],
-      "An evaluation takes 2 therapist-hours and a treatment session 1. The therapist is the only clinician, so this line is the one that will turn out to matter."),
+      "An evaluation takes 2 therapist-hours and a treatment session 1. The therapist is the only clinician, and Lesson 2 shows this limit binds."),
     sideBlock(2, "Care-plan rule", "Click any point on the feasible side of the green line (T ≥ 2V).",
       "Points above the green line satisfy the care-plan rule: at least two treatment sessions for every evaluation.", [2, 12],
       "The payer will not reimburse an evaluation that leads nowhere, so the contract requires a course of treatment to follow it. T ≥ 2V rearranges to −2V + T ≥ 0, and the points above the green line satisfy it."),
@@ -185,8 +185,8 @@ CASES.clinic.lessons = function () {
      body: () => `<p>Two of the four lines sit away from the best corner.</p>
        <p>At the corner (5.75, 11.5) the clinic uses <b>28.75</b> of its 36 room hours, leaving <b>7.25 hours unused</b>. That unused amount on a ≤ constraint is its <b>slack</b>.</p>
        <p>The network minimum is the other kind. It asks for 6 treatment sessions and the schedule delivers 11.5, so it clears the floor by <b>5.5 sessions</b>. On a ≥ constraint that margin is called <b>surplus</b>.</p>
-       <p>Therapist hours and the care-plan rule are what actually limit the clinic.</p>`,
-     why: "<p>Slack and surplus are the same idea from opposite sides: how far a constraint is from being tight. Both matter in Lesson 4, where a constraint with either one turns out to be worth nothing at the margin.</p>",
+       <p>Therapist hours and the care-plan rule limit the clinic.</p>`,
+     why: "<p>Slack and surplus are the same idea from opposite sides: how far a constraint is from being tight. Lesson 4 uses both: a constraint with slack or surplus has a shadow price of 0.</p>",
      whyTitle: "Slack, surplus, and why both are zero at a binding constraint",
      mount(b) { b.complete(); },
      show() {
@@ -395,7 +395,7 @@ CASES.clinic.lessons = function () {
      show(b) { regionView({best: true, cornerLabel: bestLabel}); sidePanel(b, {}); }},
     {title: "Final Value",
      body: () => defBox("How many of each visit type the optimal schedule books.") +
-       exBox(`Book <b>5.75</b> evaluations and <b>11.5</b> treatment sessions a week. This is the gold corner on the graph.`),
+       exBox(`Book <b>5.75</b> evaluations and <b>11.5</b> treatment sessions a week. The graph marks this plan as the gold corner.`),
      task: "Click both Final Value numbers in the table.",
      mount(b) {
        b.host.innerHTML = `<div class="res"></div>`; b.mem.seen = new Set();
@@ -468,7 +468,7 @@ CASES.clinic.lessons = function () {
        ask(b, "store", "Billing lead", "A renegotiation would cut the evaluation rate from $200 to $170, a drop of $30. Can the change in contribution be read off the report by multiplying?",
          "choice", {options: [{t: "Yes. Contribution falls by 30 × 5.75 = $172.50, to $2,012.50.", why: "The allowable decrease is only $20, so a $30 drop is outside the range."},
                               {t: "No. A $30 drop is more than the allowable decrease of $20, so the schedule changes and the model has to be solved again.", ok: true, why: "Correct. Solving again gives 0 evaluations and 23 treatment sessions, a contribution of $2,070."}]},
-         async () => { activate(b); await setProfit(b, "cx", 170); b.complete("A $30 drop is more than the allowable decrease of $20. The optimal schedule moves to <b>0 evaluations and 23 treatment sessions</b>, a contribution of <b>$2,070</b>. Outside the allowable range, multiplying does not work."); });
+         async () => { activate(b); await setProfit(b, "cx", 170); b.complete("A $30 drop is more than the allowable decrease of $20. The optimal schedule moves to <b>0 evaluations and 23 treatment sessions</b>, a contribution of <b>$2,070</b>. Outside the allowable range, solve again."); });
      },
      show: profitShow,
      async demo(b) { await setProfit(b, "cx", 170); }}
@@ -524,7 +524,7 @@ CASES.clinic.lessons = function () {
      show: rhsShow,
      async demo(b) { await setRHS(b, 27, 1000); }},
     {title: "Two shadow prices of zero",
-     body: () => defBox("A constraint that is not binding has a shadow price of zero. It does not matter whether the room to spare is slack on a ≤ constraint or surplus on a ≥ constraint.") +
+     body: () => defBox("A constraint that is not binding has a shadow price of zero. This holds for slack on a ≤ constraint and for surplus on a ≥ constraint.") +
        exBox(`Rooms have 36 − 28.75 = <b>7.25</b> hours of slack. The network minimum asks for 6 sessions and the schedule books 11.5, a <b>5.5</b> session surplus. Both shadow prices are <b>$0</b>.`),
      task: "Drag the blue room line, then switch to the magenta floor. Contribution stays at $2,185 until a line cuts into the region.",
      extra: "both", focus: {cells: [["cons", 0, 2], ["cons", 0, 3], ["cons", 3, 2], ["cons", 3, 3]]},
@@ -542,9 +542,9 @@ CASES.clinic.lessons = function () {
          el.dispatchEvent(new Event("input"));
        }));
        ask(b, "truck", "Practice owner", "The suite next door offers us eight more room hours a week. What is the most we should pay an hour?", "choice", {options: [
-         {t: "$95", why: "$95 is the therapist shadow price. The rooms' is $0."}, {t: "$60", why: "That is the per-diem therapist rate."},
+         {t: "$95", why: "$95 is the therapist shadow price. The rooms' is $0."}, {t: "$60", why: "$60 is the per-diem therapist rate."},
          {t: "$0", ok: true, why: "Correct. Room hours are already going unused, so more of them cannot raise contribution."}]},
-         async () => { activate(b); await setRHS(b, 48); b.complete("Turn it down. Rooms already have 7.25 unused hours, so eight more leave weekly contribution at $2,185. They are worth <b>$0</b>. The network minimum is worth nothing at the margin for the same reason, from the other side."); });
+         async () => { activate(b); await setRHS(b, 48); b.complete("Turn it down. Rooms already have 7.25 unused hours, so eight more leave weekly contribution at $2,185. They are worth <b>$0</b>. The network minimum also has a shadow price of $0: it has 5.5 sessions of surplus."); });
      },
      show: rhsShow,
      async demo(b) { await setRHS(b, 30, 1200); await sleep(400); await setRHS(b, 36, 700); }},
@@ -575,7 +575,7 @@ CASES.clinic.lessons = function () {
      why: "<p>Up to 28.8 hours the optimal corner slides along the care-plan line and each hour adds $95. At 28.8 hours the rooms are used up as well, and from there the rooms are the binding constraint.</p><p>Past that point another therapist hour buys nothing, so the shadow price falls all the way to <b>$0</b> and the curve goes flat.</p>",
      mount(b) {
        rhsSlider(b, "ther");
-       ask(b, "clock", "Scheduler", "If the per-diem therapist offers 8 hours instead of 4, will weekly contribution rise by 8 × $95 = $760?", "choice", {options: [
+       ask(b, "clock", "Scheduler", "If the per-diem therapist offers 8 hours, up from 4, will weekly contribution rise by 8 × $95 = $760?", "choice", {options: [
          {t: "Yes, contribution rises by $760.", why: "Eight hours is more than the allowable increase of 5.8."},
          {t: "No. Eight hours is more than the allowable increase of 5.8, so the bottleneck changes and the model has to be solved again.", ok: true, why: "Correct. With 31 hours the optimal contribution is $2,736. Multiplying predicts $2,945."}]},
          async () => { activate(b); await setRHS(b, 31); b.complete("Outside the allowable range the shadow price stops applying. With 31 therapist hours the optimal contribution is <b>$2,736</b>, while multiplying predicts $2,945, because the rooms run out first."); });
@@ -641,7 +641,7 @@ CASES.clinic.lessons = function () {
     {title: "A schedule the clinic cannot book",
      goal: "See where the corner answer stops being usable.",
      body: () => `<p>Lessons 1 and 2 ended at the corner (5.75, 11.5), worth $2,185 a week. Lesson 2 read that as an average rate: 23 evaluations and 46 treatment sessions over four weeks.</p>
-       <p>If the week has to stand on its own, that reading is not available. A visit is an appointment on a calendar, so <span class="v">V</span> and <span class="v">T</span> have to be whole numbers. The model is the same except for one line.</p>
+       <p>A single week has to be planned in whole units. A visit is an appointment on a calendar, so <span class="v">V</span> and <span class="v">T</span> have to be whole numbers. The model is the same except for one line.</p>
        <div class="model">
          <div class="model-row"><span class="m-type">Max</span><span class="m-expr">200<i>V</i> + 90<i>T</i></span><span class="m-tag obj">Contribution for the week</span></div>
          <div class="model-row sub"><span class="m-type">s.t.</span><span class="m-expr">2<i>V</i> + 1.5<i>T</i> ≤ 36</span><span class="m-tag"><span class="dot fab"></span>Treatment rooms</span></div>
@@ -723,7 +723,7 @@ CASES.clinic.lessons = function () {
        <p>Rounding gives up <b>$90</b> a week against the best whole-number schedule. Rounding down, to (5, 11), gives up <b>$180</b>.</p>
        <p>The answer sits away from every rounding of the corner: it books one more treatment session than any of them allows, and the therapist hours it frees come from the evaluation that was rounded away.</p>`,
      why: `<p>At the relaxation's corner, therapist hours and the care-plan rule are both binding, and that pins it to (5.75, 11.5).</p>
-       <p>At (5, 13) the therapist is still fully booked, 23 hours of 23, but the care-plan rule now has 3 sessions of room. The whole-number condition slides the schedule along the therapist line, away from the crossing. Nothing on the graph marks where it lands, so it cannot be read off the corners.</p>`,
+       <p>At (5, 13) the therapist is still fully booked, 23 hours of 23, but the care-plan rule now has 3 sessions of room. The whole-number condition slides the schedule along the therapist line, away from the crossing. No corner of the region sits at that point, so it has to be found by searching the grid.</p>`,
      whyTitle: "Why the best schedule leaves the corner",
      mount(b) { b.complete(); },
      show() {
@@ -734,13 +734,13 @@ CASES.clinic.lessons = function () {
     {title: "The relaxation as a bound",
      goal: "Get something useful out of the easy model.",
      body: () => defBox("For a maximization, the relaxation's optimal value is an upper bound on the whole-number model: every whole-number schedule is also a schedule in the relaxation, so none of them can bring in more.") +
-       exBox(`The relaxation brings in <b>$2,185</b> and the best whole-number schedule brings in <b>$2,170</b>. The gap is <b>$15</b>, and that is the whole cost of the whole-number condition.`),
+       exBox(`The relaxation brings in <b>$2,185</b> and the best whole-number schedule brings in <b>$2,170</b>. The gap of <b>$15</b> is what the whole-number condition costs.`),
      terms: ["bound"],
      mount(b) {
        ask(b, "gauge", "Practice owner", "Solver reports $2,185 for the relaxation, and we have a whole-number schedule worth $2,170. Before searching any further, how much could a better whole-number schedule add at most?",
          "num", {prefix: "$", answer: 15, hint: "No whole-number schedule can beat the relaxation. Subtract the schedule you have from the bound.",
                  right: "Correct. $2,185 − $2,170 = $15, so at most $15 is still on the table."},
-         () => b.complete("The bound caps what is left: at most <b>$15</b>. A gap that small is usually the point to stop searching and book the week."));
+         () => b.complete("The bound leaves at most <b>$15</b> to find. With a gap this small, stop searching and book the week."));
      },
      show() {
        view({cons: therCons(), lines: ALL, region: true, corners: true, best: true, cornerLabel: bestLabel,
@@ -766,7 +766,7 @@ CASES.clinic.lessons = function () {
   const coverBest = y => { const p = latticePts(coverCons(y))
     .map(([v, t]) => [intProfit(v, t), v, t]).sort((a, c) => c[0] - a[0])[0]; return {value: p[0], V: p[1], T: p[2]}; };
   LESSONS.push({n: 7, title: "Yes or no decisions",
-    lead: `Booking a per-diem therapist for the week is a yes-or-no decision, and that is a variable too.`,
+    lead: `Booking a per-diem therapist for the week is a yes-or-no decision, and the model gives it a variable.`,
     blocks: [
     {title: "A variable that is 0 or 1",
      goal: "Write a take-it-or-leave-it decision as part of the model.",
@@ -810,11 +810,11 @@ CASES.clinic.lessons = function () {
      async demo(b) { $$(".seg button", b.host)[1].click(); }},
     {title: "Net of the fee",
      goal: "Compare the two answers on the same footing.",
-     body: () => `<p>The $2,550 is not comparable to the $2,170 until the fee comes off it. Once it does, the two answers can be read next to each other.</p>
+     body: () => `<p>Take the fee off the $2,550 first. The two answers can then be compared directly.</p>
        <div class="readout"><div class="stat"><span>y = 0: (5, 13), no cover</span><b class="num">$2,170</b></div>
        <div class="stat"><span>y = 1: (6, 15), less $300 of fee</span><b class="num">$2,250</b></div>
        <div class="stat ok"><span>Booking the cover is worth</span><b class="num">+$80 a week</b></div></div>
-       <p class="note">Whole-number schedules, so no fraction of a visit and no fraction of a booking. The $80 is the whole of the gain.</p>`,
+       <p class="note">Whole-number schedules, so no fraction of a visit and no fraction of a booking. Booking the cover gains $80.</p>`,
      mount(b) {
        ask(b, "truck", "Scheduler", "The cover adds 4 therapist hours for a flat $300. Taking the whole-number schedules as given, what does booking it add to weekly contribution?",
          "num", {prefix: "$", answer: 80, hint: "Subtract the fee from the schedule it allows, then compare with the schedule without it: ($2,550 − $300) − $2,170.",
@@ -845,14 +845,14 @@ CASES.clinic.lessons = function () {
            <div class="stat ${d > 0 ? "" : "muted"}"><span>Cover, net of ${money(v, 0)}</span><b class="num">${money(yes, 0)}</b></div></div>
            <p class="verdict">${Math.abs(d) < 1e-9 ? `<span class="badge">Break-even</span> at ${money(v, 0)} the two answers are worth the same`
              : d > 0 ? `<span class="badge ok">Book it</span> ${money(d, 0)} better a week` : `<span class="badge bad">Do not book it</span> ${money(-d, 0)} worse a week`}</p></div>`;
-         if (Math.abs(v - COVER.even) < 1e-9) b.complete("The answer flips at <b>$380</b>: that is the extra contribution the 4 hours unlock, so a fee below it is worth paying and a fee above it is too dear.");
+         if (Math.abs(v - COVER.even) < 1e-9) b.complete("The answer flips at <b>$380</b>, the extra contribution the 4 hours unlock. Pay a fee below $380; turn down a fee above it.");
        };
        b.host.insertAdjacentHTML("beforeend", `<div class="res"></div>`);
        bindSlider(id, v => money(v, 0), v => { activate(b); b.mem.set(v); });
        b.mem.set(COVER.base);
      },
      why: `<p>The 4 hours are worth $380 here, and the therapist shadow price from Lesson 4 was $95 an hour: 4 × $95 = $380. The two agree exactly.</p>
-       <p>That agreement holds for this instance alone. The shadow price describes the relaxation, where an hour can be used in any fraction. A whole-number model usually cannot take up all of it, so the gain is usually smaller than the shadow price predicts. Check it by solving again.</p>`,
+       <p>The two numbers agree in this instance only. The shadow price describes the relaxation, where an hour can be used in any fraction. A whole-number model usually cannot take up all of it, so the gain is usually smaller than the shadow price predicts. Check it by solving again.</p>`,
      whyTitle: "Why $380 matches 4 × $95, and why that is luck",
      show(b) {
        const cons = coverCons(1), r = coverBest(1);
@@ -862,7 +862,7 @@ CASES.clinic.lessons = function () {
        b.mem.set(b.mem.fee);
      },
      async demo(b) { await tween($("#" + b.uid("fee")), COVER.even, 1200); }},
-    {title: "What Solver gives you, and what it does not",
+    {title: "Solver output for an integer model",
      goal: "Know which of the earlier lessons still applies.",
      body: () => `<p>In Solver both conditions are ordinary constraints. Select the visit cells and choose <b>int</b>; select the cover cell and choose <b>bin</b>. The solving method stays Simplex LP.</p>
        <div class="table-scroll"><table class="rtable"><tr><th>In the model</th><th>In the Solver dialog</th></tr>
@@ -870,13 +870,13 @@ CASES.clinic.lessons = function () {
          <tr><td><i>y</i> = 0 or 1</td><td><code>$D$6 = bin</code></td></tr></table></div>
        <p>One thing does change. Solver does not produce a <b>Sensitivity Report</b> for a model with int or bin constraints: Excel reports that the report is not meaningful for it, and the shadow prices and allowable ranges from Lessons 3 to 5 describe the relaxation only.</p>
        <div class="rules"><div class="rule">A quantity that must be whole gets an <b>int</b> constraint. A decision that is taken or not gets a <b>bin</b> variable, appearing once where it unlocks capacity and once where it is charged for.</div>
-         <div class="rule">Fix a binary variable and what is left is an ordinary whole-number model. Two values, two models, and the better of the two is the answer.</div>
-         <div class="rule">For an integer model there is no Sensitivity Report. Change the number and solve again: that is the only reliable answer to a what-if.</div></div>`,
+         <div class="rule">Fix a binary variable and an ordinary whole-number model remains. Solve the model for y = 0 and for y = 1, and take the better result.</div>
+         <div class="rule">For an integer model there is no Sensitivity Report. To answer a what-if, change the number and solve again.</div></div>`,
      mount(b) {
        ask(b, "tag", "Practice owner", "Next week the payer asks what one more therapist hour is worth, and our model now has whole visits and the per-diem cover in it. What do we tell them?", "choice", {options: [
-         {t: "Solve the model again with 24 hours and compare", ok: true, why: "Correct. For an integer model that is the only dependable way to answer it."},
+         {t: "Solve the model again with 24 hours and compare", ok: true, why: "Correct. An integer model answers a what-if by solving again."},
          {t: "$95, the shadow price from the Sensitivity Report", why: "Solver writes no Sensitivity Report for a model with int or bin constraints, and $95 describes the relaxation."},
-         {t: "Nothing: sensitivity analysis does not apply to integer models", why: "The report is unavailable. The answer is still obtainable, by solving the model again."}]},
+         {t: "Nothing: sensitivity analysis does not apply to integer models", why: "The report is unavailable, so solve the model again to get the answer."}]},
          () => b.complete("With whole numbers in the model, a what-if is answered by solving again. The Sensitivity Report belongs to the relaxation, and the relaxation is now only a bound."));
      },
      show() {
