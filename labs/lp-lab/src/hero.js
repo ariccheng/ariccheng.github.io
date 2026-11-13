@@ -88,7 +88,7 @@ const Hero = (() => {
       const quad = [P(...v), P(...w), P(...w, zOf(...w)), P(...v, zOf(...v))];
       return {quad, depth: (quad[0][2] + quad[1][2]) / 2};
     }).sort((a, b) => b.depth - a.depth);
-    for (const w of walls) s += `<polygon class="h-wall" points="${w.quad.map(pt).join(" ")}" fill="rgba(140,29,64,${(.1 + .12 * oblique).toFixed(3)})"/>`;
+    for (const w of walls) s += `<polygon class="h-wall" points="${w.quad.map(pt).join(" ")}" fill="rgba(var(--maroon-rgb),${(.1 + .12 * oblique).toFixed(3)})"/>`;
     s += `<polygon class="h-top" points="${REGION().map(v => pt(P(...v, zOf(...v)))).join(" ")}" fill="url(#heroTop)" fill-opacity="${(1 - .55 * late).toFixed(3)}"/>`;
     for (const L of LEVELS()) {
       const seg = insideSeg(CASE.obj.cx, CASE.obj.cy, L);
@@ -176,8 +176,8 @@ const Hero = (() => {
     track = $(".hero"); scene = $(".hero-scene"); svg = $(".hero-svg");
     tilt = $(".hero-copy .tilt"); cue = $(".cue"); spinCue = $(".spin-cue"); caps = $$(".cap");
     svg.innerHTML = `<defs><linearGradient id="heroTop" x1="0" y1="1" x2="1" y2="0">
-      <stop offset="0" stop-color="#C4577A" stop-opacity=".55"/><stop offset=".75" stop-color="#8C1D40" stop-opacity=".78"/>
-      <stop offset="1" stop-color="#E9A53B" stop-opacity=".9"/></linearGradient></defs><g class="h-draw"></g>`;
+      <stop offset="0" stop-color="var(--hero-a)" stop-opacity=".55"/><stop offset=".75" stop-color="var(--hero-b)" stop-opacity=".78"/>
+      <stop offset="1" stop-color="var(--hero-c)" stop-opacity=".9"/></linearGradient></defs><g class="h-draw"></g>`;
     measure();
     bindSpin();
     addEventListener("resize", () => { measure(); frame(cur); });

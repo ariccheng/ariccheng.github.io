@@ -47,15 +47,16 @@ const money = (v, d = 2) => (v < -1e-9 ? "−$" : "$") + Math.abs(v).toLocaleStr
   {minimumFractionDigits: Number.isInteger(Math.round(v * 100) / 100) ? 0 : d, maximumFractionDigits: d});
 
 class Graph {
-  constructor(svg) {
+  constructor(svg, label) {
     this.svg = svg;
+    this.label = label || "Graph";
     this.gid = "regionFill" + (Graph.seq = (Graph.seq || 0) + 1);
     svg.setAttribute("viewBox", `0 0 ${PLOT.W} ${PLOT.H}`);
     svg.innerHTML = `<defs><linearGradient id="${this.gid}" x1="0" y1="1" x2="1" y2="0">
-      <stop offset="0" stop-color="#8C1D40" stop-opacity=".07"/><stop offset="1" stop-color="#8C1D40" stop-opacity=".2"/></linearGradient></defs><g class="g-grid"></g><g class="layer-half dimmable"></g><g class="layer-region dimmable"></g>
+      <stop offset="0" stop-color="var(--region-a)" stop-opacity=".07"/><stop offset="1" stop-color="var(--region-b)" stop-opacity=".2"/></linearGradient></defs><g class="g-grid"></g><g class="layer-half dimmable"></g><g class="layer-region dimmable"></g>
       <g class="layer-axes"></g><g class="layer-lines dimmable"></g><g class="layer-lattice"></g><g class="layer-extra"></g><g class="layer-iso"></g>
       <g class="layer-corners dimmable"></g><g class="layer-pts"></g><rect class="g-hit" x="${PLOT.L}" y="${PLOT.T}"
-      width="${PLOT.W - PLOT.L - PLOT.R}" height="${PLOT.H - PLOT.T - PLOT.B}"></rect><g class="layer-drag"></g>`;
+      width="${PLOT.W - PLOT.L - PLOT.R}" height="${PLOT.H - PLOT.T - PLOT.B}"></rect><g class="layer-drag"></g><g class="layer-kb"></g>`;
     this.L = n => svg.querySelector(".layer-" + n);
     this.drawAxes();
     this.seen = new Set();
@@ -66,6 +67,43 @@ class Graph {
       return fromPx(p.x, p.y);
     };
     svg.querySelector(".g-hit").addEventListener("click", e => { if (this.onClick) this.onClick(...toPlot(e)); });
+    /* ---- keyboard: the same two jobs the pointer does ----------------------
+       Arrow keys move a cursor (or the probe directly, when there is one),
+       Enter picks the point under it. Shift takes bigger steps, Home recentres.
+       Without this the graph is the one part of a lesson a keyboard cannot
+       reach, and several blocks are completed by clicking it. */
+    this.kb = null;
+    const snap = v => Math.round(v * 4) / 4;
+    svg.addEventListener("focus", () => { if (this.interactive() && !this.kb) this.kbStart(); });
+    svg.addEventListener("blur", () => { this.kb = null; this.drawCursor(); });
+    svg.addEventListener("keydown", e => {
+      if (!this.interactive() || e.metaKey || e.ctrlKey || e.altKey) return;
+      const big = e.shiftKey ? 4 : 1;
+      const step = {ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowDown: [0, -1], ArrowUp: [0, 1]}[e.key];
+      if (step) {
+        if (!this.kb) this.kbStart();
+        if (this.targets) {
+          const d = (step[0] || step[1]) > 0 ? 1 : -1;
+          this.kbi = (this.kbi + d + this.targets.length) % this.targets.length;
+          const t = this.targets[this.kbi];
+          this.kb.x = t[0]; this.kb.y = t[1];
+        } else {
+          this.kb.x = Math.max(0, Math.min(PLOT.XM, snap(this.kb.x + step[0] * big)));
+          this.kb.y = Math.max(0, Math.min(PLOT.YM, snap(this.kb.y + step[1] * big)));
+        }
+        if (this.probe) this.probe.onMove(this.kb.x, this.kb.y); else this.drawCursor();
+        this.kbSay();
+        e.preventDefault();
+        return;
+      }
+      if (e.key === "Enter" || e.key === " ") {
+        if (!this.kb) this.kbStart();
+        if (this.onClick) this.onClick(this.kb.x, this.kb.y);
+        e.preventDefault();
+        return;
+      }
+      if (e.key === "Home") { this.kbStart(true); this.kbSay(); e.preventDefault(); }
+    });
     /* direct manipulation: drag a constraint line (changes its right-hand side) or the probe point */
     this.drag = null; this.probe = null;
     svg.addEventListener("pointerdown", e => {
@@ -83,6 +121,29 @@ class Graph {
       const up = () => { h.removeEventListener("pointermove", move); h.removeEventListener("pointerup", up); h.removeEventListener("pointercancel", up); svg.classList.remove("dragging"); };
       h.addEventListener("pointermove", move); h.addEventListener("pointerup", up); h.addEventListener("pointercancel", up);
     });
+  }
+  interactive() { return !!(this.onClick || this.probe); }
+  kbStart(reset) {
+    this.kbi = 0;
+    const p = this.targets ? this.targets[0]
+      : this.probe && !reset ? [this.probe.x, this.probe.y]
+      : [Math.round(PLOT.XM / 4), Math.round(PLOT.YM / 3)];
+    this.kb = {x: p[0], y: p[1]};
+    if (this.probe) this.probe.onMove(this.kb.x, this.kb.y); else this.drawCursor();
+  }
+  kbSay() {
+    if (!this.kb || typeof announce !== "function") return;
+    clearTimeout(this._say);
+    this._say = setTimeout(() => announce(`${fmt(this.kb.x)}, ${fmt(this.kb.y)}`), 220);
+  }
+  /* the pointer has the cursor it is holding; the keyboard needs one drawn */
+  drawCursor() {
+    const L = this.L("kb");
+    if (!this.kb || this.probe || !this.onClick) { L.innerHTML = ""; return; }
+    const x = X(this.kb.x), y = Y(this.kb.y);
+    L.innerHTML = `<g class="g-kb"><line x1="${x}" y1="${PLOT.T}" x2="${x}" y2="${PLOT.H - PLOT.B}"/>
+      <line x1="${PLOT.L}" y1="${y}" x2="${PLOT.W - PLOT.R}" y2="${y}"/>
+      <circle cx="${x}" cy="${y}" r="9"/></g>`;
   }
   drawAxes() {
     let g = "", a = "";
@@ -244,6 +305,24 @@ class Graph {
     this.prune("drag", keepD);
     this.svg.querySelector(".g-hit").style.cursor = this.onClick ? "crosshair" : "default";
     this.svg.querySelector(".g-hit").style.pointerEvents = this.onClick ? "auto" : "none";
+    /* stepping through a handful of named points beats crawling the grid; a
+       field of them is the other way round, so only a short list becomes targets */
+    const picks = this.onClick && !v.probe
+      ? (v.lattice && v.lattice.length ? v.lattice.map(p => [p.x, p.y])
+         : (v.corners && v.corners.length ? v.corners : null))
+      : null;
+    this.targets = picks && picks.length <= 12 ? picks : null;
+    if (this.targets && this.kb) {
+      const i = this.targets.findIndex(t => Math.abs(t[0] - this.kb.x) < 1e-6 && Math.abs(t[1] - this.kb.y) < 1e-6);
+      this.kbi = i < 0 ? 0 : i;
+    }
+    const live = this.interactive();
+    this.svg.setAttribute("tabindex", live ? "0" : "-1");
+    this.svg.setAttribute("aria-label", this.label + (live
+      ? ". Interactive: arrow keys move a point, Shift takes larger steps, Enter picks it, Home recentres."
+      : ""));
+    if (!live && this.kb) { this.kb = null; }
+    this.drawCursor();
   }
   reset() { for (const n of ["half", "region", "lines", "iso", "corners", "pts", "extra", "drag", "lattice"]) this.L(n).innerHTML = ""; }
 }

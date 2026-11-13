@@ -33,11 +33,11 @@ function draw() {
 /* every step reads with clear instructional design: Objective, Action, Takeaway */
 function blockHTML(def, i) {
   const body = typeof def.body === "function" ? def.body() : (def.body || "");
-  return `<div class="block-top"><span class="sn">${i + 1}</span><h3>${def.title}</h3></div>
+  return `<div class="block-top"><span class="sn">${i + 1}</span><h2>${def.title}</h2></div>
     ${def.goal ? `<div class="row goal"><span class="rl goal-tag">Goal</span><p>${def.goal}</p></div>` : ""}
     ${body ? `<div class="bbody">${body}</div>` : ""}
     ${def.task ? `<div class="row task"><span class="rl action-tag">Action</span><p>${def.task}</p></div>` : ""}<div class="extra"></div>
-    <div class="done-msg" role="status"><span class="rl takeaway-tag">Takeaway</span><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10" fill="#14935C"/>
+    <div class="done-msg" role="status"><span class="rl takeaway-tag">Takeaway</span><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10" fill="var(--ok)"/>
       <path d="M5.5 10.5l3 3 6-7" pathLength="1" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dm"></span></div>
     ${def.terms || def.why ? `<div class="terms">${(def.terms || []).map(k => term(k)).join("")}${def.why ? `<button class="term more">${def.whyTitle || "Why does this work?"}</button>` : ""}</div>` : ""}
     ${def.demo || def.custom ? `<div class="block-actions">${def.demo ? `<button class="btn show small">Show me</button>` : ""}${def.custom || ""}</div>` : ""}`;
@@ -48,13 +48,13 @@ function buildLesson(l) {
   const el = document.createElement("section");
   el.className = "lesson"; el.id = "lesson-" + l.n;
   el.innerHTML = `<div class="wrap"><header class="lesson-head reveal"><span class="no">${l.n}</span><div>
-      <div class="q">${q.t}</div><h2>${l.title}</h2><p>${l.lead}</p></div></header>
+      <div class="q">${q.t}</div><h1>${l.title}</h1><p>${l.lead}</p></div></header>
     <div class="lesson-grid"><div class="flow"></div>
       <div class="aside${l.aside ? " " + l.aside : ""}"><div class="mobile-tabs" role="tablist" aria-label="View toggle">
           <button class="m-tab ${l.aside === "report-first" ? "" : "active"}" data-tab="graph" role="tab" aria-selected="${l.aside === "report-first" ? "false" : "true"}">Graph</button>
           <button class="m-tab ${l.aside === "report-first" ? "active" : ""}" data-tab="panel" role="tab" aria-selected="${l.aside === "report-first" ? "true" : "false"}">Sensitivity table</button>
         </div><div class="gcard"><span class="hint"><i></i>Click on the graph</span>
-        <svg class="plot" role="img" aria-label="Graph of production plans: Trail boards across, Summit boards up"></svg></div>
+        <svg class="plot" role="img"></svg></div>
         <div class="panel"></div></div></div>
     <div class="lesson-foot"></div></div>`;
   el.hidden = true;
@@ -73,7 +73,7 @@ function buildLesson(l) {
       });
     });
   });
-  const sec = {n: l.n, lesson: l, el, graph: new Graph($(".plot", el)), V: freshView(), panel: $(".panel", el),
+  const sec = {n: l.n, lesson: l, el, graph: new Graph($(".plot", el), `Graph of plans: ${CASE.x.axis} across, ${CASE.y.axis} up`), V: freshView(), panel: $(".panel", el),
                gcard: $(".gcard", el), onReport: null, mem: {}, blocks: [], active: null};
   SECTIONS.push(sec);
   l.blocks.forEach((def, i) => {
@@ -127,7 +127,7 @@ function activate(b) {
   CUR = sec; V = sec.V;
   sec.active?.el.classList.remove("active");
   sec.active = b; b.el.classList.add("active");
-  sec.graph.onClick = null; sec.gcard.classList.remove("ask"); sec.onReport = null;
+  sec.graph.onClick = null; sec.graph.kb = null; sec.gcard.classList.remove("ask"); sec.onReport = null;
   b.def.show && b.def.show(b);
   draw();
   ping(b.el);
