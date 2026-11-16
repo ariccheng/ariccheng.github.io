@@ -63,6 +63,11 @@ body {
   padding: 0;
 }
 
+/* every size below is in rem, so the whole type scale rides on this */
+html {
+  font-size: 110%;
+}
+
 body {
   background: var(--bg);
   color: var(--ink);
@@ -78,6 +83,20 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+/* co-author links: underlined, but in body text color rather than link color */
+a.coauthor {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+a.coauthor:hover,
+a.coauthor:focus-visible {
+  text-decoration-color: currentColor;
 }
 
 .container{
@@ -352,6 +371,32 @@ p {
   font-size: 1rem;
 }
 
+/* conference talks: title line plus one muted run of venues */
+.talk + .talk {
+  margin-top: 14px;
+}
+
+.talk-title {
+  margin: 0 0 2px;
+}
+
+.venues {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.venues > span {
+  white-space: nowrap;
+}
+
+/* a single venue is too wide to hold together on a phone */
+@media (max-width: 640px) {
+  .venues > span {
+    white-space: normal;
+  }
+}
+
 .timeline-item + .timeline-item {
   margin-top: 12px;
 }
@@ -436,7 +481,6 @@ footer {
   .table {
     display: block;
     overflow-x: auto;
-    white-space: nowrap;
   }
 }
 
@@ -729,5 +773,48 @@ footer {
 
   .theme-toggle {
     margin-left: 0;
+  }
+}
+
+/* no room for three columns on a phone: stack each row and carry the
+   column name over as an inline label (see data-label in teaching.html) */
+@media (max-width: 640px) {
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+    width: auto;
+  }
+
+  .table colgroup,
+  .table thead {
+    display: none;
+  }
+
+  .table tr {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .table tr:last-child {
+    border-bottom: none;
+  }
+
+  .table td {
+    padding: 0;
+    border-bottom: none;
+  }
+
+  .table td + td {
+    margin-top: 2px;
+  }
+
+  .table td[data-label="Level"]::before,
+  .table td[data-label="Term"]::before {
+    content: attr(data-label);
+    display: inline-block;
+    min-width: 4.5em;
+    color: var(--muted);
   }
 }
